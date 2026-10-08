@@ -1,0 +1,36 @@
+name: colima_night
+description: "ColimaNight - Plataforma nocturna para descubrir antros, bares y eventos en la zona conurbada de Colima y Villa de Álvarez."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  google_fonts: ^6.2.1
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
+  flutter_animate: ^4.5.0
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.1
+  geolocator: ^11.0.0
+  crypto: ^3.0.3
+  url_launcher: ^6.2.6
+  font_awesome_flutter: ^10.7.0
+  glassmorphism_ui: ^0.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
+    - assets/images/
+    - assets/map_styles/

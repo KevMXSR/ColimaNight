@@ -1,0 +1,27 @@
+{
+  "name": "colimanight-backend",
+  "version": "1.0.0",
+  "description": "Backend en Firebase (Firestore + Cloud Functions) para ColimaNight con ingesta en tiempo real, geocerca y blindaje anti-difamación",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions,firestore",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.18.0",
+    "typescript": "^5.2.2"
+  },
+  "private": true
+}

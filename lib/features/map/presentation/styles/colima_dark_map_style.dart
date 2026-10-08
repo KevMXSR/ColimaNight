@@ -1,0 +1,146 @@
+/// Configuración de estilos visuales oscuros tipo Uber/DiDi para los mapas de ColimaNight.
+///
+/// Este estilo está optimizado para pantallas OLED/AMOLED con un fondo predominantemente
+/// negro/carbón, avenidas principales resaltadas con contornos luminosos sutiles,
+/// cuerpos de agua en azul noche profundo, y silenciamiento de POIs genéricos de Google
+/// para que los marcadores neón de los antros y bares resalten con máxima visibilidad.
+class ColimaDarkMapStyle {
+  ColimaDarkMapStyle._();
+
+  /// URL de teselas para alternativa Open Source con flutter_map (CartoDB Dark Matter)
+  static const String cartoDbDarkMatterUrl =
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+  static const List<String> cartoDbSubdomains = ['a', 'b', 'c', 'd'];
+
+  /// Estilo JSON oficial para Google Maps SDK (Dark Night Theme)
+  static const String googleMapsDarkJson = '''[
+  {
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#12161f" }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#7a8a9e" }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      { "color": "#12161f" }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#2c3b4e" }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#9eafc2" }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#00E5FF" }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#11221c" }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#3d6652" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#1a222e" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#65778b" }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#222d3d" }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#2c3b4e" }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "color": "#3f546d" }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#3f546d" }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#090d17" }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      { "color": "#24374d" }
+    ]
+  }
+]''';
+}
