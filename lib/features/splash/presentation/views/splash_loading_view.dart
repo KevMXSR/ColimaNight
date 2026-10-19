@@ -6,8 +6,8 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../venues/presentation/views/discovery_feed_view.dart';
 
 /// Pantalla de Carga (Splash Screen) cinemática para ColimaNight
-/// Reproduce el video oficial de arranque en bucle suave / intro,
-/// con respaldo visual neón y transición fluida al feed principal.
+/// Reproduce a pantalla completa el video oficial de arranque (atractivo visual obligatorio),
+/// asegurando reproducción automática sin bloqueos y transición fluida al feed.
 class SplashLoadingView extends StatefulWidget {
   const SplashLoadingView({super.key});
 
@@ -20,7 +20,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
   VideoPlayerController? _videoController;
   bool _isVideoInitialized = false;
   bool _hasNavigated = false;
-  Timer? _maxDurationTimer;
+  Timer? _safetyTimer;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -38,44 +38,51 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
       curve: Curves.easeInOut,
     );
 
-    _initializeVideoPlayer();
+    _startVideoPlayback();
 
-    // Temporizador de seguridad: si el usuario no interactúa o el video tarda,
-    // navega suavemente al feed tras 4.5 segundos
-    _maxDurationTimer = Timer(const Duration(milliseconds: 4500), () {
+    // Temporizador de respaldo: si por alguna razón el reproductor del sistema no responde,
+    // se asegura el avance suave tras 12 segundos (el video dura 10s)
+    _safetyTimer = Timer(const Duration(milliseconds: 12500), () {
       _navigateToFeed();
     });
   }
 
-  Future<void> _initializeVideoPlayer() async {
+  Future<void> _startVideoPlayback() async {
     try {
       final controller =
           VideoPlayerController.asset('assets/videos/splash_loading.mp4');
       _videoController = controller;
+
+      // 1. Inicializar el controlador
       await controller.initialize();
       if (!mounted) return;
 
-      controller.setLooping(false);
-      controller.setVolume(1.0);
+      // 2. CRÍTICO PARA AUTOPLAY EN WEB Y DISPOSITIVOS:
+      // El volumen en 0.0 activa el atributo 'muted' en el elemento HTML5/plataforma,
+      // lo que garantiza que los navegadores (Chrome, Edge, Safari, móviles)
+      // no bloqueen la reproducción automática (Autoplay Policy compliance).
+      await controller.setVolume(0.0);
+      await controller.setLooping(false);
       await controller.play();
 
-      controller.addListener(() {
-        if (!mounted) return;
-        final position = controller.value.position;
+      controller.addListener(_onVideoControllerUpdate);
+
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = true;
+        });
+
+        // Sincronizar el temporizador con la duración real del video + un margen de 400ms
         final duration = controller.value.duration;
-
-        // Si el video llega al final, transicionar a la pantalla principal
-        if (duration > Duration.zero && position >= duration && !_hasNavigated) {
-          _navigateToFeed();
+        if (duration > Duration.zero) {
+          _safetyTimer?.cancel();
+          _safetyTimer = Timer(duration + const Duration(milliseconds: 400), () {
+            _navigateToFeed();
+          });
         }
-      });
-
-      setState(() {
-        _isVideoInitialized = true;
-      });
+      }
     } catch (e) {
-      // Fallback elegante en caso de que el entorno no soporte decodificación de video
-      debugPrint('Video splash loading fallback: $e');
+      debugPrint('Video splash initialization error: $e');
       if (mounted) {
         setState(() {
           _isVideoInitialized = false;
@@ -84,14 +91,36 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
     }
   }
 
+  void _onVideoControllerUpdate() {
+    if (!mounted || _hasNavigated) return;
+    final controller = _videoController;
+    if (controller == null) return;
+
+    final val = controller.value;
+    if (!val.isInitialized) return;
+
+    if (!_isVideoInitialized && val.isPlaying) {
+      setState(() => _isVideoInitialized = true);
+    }
+
+    final position = val.position;
+    final duration = val.duration;
+
+    // Cuando el video llega a su fin, transicionar automáticamente al feed principal
+    if (duration > Duration.zero &&
+        position >= duration - const Duration(milliseconds: 200)) {
+      _navigateToFeed();
+    }
+  }
+
   void _navigateToFeed() {
     if (_hasNavigated || !mounted) return;
     _hasNavigated = true;
-    _maxDurationTimer?.cancel();
+    _safetyTimer?.cancel();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 650),
+        transitionDuration: const Duration(milliseconds: 700),
         pageBuilder: (context, animation, secondaryAnimation) =>
             const DiscoveryFeedView(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -109,29 +138,43 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
 
   @override
   void dispose() {
-    _maxDurationTimer?.cancel();
+    _safetyTimer?.cancel();
     _pulseController.dispose();
+    _videoController?.removeListener(_onVideoControllerUpdate);
     _videoController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = _videoController;
+    final isPlayingVideo = _isVideoInitialized &&
+        controller != null &&
+        controller.value.isInitialized;
+
     return Scaffold(
       backgroundColor: const Color(0xFF06070B),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Capa 1: Video de Carga Oficial o Fallback Neón
-          if (_isVideoInitialized && _videoController != null)
-            Center(
-              child: AspectRatio(
-                aspectRatio: _videoController!.value.aspectRatio,
-                child: VideoPlayer(_videoController!),
+          // Capa 1: Video Oficial a Pantalla Completa (Full Cover) o Fallback Neón
+          if (isPlayingVideo)
+            SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: controller.value.size.width > 0
+                      ? controller.value.size.width
+                      : 1080,
+                  height: controller.value.size.height > 0
+                      ? controller.value.size.height
+                      : 1920,
+                  child: VideoPlayer(controller),
+                ),
               ),
             )
           else
-            // Fallback visual con aura neón mientras el video inicializa
+            // Fallback con aura neón mientras carga el video
             Container(
               decoration: const BoxDecoration(
                 gradient: RadialGradient(
@@ -215,7 +258,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
               ),
             ),
 
-          // Capa 2: Viñeta degradada superior e inferior para look cinematográfico
+          // Capa 2: Viñeta degradada sutil para realce visual cinematográfico
           Positioned.fill(
             child: IgnorePointer(
               child: DecoratedBox(
@@ -224,92 +267,62 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withOpacity(0.55),
+                      Colors.black.withOpacity(0.40),
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black.withOpacity(0.75),
+                      Colors.black.withOpacity(0.65),
                     ],
-                    stops: const [0.0, 0.2, 0.75, 1.0],
+                    stops: const [0.0, 0.15, 0.80, 1.0],
                   ),
                 ),
               ),
             ),
           ),
 
-          // Capa 3: Barra superior con branding discreto y botón "Saltar"
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: TextButton(
-                  onPressed: _navigateToFeed,
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black.withOpacity(0.45),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 6,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Saltar',
-                        style: AppTypography.caption.copyWith(
-                          color: Colors.white.withOpacity(0.85),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 11,
-                        color: Colors.white.withOpacity(0.85),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Capa 4: Barra inferior con indicador de carga y estatus
+          // Capa 3: Barra inferior con indicador de progreso neón sincronizado
           SafeArea(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 24, left: 24, right: 24),
+                padding: const EdgeInsets.only(bottom: 28, left: 32, right: 32),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                      width: 140,
+                      width: 160,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6),
-                        child: const LinearProgressIndicator(
-                          minHeight: 2.5,
-                          backgroundColor: Color(0xFF1E1A2E),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.neonCyan,
-                          ),
+                        child: AnimatedBuilder(
+                          animation: controller ?? _pulseController,
+                          builder: (context, _) {
+                            double? progress;
+                            if (controller != null &&
+                                controller.value.isInitialized &&
+                                controller.value.duration.inMilliseconds > 0) {
+                              progress = (controller.value.position.inMilliseconds /
+                                      controller.value.duration.inMilliseconds)
+                                  .clamp(0.0, 1.0);
+                            }
+                            return LinearProgressIndicator(
+                              value: progress,
+                              minHeight: 2.5,
+                              backgroundColor: const Color(0xFF1E1A2E),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.neonCyan,
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Sincronizando aforos y ambiente en vivo...',
-                      style: AppTypography.caption.copyWith(
-                        color: Colors.white60,
-                        fontSize: 11,
-                        letterSpacing: 0.5,
+                      'COLIMA NIGHT • EN VIVO',
+                      style: AppTypography.badgeLabel.copyWith(
+                        color: Colors.white70,
+                        fontSize: 9.5,
+                        letterSpacing: 2.0,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
