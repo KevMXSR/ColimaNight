@@ -127,6 +127,7 @@ class _NightlifeMapViewState extends State<NightlifeMapView> {
               point: ll.LatLng(venue.coordinates.latitude, venue.coordinates.longitude),
               width: isSelected ? 160 : 36,
               height: isSelected ? 50 : 36,
+              alignment: isSelected ? Alignment.topCenter : Alignment.center,
               child: GestureDetector(
                 onTap: () => _onVenueSelected(venue),
                 child: isSelected

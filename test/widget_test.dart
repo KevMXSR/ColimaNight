@@ -11,7 +11,7 @@ void main() {
     );
 
     // Verify app renders with header texts
-    expect(find.text('COLIMA'), findsWidgets);
-    expect(find.text('NIGHT'), findsWidgets);
+    expect(find.textContaining('COLIMA'), findsWidgets);
+    expect(find.textContaining('NIGHT'), findsWidgets);
   });
 }

@@ -95,5 +95,24 @@ void main() {
       final dosPuntos = venues.firstWhere((v) => v.id == 'dos_puntos');
       expect(dosPuntos.coverImageUrl, 'assets/images/venues/dos_puntos.jpg');
     });
+
+    test('Geographic coordinates are aligned to actual venue landmarks', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      final sanFernando = venues.firstWhere((v) => v.id == 'costa_san_fernando');
+      expect(sanFernando.latitude, 19.2488);
+      expect(sanFernando.longitude, -103.7225);
+
+      final elTaurino = venues.firstWhere((v) => v.id == 'el_taurino');
+      expect(elTaurino.latitude, 19.2415);
+      expect(elTaurino.longitude, -103.7240);
+
+      final low = venues.firstWhere((v) => v.id == 'low_social_club');
+      expect(low.latitude, 19.2412);
+      expect(low.longitude, -103.7262);
+    });
   });
 }

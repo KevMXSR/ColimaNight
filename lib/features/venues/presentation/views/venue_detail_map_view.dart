@@ -13,34 +13,46 @@ import '../widgets/incident_report_modal.dart';
 
 /// Estilos de mapas libres y gratuitos para visualización urbana en Colima y VDA
 enum AppMapStyle {
-  streets(
-    label: 'Calles (OSM)',
-    icon: Icons.map_rounded,
-    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    fallbackUrl: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+  cyberNeon(
+    label: '⚡ Neón Cyberpunk',
+    icon: Icons.electric_bolt_rounded,
+    urlTemplate: 'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    hasNeonFilter: true,
   ),
   dark(
-    label: 'Neón Noche',
+    label: '🌙 Carto Dark',
     icon: Icons.nightlight_round,
     urlTemplate: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
     fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    hasNeonFilter: false,
+  ),
+  streets(
+    label: '🗺️ Calles (OSM)',
+    icon: Icons.map_rounded,
+    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    hasNeonFilter: false,
   ),
   voyager(
-    label: 'Urbano',
+    label: '🧭 Urbano Voyager',
     icon: Icons.explore_rounded,
     urlTemplate: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
     fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    hasNeonFilter: false,
   );
 
   final String label;
   final IconData icon;
   final String urlTemplate;
   final String fallbackUrl;
+  final bool hasNeonFilter;
   const AppMapStyle({
     required this.label,
     required this.icon,
     required this.urlTemplate,
     required this.fallbackUrl,
+    required this.hasNeonFilter,
   });
 }
 
@@ -62,7 +74,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   double _currentZoom = 15.2;
   int _barezzitoEasterEggStep = 0;
   static const List<String> _barezzitoNotes = ['💀', 'RIP', 'In Memoriam'];
-  AppMapStyle _selectedMapStyle = AppMapStyle.streets;
+  AppMapStyle _selectedMapStyle = AppMapStyle.cyberNeon;
 
   @override
   void initState() {
@@ -143,6 +155,20 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                   subdomains: const ['a', 'b', 'c', 'd'],
                   userAgentPackageName: 'com.colimanight.app',
                   maxZoom: 19,
+                  tileBuilder: (context, tileWidget, tile) {
+                    if (_selectedMapStyle.hasNeonFilter) {
+                      return ColorFiltered(
+                        colorFilter: const ColorFilter.matrix(<double>[
+                          2.8, -0.2, 0.2, 0, -58,
+                          0.2, 0.8, 0.4, 0, -45,
+                          1.2, 0.4, 2.6, 0, -35,
+                          0, 0, 0, 1, 0,
+                        ]),
+                        child: tileWidget,
+                      );
+                    }
+                    return tileWidget;
+                  },
                 ),
 
                 // Capa de Marcadores Neón de los Antros y Bares + Easter Egg Discreto
@@ -153,8 +179,9 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                       final showLabel = _currentZoom >= 14.0 || isSelected;
                       return Marker(
                         point: ll.LatLng(v.latitude, v.longitude),
-                        width: showLabel ? (isSelected ? 200 : 170) : 36,
+                        width: showLabel ? (isSelected ? 200 : 170) : 32,
                         height: showLabel ? 65 : 36,
+                        alignment: Alignment.topCenter,
                         child: GestureDetector(
                           onTap: () => _centerOnVenue(v),
                           child: _MapVenuePin(
@@ -171,6 +198,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                       point: const ll.LatLng(19.2524, -103.7210),
                       width: _currentZoom >= 13.5 ? 100 : 30,
                       height: _currentZoom >= 13.5 ? 55 : 30,
+                      alignment: Alignment.topCenter,
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -494,53 +522,68 @@ class _MapVenuePin extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _pinColor;
 
-    // Zoom Lejano (sin etiqueta expandida): solo marcador compacto de alta visibilidad
+    // Zoom Lejano (sin etiqueta expandida): solo marcador compacto con aguja de precisión
     if (!showLabel) {
       return AnimatedScale(
-        scale: isSelected ? 1.25 : 0.95,
+        scale: isSelected ? 1.25 : 1.0,
         duration: const Duration(milliseconds: 200),
-        child: Center(
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected ? color : AppColors.surface.withOpacity(0.92),
-              border: Border.all(
-                color: isSelected ? Colors.white : color,
-                width: isSelected ? 2.2 : 1.8,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(isSelected ? 0.85 : 0.45),
-                  blurRadius: isSelected ? 10 : 5,
-                  spreadRadius: isSelected ? 2 : 0,
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: 32,
+          height: 36,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: isSelected ? 26 : 22,
+                height: isSelected ? 26 : 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? color : const Color(0xFF14141F),
+                  border: Border.all(
+                    color: isSelected ? Colors.white : color,
+                    width: isSelected ? 2.2 : 1.8,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(isSelected ? 0.9 : 0.5),
+                      blurRadius: isSelected ? 10 : 5,
+                      spreadRadius: isSelected ? 2 : 0,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Icon(
-              Icons.location_on_rounded,
-              size: isSelected ? 18 : 15,
-              color: isSelected ? Colors.white : color,
-            ),
+                child: Icon(
+                  Icons.circle,
+                  size: isSelected ? 8 : 6,
+                  color: isSelected ? Colors.white : color,
+                ),
+              ),
+              CustomPaint(
+                size: const Size(8, 7),
+                painter: _PinTipPainter(color: isSelected ? Colors.white : color),
+              ),
+            ],
           ),
         ),
       );
     }
 
-    // Zoom Cercano o Seleccionado: Nombre completo legible sin recorte y badge de aforo
+    // Zoom Cercano o Seleccionado: Nombre completo legible sin recorte y aguja de precisión
     return AnimatedScale(
-      scale: isSelected ? 1.12 : 0.96,
+      scale: isSelected ? 1.08 : 0.96,
       duration: const Duration(milliseconds: 220),
+      alignment: Alignment.bottomCenter,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Etiqueta flotante con el nombre completo y % de aforo
           Container(
             constraints: const BoxConstraints(maxWidth: 195),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.black : AppColors.surface.withOpacity(0.94),
+              color: isSelected ? Colors.black : const Color(0xFF14141F).withOpacity(0.95),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected ? color : AppColors.glassBorder,
@@ -591,36 +634,64 @@ class _MapVenuePin extends StatelessWidget {
           ),
           const SizedBox(height: 2),
 
-          // Icono de Pin Neón
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              if (isSelected)
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color.withOpacity(0.35),
-                  ),
-                ),
-              Icon(
-                Icons.location_on_rounded,
-                size: isSelected ? 28 : 22,
-                color: color,
-                shadows: [
-                  Shadow(
-                    color: color.withOpacity(0.9),
-                    blurRadius: 10,
-                  ),
-                ],
+          // Cabeza del Pin Neón con punta inferior exacta
+          Container(
+            width: isSelected ? 26 : 22,
+            height: isSelected ? 26 : 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isSelected ? color : const Color(0xFF14141F),
+              border: Border.all(
+                color: isSelected ? Colors.white : color,
+                width: 2.0,
               ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(isSelected ? 0.85 : 0.5),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.nightlife_rounded,
+              size: isSelected ? 14 : 12,
+              color: isSelected ? Colors.white : color,
+            ),
+          ),
+          CustomPaint(
+            size: const Size(8, 7),
+            painter: _PinTipPainter(color: isSelected ? Colors.white : color),
           ),
         ],
       ),
     );
   }
+}
+
+/// Punta triangular de precisión que apunta exactamente a la coordenada GPS
+class _PinTipPainter extends CustomPainter {
+  final Color color;
+
+  const _PinTipPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PinTipPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 /// Modal interactivo para que el usuario pueda probar y modificar aforos en caliente
