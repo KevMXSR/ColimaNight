@@ -11,48 +11,63 @@ import '../providers/venue_providers.dart';
 import '../widgets/venue_detail_bottom_sheet.dart';
 import '../widgets/incident_report_modal.dart';
 
-/// Estilos de mapas libres y gratuitos para visualización urbana en Colima y VDA
+/// Estilos de mapas libres y gratuitos con aceleración GPU para Colima y VDA
 enum AppMapStyle {
   cyberNeon(
     label: '⚡ Neón Cyberpunk',
     icon: Icons.electric_bolt_rounded,
-    urlTemplate: 'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-    fallbackUrl: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    hasNeonFilter: true,
+    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    colorFilter: ColorFilter.matrix(<double>[
+      -0.85,  0.00,  0.00, 0.0, 225.0,
+       0.00, -0.85,  0.00, 0.0, 220.0,
+       0.00,  0.00, -0.95, 0.0, 250.0,
+       0.00,  0.00,  0.00, 1.0,   0.0,
+    ]),
   ),
   dark(
     label: '🌙 Carto Dark',
     icon: Icons.nightlight_round,
-    urlTemplate: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    hasNeonFilter: false,
+    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    colorFilter: ColorFilter.matrix(<double>[
+      -0.78,  0.00,  0.00, 0.0, 200.0,
+       0.00, -0.78,  0.00, 0.0, 200.0,
+       0.00,  0.00, -0.78, 0.0, 205.0,
+       0.00,  0.00,  0.00, 1.0,   0.0,
+    ]),
   ),
   streets(
     label: '🗺️ Calles (OSM)',
     icon: Icons.map_rounded,
     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    fallbackUrl: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    hasNeonFilter: false,
+    fallbackUrl: 'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    colorFilter: null,
   ),
   voyager(
     label: '🧭 Urbano Voyager',
     icon: Icons.explore_rounded,
-    urlTemplate: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    hasNeonFilter: false,
+    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    colorFilter: ColorFilter.matrix(<double>[
+      1.12,  0.00,  0.00, 0.0, -12.0,
+      0.00,  1.12,  0.00, 0.0, -12.0,
+      0.00,  0.00,  1.12, 0.0, -12.0,
+      0.00,  0.00,  0.00, 1.0,   0.0,
+    ]),
   );
 
   final String label;
   final IconData icon;
   final String urlTemplate;
   final String fallbackUrl;
-  final bool hasNeonFilter;
+  final ColorFilter? colorFilter;
   const AppMapStyle({
     required this.label,
     required this.icon,
     required this.urlTemplate,
     required this.fallbackUrl,
-    required this.hasNeonFilter,
+    required this.colorFilter,
   });
 }
 
@@ -72,8 +87,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   late String _selectedVenueId;
   final MapController _mapController = MapController();
   double _currentZoom = 15.2;
-  int _barezzitoEasterEggStep = 0;
-  static const List<String> _barezzitoNotes = ['💀', 'RIP', 'In Memoriam'];
+  bool _showBarezzitoTooltip = false;
   AppMapStyle _selectedMapStyle = AppMapStyle.cyberNeon;
 
   @override
@@ -152,18 +166,13 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                   key: ValueKey<String>(_selectedMapStyle.name),
                   urlTemplate: _selectedMapStyle.urlTemplate,
                   fallbackUrl: _selectedMapStyle.fallbackUrl,
-                  subdomains: const ['a', 'b', 'c', 'd'],
                   userAgentPackageName: 'com.colimanight.app',
                   maxZoom: 19,
                   tileBuilder: (context, tileWidget, tile) {
-                    if (_selectedMapStyle.hasNeonFilter) {
+                    final filter = _selectedMapStyle.colorFilter;
+                    if (filter != null) {
                       return ColorFiltered(
-                        colorFilter: const ColorFilter.matrix(<double>[
-                          2.8, -0.2, 0.2, 0, -58,
-                          0.2, 0.8, 0.4, 0, -45,
-                          1.2, 0.4, 2.6, 0, -35,
-                          0, 0, 0, 1, 0,
-                        ]),
+                        colorFilter: filter,
                         child: tileWidget,
                       );
                     }
@@ -176,90 +185,117 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                   markers: [
                     ...allVenues.map((v) {
                       final isSelected = v.id == currentVenue.id;
-                      final showLabel = _currentZoom >= 14.0 || isSelected;
+                      final showMicroLabel = !isSelected && _currentZoom >= 16.2;
+                      final width = isSelected
+                          ? 175.0
+                          : (showMicroLabel ? 110.0 : 26.0);
+                      final height = isSelected
+                          ? 56.0
+                          : (showMicroLabel ? 46.0 : 32.0);
+
                       return Marker(
                         point: ll.LatLng(v.latitude, v.longitude),
-                        width: showLabel ? (isSelected ? 200 : 170) : 32,
-                        height: showLabel ? 65 : 36,
-                        alignment: Alignment.topCenter,
+                        width: width,
+                        height: height,
+                        alignment: Alignment.bottomCenter,
                         child: GestureDetector(
                           onTap: () => _centerOnVenue(v),
                           child: _MapVenuePin(
                             venue: v,
                             isSelected: isSelected,
-                            showLabel: showLabel,
+                            showMicroLabel: showMicroLabel,
                           ),
                         ),
                       );
                     }),
 
-                    // Easter Egg Discreto de Barezzito en Av. Constitución 1450 (19.2524, -103.7210)
+                    // Easter Egg Discreto de Barezzito en Plaza Zentralia (19.2669, -103.6972)
                     Marker(
-                      point: const ll.LatLng(19.2524, -103.7210),
-                      width: _currentZoom >= 13.5 ? 100 : 30,
-                      height: _currentZoom >= 13.5 ? 55 : 30,
-                      alignment: Alignment.topCenter,
+                      point: const ll.LatLng(19.2669, -103.6972),
+                      width: _showBarezzitoTooltip ? 95.0 : 26.0,
+                      height: _showBarezzitoTooltip ? 48.0 : 26.0,
+                      alignment: _showBarezzitoTooltip
+                          ? Alignment.bottomCenter
+                          : Alignment.center,
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
-                            _barezzitoEasterEggStep =
-                                (_barezzitoEasterEggStep + 1) % _barezzitoNotes.length;
+                            _showBarezzitoTooltip = !_showBarezzitoTooltip;
                           });
                         },
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (_currentZoom >= 13.5) ...[
-                              // Nota flotante discreta que alterna secuencialmente
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 200),
-                                transitionBuilder: (child, animation) => FadeTransition(
-                                  opacity: animation,
-                                  child: ScaleTransition(scale: animation, child: child),
-                                ),
-                                child: Container(
-                                  key: ValueKey<int>(_barezzitoEasterEggStep),
-                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF14141F).withOpacity(0.95),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.white24, width: 0.8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.5),
-                                        blurRadius: 5,
+                        child: _showBarezzitoTooltip
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF14141F)
+                                          .withOpacity(0.95),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color: Colors.white24, width: 0.8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.6),
+                                          blurRadius: 6,
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Text(
+                                      '💀 Barezzito (RIP)',
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 9.0,
+                                        fontWeight: FontWeight.w600,
                                       ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    _barezzitoNotes[_barezzitoEasterEggStep],
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.4,
                                     ),
                                   ),
+                                  const SizedBox(height: 2),
+                                  Container(
+                                    width: 18,
+                                    height: 18,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF1C1C28)
+                                          .withOpacity(0.9),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: Colors.white30, width: 1.0),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        '💀',
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                width: 22,
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF14141F)
+                                      .withOpacity(0.85),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: Colors.white24, width: 1.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    '💀',
+                                    style: TextStyle(fontSize: 10),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 2),
-                            ],
-                            // Pin minimalista discreto
-                            Container(
-                              padding: const EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF1C1C28).withOpacity(0.9),
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white24, width: 0.8),
-                              ),
-                              child: const Icon(
-                                Icons.place_outlined,
-                                size: 14,
-                                color: Color(0xFF8E8EA0),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],
@@ -497,16 +533,16 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   }
 }
 
-/// Pin de mapa interactivo con halo neón y badge de aforo adaptativo por nivel de zoom
+/// Pin de mapa interactivo con halo neón y adaptabilidad proporcional por nivel de zoom
 class _MapVenuePin extends StatelessWidget {
   final VenueModel venue;
   final bool isSelected;
-  final bool showLabel;
+  final bool showMicroLabel;
 
   const _MapVenuePin({
     required this.venue,
     required this.isSelected,
-    this.showLabel = true,
+    required this.showMicroLabel,
   });
 
   Color get _pinColor {
@@ -522,148 +558,197 @@ class _MapVenuePin extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _pinColor;
 
-    // Zoom Lejano (sin etiqueta expandida): solo marcador compacto con aguja de precisión
-    if (!showLabel) {
+    // Caso 1: Establecimiento Seleccionado -> Tarjeta Neón completa flotante iluminada
+    if (isSelected) {
       return AnimatedScale(
-        scale: isSelected ? 1.25 : 1.0,
+        scale: 1.05,
         duration: const Duration(milliseconds: 200),
         alignment: Alignment.bottomCenter,
-        child: SizedBox(
-          width: 32,
-          height: 36,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                width: isSelected ? 26 : 22,
-                height: isSelected ? 26 : 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? color : const Color(0xFF14141F),
-                  border: Border.all(
-                    color: isSelected ? Colors.white : color,
-                    width: isSelected ? 2.2 : 1.8,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.92),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: color, width: 1.6),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.8),
+                    blurRadius: 10,
+                    spreadRadius: 1,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(isSelected ? 0.9 : 0.5),
-                      blurRadius: isSelected ? 10 : 5,
-                      spreadRadius: isSelected ? 2 : 0,
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
                     ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.circle,
-                  size: isSelected ? 8 : 6,
-                  color: isSelected ? Colors.white : color,
-                ),
+                  ),
+                  const SizedBox(width: 5),
+                  Flexible(
+                    child: Text(
+                      venue.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.badgeLabel.copyWith(
+                        color: Colors.white,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${venue.capacityPercent}%',
+                    style: AppTypography.badgeLabel.copyWith(
+                      color: color,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              CustomPaint(
-                size: const Size(8, 7),
-                painter: _PinTipPainter(color: isSelected ? Colors.white : color),
+            ),
+            const SizedBox(height: 2),
+            Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+                border: Border.all(color: Colors.white, width: 1.8),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.9),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
-            ],
-          ),
+              child: const Icon(
+                Icons.nightlife_rounded,
+                size: 12,
+                color: Colors.white,
+              ),
+            ),
+            CustomPaint(
+              size: const Size(8, 6),
+              painter: _PinTipPainter(color: Colors.white),
+            ),
+          ],
         ),
       );
     }
 
-    // Zoom Cercano o Seleccionado: Nombre completo legible sin recorte y aguja de precisión
-    return AnimatedScale(
-      scale: isSelected ? 1.08 : 0.96,
-      duration: const Duration(milliseconds: 220),
-      alignment: Alignment.bottomCenter,
-      child: Column(
+    // Caso 2: Zoom Muy Cercano (>= 16.2) -> Pin compacto con micro-etiqueta no intrusiva
+    if (showMicroLabel) {
+      return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // Etiqueta flotante con el nombre completo y % de aforo
           Container(
-            constraints: const BoxConstraints(maxWidth: 195),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            constraints: const BoxConstraints(maxWidth: 100),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.black : const Color(0xFF14141F).withOpacity(0.95),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: isSelected ? color : AppColors.glassBorder,
-                width: isSelected ? 1.8 : 1.0,
-              ),
+              color: const Color(0xFF0F101A).withOpacity(0.9),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.white12, width: 0.8),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(isSelected ? 0.75 : 0.25),
-                  blurRadius: isSelected ? 12 : 4,
+                  color: Colors.black.withOpacity(0.4),
+                  blurRadius: 4,
                 ),
               ],
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    venue.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.badgeLabel.copyWith(
-                      color: Colors.white,
-                      fontSize: isSelected ? 10.5 : 9.5,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '${venue.capacityPercent}%',
-                  style: AppTypography.badgeLabel.copyWith(
-                    color: color,
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            child: Text(
+              venue.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 8.5,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(height: 2),
-
-          // Cabeza del Pin Neón con punta inferior exacta
           Container(
-            width: isSelected ? 26 : 22,
-            height: isSelected ? 26 : 22,
+            width: 18,
+            height: 18,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? color : const Color(0xFF14141F),
-              border: Border.all(
-                color: isSelected ? Colors.white : color,
-                width: 2.0,
-              ),
+              color: const Color(0xFF14141F),
+              border: Border.all(color: color, width: 1.6),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(isSelected ? 0.85 : 0.5),
-                  blurRadius: 10,
+                  color: color.withOpacity(0.6),
+                  blurRadius: 6,
                 ),
               ],
             ),
-            child: Icon(
-              Icons.nightlife_rounded,
-              size: isSelected ? 14 : 12,
-              color: isSelected ? Colors.white : color,
+            child: Center(
+              child: Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                ),
+              ),
             ),
           ),
           CustomPaint(
-            size: const Size(8, 7),
-            painter: _PinTipPainter(color: isSelected ? Colors.white : color),
+            size: const Size(6, 5),
+            painter: _PinTipPainter(color: color),
           ),
         ],
-      ),
+      );
+    }
+
+    // Caso 3: Zoom Estándar / Lejano (< 16.2) -> Pin Neón Minimalista Compacto (sin texto invasivo)
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF14141F),
+            border: Border.all(color: color, width: 1.8),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.75),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Container(
+              width: 7,
+              height: 7,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+        CustomPaint(
+          size: const Size(6, 5),
+          painter: _PinTipPainter(color: color),
+        ),
+      ],
     );
   }
 }

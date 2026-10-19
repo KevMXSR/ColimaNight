@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
+import 'package:colima_night/features/map/domain/models/venue_location.dart';
 
 void main() {
   group('Venue Data & Deduplication Tests', () {
@@ -113,6 +114,13 @@ void main() {
       final low = venues.firstWhere((v) => v.id == 'low_social_club');
       expect(low.latitude, 19.2412);
       expect(low.longitude, -103.7262);
+    });
+
+    test('Barezzito Easter Egg is correctly positioned at Plaza Zentralia', () {
+      const barezzito = VenueLocation.barezzitoEasterEgg;
+      expect(barezzito.coordinates.latitude, 19.2669);
+      expect(barezzito.coordinates.longitude, -103.6972);
+      expect(barezzito.address.contains('Plaza Zentralia'), isTrue);
     });
   });
 }

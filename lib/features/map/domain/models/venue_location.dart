@@ -1,4 +1,4 @@
-import '../../../core/constants/colima_geo_constants.dart';
+import '../../../../core/constants/colima_geo_constants.dart';
 import 'nightlife_corridor.dart';
 
 /// Categorías de establecimientos nocturnos en Colima y Villa de Álvarez
@@ -452,20 +452,20 @@ class VenueLocation {
 
       ];
 
-  /// Easter Egg Memorial de Barezzito (históricamente ubicado sobre Av. Constitución)
+  /// Easter Egg Memorial de Barezzito (históricamente ubicado en Plaza Zentralia)
   static const VenueLocation barezzitoEasterEgg = VenueLocation(
     id: 'barezzito-memorial',
     name: 'Barezzito (RIP Memorial)',
     category: VenueCategory.memorialHistoric,
-    corridorId: CorridorId.constitucionSanFernando,
-    address: 'Av. Constitución 1450, Jardines Vista Hermosa III, 28017 Colima, Col.',
-    coordinates: GeoPoint(19.2524, -103.7210),
+    corridorId: CorridorId.tercerAnilloVda,
+    address: 'Plaza Zentralia, Blvd. Miguel de la Madrid Hurtado 301, Residencial Cantera, 28017 Colima, Col.',
+    coordinates: GeoPoint(19.2669, -103.6972),
     currentStatus: VenueStatus.memorial,
     currentOccupancyPercentage: 0,
     hasCover: false,
     musicGenre: 'Pop 2010s, Rock en Vivo & Nostalgia Nocturna',
     activePromotion:
-        'Easter Egg: ¡En memoria de las noches legendarias de sushi, drinks y desveladas en Constitución!',
+        'Easter Egg: ¡En memoria de las noches legendarias de fiesta y desveladas en Zentralia!',
     geofenceRadiusMeters: ColimaGeoConstants.proofOfProximityRadiusMeters,
     instagramHandle: 'barezzitocolima',
   );

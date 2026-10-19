@@ -1,4 +1,4 @@
-import '../../../core/constants/colima_geo_constants.dart';
+import '../../../../core/constants/colima_geo_constants.dart';
 
 /// Coordenada geodésica simple (Latitud, Longitud)
 class GeoPoint {
@@ -94,15 +94,15 @@ class NightlifeCorridor {
           name: 'Corredor Constitución / San Fernando',
           municipality: 'Colima',
           description:
-              'Eje vibrante desde Plaza San Fernando ascendiendo por Av. Constitución hacia Residencial Esmeralda y Bugambilias. Terrazas chic, gastro-bares, mezcalerías y el punto memorial histórico de Barezzito (Constitución 1450).',
+              'Eje vibrante desde Plaza San Fernando ascendiendo por Av. Constitución hacia Residencial Esmeralda y Bugambilias. Terrazas chic, gastro-bares, mezcalerías y taprooms.',
           focalPoint: GeoPoint(19.2550, -103.7170),
           polylinePoints: [
-            GeoPoint(19.2524, -103.7210), // Av. Constitución 1450 (Barezzito Memorial / Plaza San Fernando)
+            GeoPoint(19.2488, -103.7225), // Plaza San Fernando (Cervecería de la Costa)
             GeoPoint(19.2578, -103.7158), // Estación Colimita Constitución
             GeoPoint(19.2630, -103.7138), // Residencial Esmeralda
             GeoPoint(19.2730, -103.7080), // Santo Mezcal (Constitución 1999)
           ],
-          tags: ['Terrazas San Fernando', 'Colimita', 'Santo Mezcal', 'Barezzito Memorial', 'Chic'],
+          tags: ['Terrazas San Fernando', 'Colimita', 'Santo Mezcal', 'Chic'],
           vibe: 'Gastro-Bars, Terrazas & Mixología Chic',
           estimatedAverageDrivingSpeedKmH: 28.0,
         ),
@@ -131,16 +131,16 @@ class NightlifeCorridor {
           name: 'Corredor Tercer Anillo / VDA',
           municipality: 'Conurbado (Colima - Villa de Álvarez)',
           description:
-              'El mayor eje metropolitano de alta afluencia nocturna. Integra las grandes sucursales de Tercer Anillo, Plaza Zentralia, Santa Fe, y penetra a Villa de Álvarez por Av. Pablo Silva y Av. Griselda Álvarez.',
+              'El mayor eje metropolitano de alta afluencia nocturna. Integra las grandes sucursales de Tercer Anillo, Plaza Zentralia (sitio histórico de Barezzito), Santa Fe, y penetra a Villa de Álvarez por Av. Pablo Silva y Av. Griselda Álvarez.',
           focalPoint: GeoPoint(19.2750, -103.7380),
           polylinePoints: [
             GeoPoint(19.2664, -103.7491), // Pablo Silva (Villa de Álvarez)
             GeoPoint(19.2750, -103.7510), // Griselda Álvarez (Villa de Álvarez)
-            GeoPoint(19.2687, -103.7248), // Cruce Blvd. Miguel de la Madrid / Zentralia
+            GeoPoint(19.2669, -103.6972), // Plaza Zentralia (Barezzito Memorial)
             GeoPoint(19.2828, -103.7325), // Cervecería de la Costa Tercer Anillo
             GeoPoint(19.2892, -103.7250), // Santa Fe Tercer Anillo Norte
           ],
-          tags: ['Tercer Anillo', 'Villa de Álvarez', 'Zentralia', 'Grandes Taprooms', 'Santa Fe'],
+          tags: ['Tercer Anillo', 'Villa de Álvarez', 'Zentralia', 'Barezzito Memorial', 'Grandes Taprooms', 'Santa Fe'],
           vibe: 'Macro-Clubs, Taprooms Expansivos & Vía Rápida',
           estimatedAverageDrivingSpeedKmH: 45.0,
         ),
