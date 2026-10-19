@@ -71,17 +71,19 @@ class NightlifeCorridor {
           name: 'Corredor Centro Histórico',
           municipality: 'Colima',
           description:
-              'Corazón colonial, bohemio y alternativo. Andador Constitución, Calle Santos Degollado, Portales de Medellín/Morelos, Calle Miguel Hidalgo, bares de rock, clubes electrónicos (Low Social Club), mezcalerías y cantinas de tradición.',
+              'Corazón colonial, bohemio y alternativo. Andador Constitución, Calle Santos Degollado, Portales de Medellín/Morelos, Calle Miguel Hidalgo, bares de rock, clubes electrónicos (Low Social Club), Mezcalería Casa Colima, Los Toros Barra Taurina y cantinas de tradición.',
           focalPoint: GeoPoint(19.2435, -103.7275),
           polylinePoints: [
             GeoPoint(19.2408, -103.7225), // El Taurino / Filomeno Medina
+            GeoPoint(19.2430, -103.7205), // Los Toros Barra Taurina (Emilio Carranza 164)
             GeoPoint(19.2410, -103.7256), // Low Social Club (Calle Miguel Hidalgo 165)
             GeoPoint(19.2425, -103.7265), // Santos Degollado / DMT / Dos Puntos
+            GeoPoint(19.2443, -103.7268), // Mezcalería Casa Colima (Venustiano Carranza 60)
             GeoPoint(19.2439, -103.7275), // Andador Constitución / Estación Colimita
             GeoPoint(19.2448, -103.7295), // 27 de Septiembre / La Puerta Bar
             GeoPoint(19.2460, -103.7240), // Teatro Hidalgo & Madero
           ],
-          tags: ['Bohemio', 'Rock en Vivo', 'Cantinas Clásicas', 'Low Social Club', 'Electrónica', 'Mezcal', 'Andador'],
+          tags: ['Bohemio', 'Rock en Vivo', 'Cantinas Clásicas', 'Mezcalería Casa Colima', 'Los Toros', 'Low Social Club', 'Electrónica', 'Mezcal', 'Andador'],
           vibe: 'Bohemio, Rock Clásico, Electrónica Underground & Tradición',
           estimatedAverageDrivingSpeedKmH: 20.0,
         ),

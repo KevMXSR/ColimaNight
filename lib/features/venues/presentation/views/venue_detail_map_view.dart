@@ -25,6 +25,7 @@ class VenueDetailMapView extends ConsumerStatefulWidget {
 class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   late String _selectedVenueId;
   final MapController _mapController = MapController();
+  double _currentZoom = 15.2;
   int _barezzitoEasterEggStep = 0;
   static const List<String> _barezzitoNotes = ['💀', 'RIP', 'In Memoriam'];
 
@@ -81,6 +82,14 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.all,
                 ),
+                onPositionChanged: (camera, hasGesture) {
+                  final zoom = camera.zoom;
+                  if (zoom != null && (zoom - _currentZoom).abs() > 0.15) {
+                    setState(() {
+                      _currentZoom = zoom;
+                    });
+                  }
+                },
               ),
               children: [
                 // Capa de teselas oscuras gratuitas (CartoDB Dark Matter - Estilo Uber/DiDi)
@@ -96,15 +105,17 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                   markers: [
                     ...allVenues.map((v) {
                       final isSelected = v.id == currentVenue.id;
+                      final showLabel = _currentZoom >= 14.0 || isSelected;
                       return Marker(
                         point: ll.LatLng(v.latitude, v.longitude),
-                        width: 130,
-                        height: 70,
+                        width: showLabel ? (isSelected ? 200 : 170) : 36,
+                        height: showLabel ? 65 : 36,
                         child: GestureDetector(
                           onTap: () => _centerOnVenue(v),
                           child: _MapVenuePin(
                             venue: v,
                             isSelected: isSelected,
+                            showLabel: showLabel,
                           ),
                         ),
                       );
@@ -113,8 +124,8 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                     // Easter Egg Discreto de Barezzito en Av. Constitución 1450 (19.2524, -103.7210)
                     Marker(
                       point: const ll.LatLng(19.2524, -103.7210),
-                      width: 100,
-                      height: 55,
+                      width: _currentZoom >= 13.5 ? 100 : 30,
+                      height: _currentZoom >= 13.5 ? 55 : 30,
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -125,39 +136,41 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Nota flotante discreta que alterna secuencialmente
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              transitionBuilder: (child, animation) => FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(scale: animation, child: child),
-                              ),
-                              child: Container(
-                                key: ValueKey<int>(_barezzitoEasterEggStep),
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF14141F).withOpacity(0.95),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.white24, width: 0.8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      blurRadius: 5,
-                                    ),
-                                  ],
+                            if (_currentZoom >= 13.5) ...[
+                              // Nota flotante discreta que alterna secuencialmente
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                transitionBuilder: (child, animation) => FadeTransition(
+                                  opacity: animation,
+                                  child: ScaleTransition(scale: animation, child: child),
                                 ),
-                                child: Text(
-                                  _barezzitoNotes[_barezzitoEasterEggStep],
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.4,
+                                child: Container(
+                                  key: ValueKey<int>(_barezzitoEasterEggStep),
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF14141F).withOpacity(0.95),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.white24, width: 0.8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.5),
+                                        blurRadius: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    _barezzitoNotes[_barezzitoEasterEggStep],
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.4,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 2),
+                              const SizedBox(height: 2),
+                            ],
                             // Pin minimalista discreto
                             Container(
                               padding: const EdgeInsets.all(3),
@@ -300,14 +313,16 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   }
 }
 
-/// Pin de mapa interactivo con halo neón y badge de aforo
+/// Pin de mapa interactivo con halo neón y badge de aforo adaptativo por nivel de zoom
 class _MapVenuePin extends StatelessWidget {
   final VenueModel venue;
   final bool isSelected;
+  final bool showLabel;
 
   const _MapVenuePin({
     required this.venue,
     required this.isSelected,
+    this.showLabel = true,
   });
 
   Color get _pinColor {
@@ -323,17 +338,53 @@ class _MapVenuePin extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _pinColor;
 
+    // Zoom Lejano (sin etiqueta expandida): solo marcador compacto de alta visibilidad
+    if (!showLabel) {
+      return AnimatedScale(
+        scale: isSelected ? 1.25 : 0.95,
+        duration: const Duration(milliseconds: 200),
+        child: Center(
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isSelected ? color : AppColors.surface.withOpacity(0.92),
+              border: Border.all(
+                color: isSelected ? Colors.white : color,
+                width: isSelected ? 2.2 : 1.8,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(isSelected ? 0.85 : 0.45),
+                  blurRadius: isSelected ? 10 : 5,
+                  spreadRadius: isSelected ? 2 : 0,
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.location_on_rounded,
+              size: isSelected ? 18 : 15,
+              color: isSelected ? Colors.white : color,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Zoom Cercano o Seleccionado: Nombre completo legible sin recorte y badge de aforo
     return AnimatedScale(
-      scale: isSelected ? 1.15 : 0.95,
-      duration: const Duration(milliseconds: 250),
+      scale: isSelected ? 1.12 : 0.96,
+      duration: const Duration(milliseconds: 220),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Etiqueta flotante del Bar con indicador de aforo %
+          // Etiqueta flotante con el nombre completo y % de aforo
           Container(
+            constraints: const BoxConstraints(maxWidth: 195),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.black : AppColors.surface.withOpacity(0.92),
+              color: isSelected ? Colors.black : AppColors.surface.withOpacity(0.94),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected ? color : AppColors.glassBorder,
@@ -341,7 +392,7 @@ class _MapVenuePin extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(isSelected ? 0.7 : 0.25),
+                  color: color.withOpacity(isSelected ? 0.75 : 0.25),
                   blurRadius: isSelected ? 12 : 4,
                 ),
               ],
@@ -358,12 +409,25 @@ class _MapVenuePin extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    venue.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.badgeLabel.copyWith(
+                      color: Colors.white,
+                      fontSize: isSelected ? 10.5 : 9.5,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
                 Text(
-                  '${venue.name.split(' ').first} (${venue.capacityPercent}%)',
+                  '${venue.capacityPercent}%',
                   style: AppTypography.badgeLabel.copyWith(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: color,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -377,16 +441,16 @@ class _MapVenuePin extends StatelessWidget {
             children: [
               if (isSelected)
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(0.3),
+                    color: color.withOpacity(0.35),
                   ),
                 ),
               Icon(
                 Icons.location_on_rounded,
-                size: isSelected ? 30 : 24,
+                size: isSelected ? 28 : 22,
                 color: color,
                 shadows: [
                   Shadow(

@@ -21,7 +21,7 @@ final List<VenueModel> _initialVenues = [
     id: 'el_guachi',
     name: 'El Guachi',
     category: 'Club & Antro',
-    zone: 'Ignacio Sandoval 1943, Paseo de la Cantera, Colima',
+    zone: 'Calle Ignacio Sandoval 1943, Paseo de La Cantera, La Cantera, 28018 Colima, Col',
     description:
         'Club nocturno sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería.',
     coverImageUrl:
@@ -41,7 +41,7 @@ final List<VenueModel> _initialVenues = [
     hasPromo: false,
     parkingAvailable: true,
     parkingDetails: 'Valet parking sobre Ignacio Sandoval',
-    latitude: 19.2631,
+    latitude: 19.2635,
     longitude: -103.7043,
     instagramHandle: '@elguachiclub',
     tikTokHandle: '@elguachicolima',
@@ -58,7 +58,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_tercer_anillo',
     name: 'Cervecería de la Costa - Tercer Anillo',
     category: 'Taproom & Terraza',
-    zone: 'Tercer Anillo Periférico, Colima',
+    zone: 'Tercer Anilllo, El Ángel, 28979 Cdad de Villa de Álvarez, Col',
     description:
         'Cervezas artesanales de barril, comida casual y amplia terraza al aire libre sobre Tercer Anillo.',
     coverImageUrl:
@@ -88,7 +88,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_san_fernando',
     name: 'Cervecería de la Costa - San Fernando',
     category: 'Taproom Cervecero',
-    zone: 'Av. San Fernando / Sevilla del Río, Colima',
+    zone: 'Av. Constitución 555, Las Amarillas, 28030 Colima, Col',
     description:
         'Taproom cervecero con selección fresca de IPAs de la casa y ambiente relajado para precopeo.',
     coverImageUrl:
@@ -118,7 +118,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_sandoval',
     name: 'Cervecería de la Costa - Ignacio Sandoval',
     category: 'Taproom & Jardín',
-    zone: 'Av. Ignacio Sandoval, Colima',
+    zone: 'Calle Ignacio Sandoval 1793-2, Girasoles, 28018 Colima, Col',
     description:
         'Sucursal sobre el corredor gastronómico de Sandoval con cocina urbana y cervezas frías.',
     coverImageUrl:
@@ -147,7 +147,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_pablo_silva',
     name: 'Cervecería de la Costa - Pablo Silva',
     category: 'Taproom & Terraza',
-    zone: 'Av. Pablo Silva García, Villa de Álvarez',
+    zone: 'Av Pablo Silva García 175, VILLAS DIAMANTE, 28986 Colima, Col',
     description:
         'Punto cervecero en Villa de Álvarez ideal para reunirse con amigos toda la semana.',
     coverImageUrl:
@@ -176,7 +176,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_carranza',
     name: 'Cervecería de la Costa - Carranza',
     category: 'Taproom & Terraza',
-    zone: 'Av. Venustiano Carranza, Colima',
+    zone: 'Avenida Venustiano Carranza 2090, Residencial Esmeralda Nte, 28017 Colima, Col',
     description:
         'Terraza cervecera sobre el norte de la ciudad con cervezas artesanales y platillos para compartir.',
     coverImageUrl:
@@ -205,7 +205,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_la_paz',
     name: 'Cervecería de la Costa - La Paz',
     category: 'Taproom & Cocina',
-    zone: 'Av. La Paz, Colima',
+    zone: 'Av La Paz 134, Sta Bárbara, 28017 Colima, Col',
     description:
         'Espacio cervecero íntimo con ambiente fresco, cocina al grill y cervezas de temporada.',
     coverImageUrl:
@@ -234,7 +234,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_griselda_alvarez',
     name: 'Cervecería de la Costa - Griselda Álvarez',
     category: 'Taproom Cervecero',
-    zone: 'Av. Griselda Álvarez, Villa de Álvarez',
+    zone: 'Lib Gobernadora Griselda Álvarez 32, Jardines del Llano, 28989 Cdad de Villa de Álvarez, Col',
     description:
         'Sucursal en Villa de Álvarez con terraza abierta, barra de barriles frescos y snacks botaneros.',
     coverImageUrl:
@@ -263,7 +263,7 @@ final List<VenueModel> _initialVenues = [
     id: 'costa_santa_fe',
     name: 'Cervecería de la Costa - Santa Fe',
     category: 'Taproom & Bar',
-    zone: 'Zona Residencial Santa Fe / Norte, Colima',
+    zone: 'Prol Hidalgo 1041, Real Santa Fe, 28978 Cdad de Villa de Álvarez, Col',
     description:
         'Taproom en la zona norte con propuesta cervecera artesanal y ambiente tranquilo.',
     coverImageUrl:
@@ -294,7 +294,7 @@ final List<VenueModel> _initialVenues = [
     id: 'colimita_centro',
     name: 'Estación Colimita - Andador Centro',
     category: 'Taproom & Cocina de Humo',
-    zone: 'Andador Constitución / Centro, Colima',
+    zone: 'Andador Constitución 39, Sangre de Cristo, 28000 Colima, Col',
     description:
         'Cervezas clásicas de la casa servidas de barril junto a cocina de humo en el corazón del Centro.',
     coverImageUrl:
@@ -328,7 +328,7 @@ final List<VenueModel> _initialVenues = [
     id: 'colimita_constitucion',
     name: 'Estación Colimita - Constitución',
     category: 'Taproom & Jardín Cervecero',
-    zone: 'Av. Constitución 1690, Colima',
+    zone: 'Av Constitución 1401-Loc 1, Jardines Vista Hermosa IV, 28017 Colima, Col',
     description:
         'Jardín cervecero con toda la línea Colimita de barril y propuesta gastronómica contemporánea.',
     coverImageUrl:
@@ -360,7 +360,7 @@ final List<VenueModel> _initialVenues = [
     id: 'dmt_rock_bar',
     name: 'DMT Rock Bar',
     category: 'Rock Bar & Live Music',
-    zone: 'Degollado 28, Centro, Colima',
+    zone: 'C. Santos Degollado 28, Centro, 28000 Colima, Col',
     description:
         'El bar clásico de rock y música alternativa con tributos en vivo y cervezas frías.',
     coverImageUrl:
@@ -393,7 +393,7 @@ final List<VenueModel> _initialVenues = [
     id: 'dos_puntos',
     name: 'Dos Puntos Cervecería',
     category: 'Bar & Terraza',
-    zone: 'Degollado 34, Centro, Colima',
+    zone: 'C. Santos Degollado 34, Centro, 28000 Colima, Col',
     description:
         'Terraza céntrica con tragos preparados, cervezas y buena música para iniciar la noche.',
     coverImageUrl:
@@ -423,7 +423,7 @@ final List<VenueModel> _initialVenues = [
     id: 'el_taurino',
     name: 'El Taurino Cantina Bar',
     category: 'Cantina Tradicional',
-    zone: 'Filomeno Medina 12, Centro, Colima',
+    zone: 'Filomeno Medina 12, Obregón, 28000 Colima, Col',
     description:
         'Cantina tradicional del centro con botanas típicas colimotas al consumir bebidas.',
     coverImageUrl:
@@ -440,8 +440,8 @@ final List<VenueModel> _initialVenues = [
     promoHeadline: 'Botanas de la casa incluidas por copeo',
     parkingAvailable: false,
     parkingDetails: 'Estacionamientos públicos cercanos',
-    latitude: 19.2445,
-    longitude: -103.7295,
+    latitude: 19.2408,
+    longitude: -103.7225,
     instagramHandle: '@eltaurinocolima',
     tikTokHandle: '@cantinaeltaurino',
     vibeGenre: 'Cantina / Tradicional / Bohemio',
@@ -454,7 +454,7 @@ final List<VenueModel> _initialVenues = [
     id: 'la_puerta_bar',
     name: 'La Puerta Bar',
     category: 'Bar Bohemio & Sessions',
-    zone: '27 de Septiembre 135, Centro, Colima',
+    zone: '27 de Septiembre 135, Centro, 28000 Colima, Col',
     description:
         'Espacio nocturno bohemio en el centro con coctelería, mezcales y presentaciones musicales.',
     coverImageUrl:
@@ -471,8 +471,8 @@ final List<VenueModel> _initialVenues = [
     promoHeadline: 'Mezcal de la casa 2x1',
     parkingAvailable: false,
     parkingDetails: 'Estacionamientos públicos en el centro',
-    latitude: 19.2450,
-    longitude: -103.7265,
+    latitude: 19.2448,
+    longitude: -103.7295,
     instagramHandle: '@lapuertabarcolima',
     vibeGenre: 'Bohemio / Reggae / Funk',
     schedule: '7:00 PM - 3:00 AM',
@@ -484,7 +484,7 @@ final List<VenueModel> _initialVenues = [
     id: 'low_social_club',
     name: 'Low Social Club (Low)',
     category: 'Club & Bar',
-    zone: 'Calle Miguel Hidalgo 165, Centro, Colima',
+    zone: 'Calle Miguel Hidalgo 165, Centro, 28000 Colima, Col',
     description:
         'Club nocturno en el Centro Histórico con música electrónica, coctelería y DJ sets en vivo.',
     coverImageUrl:
@@ -511,12 +511,79 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
   ),
 
+  // NUEVOS ESTABLECIMIENTOS CENTRO HISTÓRICO
+  const VenueModel(
+    id: 'mezcaleria_casa_colima',
+    name: 'Mezcalería Casa Colima',
+    category: 'Mezcalería & Bar de Autor',
+    zone: 'Calle Venustiano Carranza 60, Centro, 28000 Colima, Col',
+    description:
+        'Espacio de tradición y mixología artesanal con amplia selección de mezcales y ambiente bohemio.',
+    coverImageUrl:
+        'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    galleryUrls: [
+      'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80',
+    ],
+    rating: 4.9,
+    reviewsCount: 310,
+    capacityPercent: 81,
+    isHotRightNow: false,
+    hasLiveMusic: true,
+    liveMusicAct: 'Noches de Trova, Son Jarocho y Acústico',
+    isVipPresent: false,
+    hasPromo: true,
+    promoHeadline: 'Degustación de mezcal artesanal con maridaje de sales de Colima',
+    parkingAvailable: false,
+    parkingDetails: 'Estacionamiento público sobre Venustiano Carranza y Centro',
+    latitude: 19.2443,
+    longitude: -103.7268,
+    instagramHandle: '@casa.colima.mezcaleria',
+    tikTokHandle: '@casacolimamezcal',
+    facebookUrl: 'https://facebook.com/casacolimamezcaleria',
+    vibeGenre: 'Mezcal / Acústico / Bohemio',
+    schedule: '6:00 PM - 2:00 AM',
+    estimatedMinutes: 6,
+    securityStatus: 'normal',
+    activeIncidentReportsCount: 0,
+  ),
+  const VenueModel(
+    id: 'los_toros_barra_taurina',
+    name: 'Los Toros Barra Taurina',
+    category: 'Barra Taurina & Cantina',
+    zone: 'Emilio Carranza #164, Centro, 28000 Colima, Col',
+    description:
+        'Barra tradicional con ambiente taurino, botanas de cantina y tragos clásicos en el Centro de Colima.',
+    coverImageUrl:
+        'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=1200&q=80',
+    galleryUrls: [],
+    rating: 4.7,
+    reviewsCount: 275,
+    capacityPercent: 78,
+    isHotRightNow: false,
+    hasLiveMusic: false,
+    isVipPresent: false,
+    hasPromo: true,
+    promoHeadline: 'Tequila tradicional y botanas botaneras de cortesía por consumo',
+    parkingAvailable: false,
+    parkingDetails: 'Cajones sobre calle Emilio Carranza y estacionamiento cercano',
+    latitude: 19.2430,
+    longitude: -103.7205,
+    instagramHandle: '@lostorosbarrataurina',
+    tikTokHandle: '@lostorosbarrataurina',
+    facebookUrl: 'https://facebook.com/lostorosbarrataurina',
+    vibeGenre: 'Cantina / Taurino / Tradicional',
+    schedule: '2:00 PM - 1:30 AM',
+    estimatedMinutes: 6,
+    securityStatus: 'normal',
+    activeIncidentReportsCount: 0,
+  ),
+
   // --- LOCALES SANDOVAL ---
   const VenueModel(
     id: 'almada_cantina',
     name: 'Almada Cantina',
     category: 'Cantina Contemporánea',
-    zone: 'Ignacio Sandoval 1906, Colima',
+    zone: 'Calle Ignacio Sandoval 1906-Loc 4-5, Las Pergolas, 28018 Colima, Col',
     description:
         'Cantina con ambiente animado, cocina mexicana, mixología y música para cantar con amigos.',
     coverImageUrl:
@@ -547,7 +614,7 @@ final List<VenueModel> _initialVenues = [
     id: 'el_gustito',
     name: 'El Gustito',
     category: 'Botanero & Cervecería',
-    zone: 'Ignacio Sandoval 1866, Colima',
+    zone: 'Calle Ignacio Sandoval 1866, Lomas Vista Hermosa, 28017 Colima, Col',
     description:
         'Botanero tradicional con variedad de platillos incluidos en cada ronda y micheladas preparadas.',
     coverImageUrl:
@@ -578,7 +645,7 @@ final List<VenueModel> _initialVenues = [
     id: 'la_regional',
     name: 'La Regional',
     category: 'Cantina & Bar Mexicano',
-    zone: 'Av. Felipe Sevilla del Río 534, Colima',
+    zone: 'Calle Ignacio Sandoval 1866, Real Vista Hermosa, 28000 Colima, Col',
     description:
         'Bar y cantina festiva con antojitos, cantaritos de tequila y música regional mexicana.',
     coverImageUrl:
@@ -595,8 +662,8 @@ final List<VenueModel> _initialVenues = [
     promoHeadline: 'Cantaritos de 2 litros 2x1',
     parkingAvailable: true,
     parkingDetails: 'Cajones sobre lateral de avenida',
-    latitude: 19.2542,
-    longitude: -103.7180,
+    latitude: 19.2619,
+    longitude: -103.7056,
     instagramHandle: '@laregional_colima',
     tikTokHandle: '@laregionalbar',
     vibeGenre: 'Banda / Regional Mexicano',
@@ -609,9 +676,9 @@ final List<VenueModel> _initialVenues = [
     id: 'la_chintola',
     name: 'La Chintola Bar',
     category: 'Bar & Coctelería',
-    zone: 'Blvd. Camino Real, Colima',
+    zone: 'Felipe Sevilla del Río 601, José María Morelos, 28000 Colima, Col',
     description:
-        'Terraza relajada sobre Camino Real para tomar tragos preparados y convivir con amigos.',
+        'Terraza relajada para tomar tragos preparados, cócteles de la casa y convivir con amigos.',
     coverImageUrl:
         'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&w=1200&q=80',
     galleryUrls: [],
@@ -625,8 +692,8 @@ final List<VenueModel> _initialVenues = [
     promoHeadline: 'Shots de bienvenida a grupos',
     parkingAvailable: true,
     parkingDetails: 'Estacionamiento libre frente al local',
-    latitude: 19.2460,
-    longitude: -103.7100,
+    latitude: 19.2530,
+    longitude: -103.7175,
     instagramHandle: '@lachintolabar',
     tikTokHandle: '@lachintola_colima',
     vibeGenre: 'Reggaetón / Urbano / Latino',
@@ -639,7 +706,7 @@ final List<VenueModel> _initialVenues = [
     id: 'santo_mezcal',
     name: 'Santo Mezcal',
     category: 'Mezcalería & Bar',
-    zone: 'Av. Constitución 1999, Colima',
+    zone: 'Av Constitución 1999, Lomas Verdes, 28017 Colima, Col',
     description:
         'Bar especializado en mixología con mezcales artesanales y ambiente musical contemporáneo.',
     coverImageUrl:
@@ -669,7 +736,7 @@ final List<VenueModel> _initialVenues = [
     id: 'taverna_ny',
     name: 'Taverna New York Style Pizza',
     category: 'NY Pizza & Taproom',
-    zone: 'Av. Venustiano Carranza 1310, Colima',
+    zone: 'Av. Venustiano Carranza 1310, Residencial Santa Bárbara, Colima',
     description:
         'Pizzas estilo neoyorquino por rebanada acompañadas de cervezas artesanales en terraza.',
     coverImageUrl:

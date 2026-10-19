@@ -39,6 +39,11 @@ class DiscoveryFeedView extends ConsumerWidget {
     final hotVenue = ref.watch(hotRightNowVenueProvider);
     final searchQuery = ref.watch(searchQueryProvider);
 
+    // Evita duplicar en el listado inferior al establecimiento que ya está destacado en "Hot Right Now"
+    final displayVenues = hotVenue != null && searchQuery.isEmpty
+        ? filteredVenues.where((v) => v.id != hotVenue.id).toList()
+        : filteredVenues;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -235,7 +240,7 @@ class DiscoveryFeedView extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '${filteredVenues.length} lugares',
+                      '${displayVenues.length} lugares',
                       style: AppTypography.caption.copyWith(color: AppColors.neonCyan),
                     ),
                   ],
@@ -243,8 +248,8 @@ class DiscoveryFeedView extends ConsumerWidget {
               ),
             ),
 
-            // Lista de Tarjetas de Establecimientos
-            if (filteredVenues.isEmpty)
+            // Lista de Tarjetas de Establecimientos (excluyendo el que ya se muestra en 'Hot Right Now')
+            if (displayVenues.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
@@ -270,13 +275,13 @@ class DiscoveryFeedView extends ConsumerWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final venue = filteredVenues[index];
+                    final venue = displayVenues[index];
                     return VenueCard(
                       venue: venue,
                       onTap: () => _navigateToDetail(context, ref, venue),
                     );
                   },
-                  childCount: filteredVenues.length,
+                  childCount: displayVenues.length,
                 ),
               ),
 
