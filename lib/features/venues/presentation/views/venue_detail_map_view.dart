@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
@@ -9,6 +10,39 @@ import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/venue_detail_bottom_sheet.dart';
 import '../widgets/incident_report_modal.dart';
+
+/// Estilos de mapas libres y gratuitos para visualización urbana en Colima y VDA
+enum AppMapStyle {
+  streets(
+    label: 'Calles (OSM)',
+    icon: Icons.map_rounded,
+    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+  ),
+  dark(
+    label: 'Neón Noche',
+    icon: Icons.nightlight_round,
+    urlTemplate: 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  ),
+  voyager(
+    label: 'Urbano',
+    icon: Icons.explore_rounded,
+    urlTemplate: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  );
+
+  final String label;
+  final IconData icon;
+  final String urlTemplate;
+  final String fallbackUrl;
+  const AppMapStyle({
+    required this.label,
+    required this.icon,
+    required this.urlTemplate,
+    required this.fallbackUrl,
+  });
+}
 
 class VenueDetailMapView extends ConsumerStatefulWidget {
   final VenueModel venue;
@@ -28,6 +62,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   double _currentZoom = 15.2;
   int _barezzitoEasterEggStep = 0;
   static const List<String> _barezzitoNotes = ['💀', 'RIP', 'In Memoriam'];
+  AppMapStyle _selectedMapStyle = AppMapStyle.streets;
 
   @override
   void initState() {
@@ -43,6 +78,14 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
       ll.LatLng(venue.latitude, venue.longitude),
       15.5,
     );
+  }
+
+  Future<void> _openInGoogleMaps(double lat, double lng) async {
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   void _showTestAforoModal(BuildContext context, VenueModel currentVenue) {
@@ -70,7 +113,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // Capa 1: Mapa Interactivo Gratuito (CartoDB Dark Matter en FlutterMap)
+          // Capa 1: Mapa Interactivo Gratuito (CartoDB / OpenStreetMap con fallback)
           Positioned.fill(
             child: FlutterMap(
               mapController: _mapController,
@@ -92,9 +135,11 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                 },
               ),
               children: [
-                // Capa de teselas oscuras gratuitas (CartoDB Dark Matter - Estilo Uber/DiDi)
+                // Capa de teselas libres con soporte de múltiples estilos y fallback automático
                 TileLayer(
-                  urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                  key: ValueKey<String>(_selectedMapStyle.name),
+                  urlTemplate: _selectedMapStyle.urlTemplate,
+                  fallbackUrl: _selectedMapStyle.fallbackUrl,
                   subdomains: const ['a', 'b', 'c', 'd'],
                   userAgentPackageName: 'com.colimanight.app',
                   maxZoom: 19,
@@ -203,90 +248,201 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Botón Regresar Glassmorphism
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface.withOpacity(0.85),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.glassBorder),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.5),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-
-                    // Badge de Zona Conurbada Colima & VDA
-                    GlassContainer(
-                      blur: 12,
-                      borderRadius: 20,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              color: AppColors.neonCyan,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Botón Regresar Glassmorphism
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface.withOpacity(0.85),
                               shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.glassBorder),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 18,
+                              color: Colors.white,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Colima - VDA • Libre de Costo',
-                            style: AppTypography.badgeLabel.copyWith(
-                              color: Colors.white,
-                              fontSize: 11,
+                        ),
+
+                        // Badge de Zona Conurbada Colima & VDA
+                        GlassContainer(
+                          blur: 12,
+                          borderRadius: 20,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.neonCyan,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Colima - VDA • Libre de Costo',
+                                style: AppTypography.badgeLabel.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Botón Modo Pruebas / Simular Aforo y Reportes
+                        GestureDetector(
+                          onTap: () => _showTestAforoModal(context, currentVenue),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceElevated.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.neonAmber),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.neonAmber.withOpacity(0.3),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.tune_rounded, size: 16, color: AppColors.neonAmber),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Probar Aforo',
+                                  style: AppTypography.badgeLabel.copyWith(
+                                    color: AppColors.neonAmber,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Barra flotante interactiva: Selector de Estilo de Mapa + Google Maps directo
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ...AppMapStyle.values.map((style) {
+                            final isCurrent = _selectedMapStyle == style;
+                            return GestureDetector(
+                              onTap: () => setState(() => _selectedMapStyle = style),
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: isCurrent
+                                      ? AppColors.neonCyan.withOpacity(0.25)
+                                      : AppColors.surface.withOpacity(0.85),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: isCurrent ? AppColors.neonCyan : AppColors.glassBorder,
+                                    width: isCurrent ? 1.5 : 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      style.icon,
+                                      size: 13,
+                                      color: isCurrent ? AppColors.neonCyan : AppColors.textSecondary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      style.label,
+                                      style: TextStyle(
+                                        color: isCurrent ? Colors.white : AppColors.textSecondary,
+                                        fontSize: 11,
+                                        fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+
+                          // Botón directo a Google Maps para verificar georreferencias
+                          GestureDetector(
+                            onTap: () => _openInGoogleMaps(currentVenue.latitude, currentVenue.longitude),
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1E3A8A).withOpacity(0.85),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.neonCyan.withOpacity(0.7)),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.open_in_new_rounded, size: 13, color: AppColors.neonCyan),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Google Maps',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Botón para centrar en el establecimiento seleccionado
+                          GestureDetector(
+                            onTap: () => _centerOnVenue(currentVenue),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceElevated.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.glassBorder),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.my_location_rounded, size: 13, color: AppColors.neonCyan),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Centrar',
+                                    style: TextStyle(
+                                      color: AppColors.neonCyan,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
-                      ),
-                    ),
-
-                    // Botón Modo Pruebas / Simular Aforo y Reportes
-                    GestureDetector(
-                      onTap: () => _showTestAforoModal(context, currentVenue),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceElevated.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.neonAmber),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.neonAmber.withOpacity(0.3),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.tune_rounded, size: 16, color: AppColors.neonAmber),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Probar Aforo',
-                              style: AppTypography.badgeLabel.copyWith(
-                                color: AppColors.neonAmber,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],

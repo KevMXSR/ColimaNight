@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' as ll;
 import '../../../../core/constants/colima_geo_constants.dart';
 import '../../domain/models/nightlife_corridor.dart';
 import '../../domain/models/venue_location.dart';
@@ -103,82 +105,91 @@ class _NightlifeMapViewState extends State<NightlifeMapView> {
   }
 
   Widget _buildMapCanvasPlaceholder() {
-    return Container(
-      color: const Color(0xFF10141D),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.map_rounded, size: 48, color: Colors.blueGrey.shade700),
-            const SizedBox(height: 8),
-            Text(
-              'Mapa Nocturno Conurbado\nColima - Villa de Álvarez',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.blueGrey.shade400,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: widget.venues.map((venue) {
-                final color = _parseColor(venue.statusColorHex);
-                final isSelected = _activeVenue?.id == venue.id;
-                return GestureDetector(
-                  onTap: () => _onVenueSelected(venue),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? color.withValues(alpha: 0.25) : const Color(0xFF161B26),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected ? color : color.withValues(alpha: 0.5),
-                        width: isSelected ? 2.5 : 1.2,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: color.withValues(alpha: 0.4),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              )
-                            ]
-                          : [],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          venue.name,
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.white70,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+    return FlutterMap(
+      options: const MapOptions(
+        initialCenter: ll.LatLng(ColimaGeoConstants.centerLatitude, ColimaGeoConstants.centerLongitude),
+        initialZoom: ColimaGeoConstants.defaultZoom,
+        minZoom: 11.0,
+        maxZoom: 18.5,
       ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          fallbackUrl: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.colimanight.app',
+          maxZoom: 19,
+        ),
+        MarkerLayer(
+          markers: widget.venues.map((venue) {
+            final color = _parseColor(venue.statusColorHex);
+            final isSelected = _activeVenue?.id == venue.id;
+            return Marker(
+              point: ll.LatLng(venue.coordinates.latitude, venue.coordinates.longitude),
+              width: isSelected ? 160 : 36,
+              height: isSelected ? 50 : 36,
+              child: GestureDetector(
+                onTap: () => _onVenueSelected(venue),
+                child: isSelected
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF161B26).withOpacity(0.95),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: color, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.5),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                venue.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.6),
+                              blurRadius: 8,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.local_bar_rounded,
+                          size: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 

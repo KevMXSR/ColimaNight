@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../domain/models/venue_model.dart';
@@ -241,17 +242,11 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                     itemCount: venue.galleryUrls.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 10),
                     itemBuilder: (context, index) {
-                      return ClipRRect(
+                      return AppVenueImage(
+                        imageUrl: venue.galleryUrls[index],
+                        width: 140,
+                        fit: BoxFit.cover,
                         borderRadius: BorderRadius.circular(14),
-                        child: CachedNetworkImage(
-                          imageUrl: venue.galleryUrls[index],
-                          width: 140,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            width: 140,
-                            color: AppColors.surfaceElevated,
-                          ),
-                        ),
                       );
                     },
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../../../core/widgets/pulsing_glow.dart';
@@ -40,26 +41,10 @@ class HotRightNowCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Imagen con Hero para transición fluida
-                Hero(
-                  tag: 'venue_cover_${venue.id}',
-                  child: CachedNetworkImage(
-                    imageUrl: venue.coverImageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: AppColors.surfaceElevated,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.neonMagenta,
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: AppColors.surface,
-                      child: const Icon(Icons.nightlife, color: AppColors.neonViolet, size: 48),
-                    ),
-                  ),
+                AppVenueImage(
+                  imageUrl: venue.coverImageUrl,
+                  fit: BoxFit.cover,
+                  heroTag: 'venue_cover_${venue.id}',
                 ),
 
                 // Gradientes Neón Nocturnos (Cyber Fade)

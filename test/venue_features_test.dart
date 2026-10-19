@@ -74,5 +74,26 @@ void main() {
       expect(displayVenues.any((v) => v.id == hotVenue!.id), isFalse);
       expect(displayVenues.length, filteredVenues.length - 1);
     });
+    test('Local ambient reference images are mapped to assets/images/venues/', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      final elGuachi = venues.firstWhere((v) => v.id == 'el_guachi');
+      expect(elGuachi.coverImageUrl, 'assets/images/venues/el_guachi.jpg');
+
+      final almada = venues.firstWhere((v) => v.id == 'almada_cantina');
+      expect(almada.coverImageUrl, 'assets/images/venues/almada_cantina.jpg');
+
+      final casaColima = venues.firstWhere((v) => v.id == 'mezcaleria_casa_colima');
+      expect(casaColima.coverImageUrl, 'assets/images/venues/mezcaleria_casa_colima.jpg');
+
+      final losToros = venues.firstWhere((v) => v.id == 'los_toros_barra_taurina');
+      expect(losToros.coverImageUrl, 'assets/images/venues/los_toros_barra_taurina.jpg');
+
+      final dosPuntos = venues.firstWhere((v) => v.id == 'dos_puntos');
+      expect(dosPuntos.coverImageUrl, 'assets/images/venues/dos_puntos.jpg');
+    });
   });
 }

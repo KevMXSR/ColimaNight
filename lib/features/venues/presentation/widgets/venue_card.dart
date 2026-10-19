@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../domain/models/venue_model.dart';
@@ -36,28 +37,11 @@ class VenueCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Hero(
-                      tag: 'venue_cover_${venue.id}',
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-                        child: CachedNetworkImage(
-                          imageUrl: venue.coverImageUrl,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: AppColors.surfaceElevated,
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 1.5,
-                                color: AppColors.neonViolet,
-                              ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: AppColors.surface,
-                            child: const Icon(Icons.nightlife, color: AppColors.neonViolet),
-                          ),
-                        ),
-                      ),
+                    AppVenueImage(
+                      imageUrl: venue.coverImageUrl,
+                      fit: BoxFit.cover,
+                      heroTag: 'venue_cover_${venue.id}',
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
                     ),
 
                     // Gradiente oscuro para contraste de textos

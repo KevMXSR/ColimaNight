@@ -24,8 +24,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Ignacio Sandoval 1943, Paseo de La Cantera, La Cantera, 28018 Colima, Col',
     description:
         'Club nocturno sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/el_guachi.jpg',
     galleryUrls: [
       'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80',
@@ -61,8 +60,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Tercer Anilllo, El Ángel, 28979 Cdad de Villa de Álvarez, Col',
     description:
         'Cervezas artesanales de barril, comida casual y amplia terraza al aire libre sobre Tercer Anillo.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_tercer_anillo.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 460,
@@ -91,8 +89,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av. Constitución 555, Las Amarillas, 28030 Colima, Col',
     description:
         'Taproom cervecero con selección fresca de IPAs de la casa y ambiente relajado para precopeo.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_san_fernando.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 385,
@@ -121,8 +118,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Ignacio Sandoval 1793-2, Girasoles, 28018 Colima, Col',
     description:
         'Sucursal sobre el corredor gastronómico de Sandoval con cocina urbana y cervezas frías.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_sandoval.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 310,
@@ -150,8 +146,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av Pablo Silva García 175, VILLAS DIAMANTE, 28986 Colima, Col',
     description:
         'Punto cervecero en Villa de Álvarez ideal para reunirse con amigos toda la semana.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_pablo_silva.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 290,
@@ -179,8 +174,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Avenida Venustiano Carranza 2090, Residencial Esmeralda Nte, 28017 Colima, Col',
     description:
         'Terraza cervecera sobre el norte de la ciudad con cervezas artesanales y platillos para compartir.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_carranza.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 340,
@@ -208,8 +202,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av La Paz 134, Sta Bárbara, 28017 Colima, Col',
     description:
         'Espacio cervecero íntimo con ambiente fresco, cocina al grill y cervezas de temporada.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_la_paz.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 220,
@@ -237,8 +230,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Lib Gobernadora Griselda Álvarez 32, Jardines del Llano, 28989 Cdad de Villa de Álvarez, Col',
     description:
         'Sucursal en Villa de Álvarez con terraza abierta, barra de barriles frescos y snacks botaneros.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_griselda_alvarez.jpg',
     galleryUrls: [],
     rating: 4.6,
     reviewsCount: 215,
@@ -266,8 +258,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Prol Hidalgo 1041, Real Santa Fe, 28978 Cdad de Villa de Álvarez, Col',
     description:
         'Taproom en la zona norte con propuesta cervecera artesanal y ambiente tranquilo.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/costa_santa_fe.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 190,
@@ -297,8 +288,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Andador Constitución 39, Sangre de Cristo, 28000 Colima, Col',
     description:
         'Cervezas clásicas de la casa servidas de barril junto a cocina de humo en el corazón del Centro.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/colimita_centro.jpg',
     galleryUrls: [
       'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
     ],
@@ -331,8 +321,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av Constitución 1401-Loc 1, Jardines Vista Hermosa IV, 28017 Colima, Col',
     description:
         'Jardín cervecero con toda la línea Colimita de barril y propuesta gastronómica contemporánea.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/colimita_constitucion.jpg',
     galleryUrls: [],
     rating: 4.9,
     reviewsCount: 650,
@@ -396,8 +385,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'C. Santos Degollado 34, Centro, 28000 Colima, Col',
     description:
         'Terraza céntrica con tragos preparados, cervezas y buena música para iniciar la noche.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/dos_puntos.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 390,
@@ -426,8 +414,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Filomeno Medina 12, Obregón, 28000 Colima, Col',
     description:
         'Cantina tradicional del centro con botanas típicas colimotas al consumir bebidas.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/el_taurino.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 490,
@@ -487,8 +474,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Miguel Hidalgo 165, Centro, 28000 Colima, Col',
     description:
         'Club nocturno en el Centro Histórico con música electrónica, coctelería y DJ sets en vivo.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/low_social_club.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 260,
@@ -519,8 +505,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Venustiano Carranza 60, Centro, 28000 Colima, Col',
     description:
         'Espacio de tradición y mixología artesanal con amplia selección de mezcales y ambiente bohemio.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/mezcaleria_casa_colima.jpg',
     galleryUrls: [
       'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80',
     ],
@@ -553,8 +538,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Emilio Carranza #164, Centro, 28000 Colima, Col',
     description:
         'Barra tradicional con ambiente taurino, botanas de cantina y tragos clásicos en el Centro de Colima.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/los_toros_barra_taurina.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 275,
@@ -586,8 +570,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Ignacio Sandoval 1906-Loc 4-5, Las Pergolas, 28018 Colima, Col',
     description:
         'Cantina con ambiente animado, cocina mexicana, mixología y música para cantar con amigos.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/almada_cantina.jpg',
     galleryUrls: [],
     rating: 4.9,
     reviewsCount: 520,
@@ -617,8 +600,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Ignacio Sandoval 1866, Lomas Vista Hermosa, 28017 Colima, Col',
     description:
         'Botanero tradicional con variedad de platillos incluidos en cada ronda y micheladas preparadas.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/el_gustito.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 610,
@@ -648,8 +630,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Calle Ignacio Sandoval 1866, Real Vista Hermosa, 28000 Colima, Col',
     description:
         'Bar y cantina festiva con antojitos, cantaritos de tequila y música regional mexicana.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/la_regional.jpg',
     galleryUrls: [],
     rating: 4.6,
     reviewsCount: 370,
@@ -679,8 +660,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Felipe Sevilla del Río 601, José María Morelos, 28000 Colima, Col',
     description:
         'Terraza relajada para tomar tragos preparados, cócteles de la casa y convivir con amigos.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/la_chintola.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 310,
@@ -709,8 +689,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av Constitución 1999, Lomas Verdes, 28017 Colima, Col',
     description:
         'Bar especializado en mixología con mezcales artesanales y ambiente musical contemporáneo.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'assets/images/venues/santo_mezcal.jpg',
     galleryUrls: [],
     rating: 4.9,
     reviewsCount: 295,
