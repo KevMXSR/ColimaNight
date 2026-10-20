@@ -202,7 +202,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Avenida Venustiano Carranza 2213, Rincón del Colibrí, Residencial Esmeralda Nte., 28017 Colima, Col.',
     description:
         'Segunda sucursal sobre Carranza con cervezas de línea, cocina al carbón y amplio jardín.',
-    coverImageUrl: 'assets/images/venues/costa_carranza.jpg',
+    coverImageUrl: 'assets/images/venues/costa_carranza_2.jpg',
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 280,
@@ -258,7 +258,7 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av La Paz 51, Sta Bárbara, 28017 Colima, Col.',
     description:
         'Punto de degustación cervecera sobre Av. La Paz con botanas y cervezas frías.',
-    coverImageUrl: 'assets/images/venues/costa_la_paz.jpg',
+    coverImageUrl: 'assets/images/venues/costa_la_paz_2.jpg',
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 205,

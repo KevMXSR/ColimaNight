@@ -95,6 +95,12 @@ void main() {
 
       final dosPuntos = venues.firstWhere((v) => v.id == 'dos_puntos');
       expect(dosPuntos.coverImageUrl, 'assets/images/venues/dos_puntos.jpg');
+
+      final carranza2 = venues.firstWhere((v) => v.id == 'costa_carranza_2');
+      expect(carranza2.coverImageUrl, 'assets/images/venues/costa_carranza_2.jpg');
+
+      final laPaz2 = venues.firstWhere((v) => v.id == 'costa_la_paz_2');
+      expect(laPaz2.coverImageUrl, 'assets/images/venues/costa_la_paz_2.jpg');
     });
 
     test('Geographic coordinates are aligned to actual venue landmarks', () {
