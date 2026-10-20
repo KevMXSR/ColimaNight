@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 class AppVenueImage extends StatelessWidget {
   final String imageUrl;
   final BoxFit fit;
+  final Alignment alignment;
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
@@ -19,6 +20,7 @@ class AppVenueImage extends StatelessWidget {
     super.key,
     required this.imageUrl,
     this.fit = BoxFit.cover,
+    this.alignment = Alignment.center,
     this.width,
     this.height,
     this.borderRadius,
@@ -38,6 +40,7 @@ class AppVenueImage extends StatelessWidget {
       imageWidget = CachedNetworkImage(
         imageUrl: imageUrl,
         fit: fit,
+        alignment: alignment,
         width: width,
         height: height,
         placeholder: (context, url) =>
@@ -68,6 +71,7 @@ class AppVenueImage extends StatelessWidget {
       imageWidget = Image.asset(
         imageUrl,
         fit: fit,
+        alignment: alignment,
         width: width,
         height: height,
         errorBuilder: (context, error, stackTrace) =>

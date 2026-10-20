@@ -39,6 +39,9 @@ class VenueCard extends StatelessWidget {
                     AppVenueImage(
                       imageUrl: venue.coverImageUrl,
                       fit: BoxFit.cover,
+                      alignment: venue.id == 'costa_carranza_2'
+                          ? const Alignment(0, -0.3)
+                          : Alignment.center,
                       heroTag: 'venue_cover_${venue.id}',
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
                     ),
