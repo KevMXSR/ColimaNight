@@ -836,15 +836,15 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
         String newStatus = v.securityStatus;
 
         if (incidentType == 'weapon') {
-          // Máxima severidad: 2 reportes activan alerta roja
-          if (newCount >= 2) {
+          // Máxima severidad con blindaje reputacional: Requiere al menos 3 reportes independientes
+          if (newCount >= 3) {
             newStatus = 'active_alert';
           } else {
             newStatus = 'under_review';
           }
         } else if (incidentType == 'brawl') {
-          // Riña o pelea: Requiere cuórum de 3 reportes
-          if (newCount >= 3) {
+          // Riña o altercado: Blindaje anti-difamación, requiere al menos 5 reportes independientes
+          if (newCount >= 5) {
             newStatus = 'active_alert';
           } else {
             newStatus = 'under_review';
