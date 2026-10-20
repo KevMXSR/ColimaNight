@@ -767,36 +767,6 @@ final List<VenueModel> _initialVenues = [
     securityStatus: 'normal',
     activeIncidentReportsCount: 0,
   ),
-  const VenueModel(
-    id: 'taverna_ny',
-    name: 'Taverna New York Style Pizza',
-    category: 'NY Pizza & Taproom',
-    zone: 'Av. Venustiano Carranza 1310, Residencial Santa Bárbara, Colima',
-    description:
-        'Pizzas estilo neoyorquino por rebanada acompañadas de cervezas artesanales en terraza.',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80',
-    galleryUrls: [],
-    rating: 4.8,
-    reviewsCount: 440,
-    capacityPercent: 76,
-    isHotRightNow: false,
-    hasLiveMusic: false,
-    isVipPresent: false,
-    hasPromo: true,
-    promoHeadline: 'Rebanada grande + cerveza artesanal por \$99',
-    parkingAvailable: true,
-    parkingDetails: 'Cajones al frente de plaza comercial',
-    latitude: 19.2720,
-    longitude: -103.7185,
-    instagramHandle: '@tavernanypizza',
-    tikTokHandle: '@tavernacolima',
-    vibeGenre: 'Indie / Hip-Hop 90s',
-    schedule: '6:00 PM - 1:30 AM',
-    estimatedMinutes: 8,
-    securityStatus: 'normal',
-    activeIncidentReportsCount: 0,
-  ),
 ];
 
 class VenuesNotifier extends StateNotifier<List<VenueModel>> {

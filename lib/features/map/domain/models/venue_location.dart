@@ -461,22 +461,6 @@ class VenueLocation {
           instagramHandle: 'santomezcalcolima',
           whatsappNumber: '+523121601010',
         ),
-
-        // Corredor Venustiano Carranza
-        const VenueLocation(
-          id: 'taverna-ny-pizza',
-          name: 'Taverna NY Style Pizza',
-          category: VenueCategory.pizzaBar,
-          corridorId: CorridorId.venustianoCarranza,
-          address: 'Av. Venustiano Carranza 1310, Residencial Santa Bárbara, Colima',
-          coordinates: GeoPoint(19.2720, -103.7185),
-          currentStatus: VenueStatus.available,
-          currentOccupancyPercentage: 75,
-          musicGenre: 'Indie Pop, Vinyl Grooves & Chillhop',
-          activePromotion: 'Slice gigante de pizza pepperoni + cerveza artesanal por \$129',
-          instagramHandle: 'tavernapizzacolima',
-          whatsappNumber: '+523121702020',
-        ),
       ];
 
   /// Easter Egg Memorial de Barezzito

@@ -116,12 +116,12 @@ class NightlifeCorridor {
               'Avenida gastronómica y nocturna moderna que conecta la zona centro-norte con Tercer Anillo. Pizzerías de estilo neoyorquino, bares cerveceros y cocina urbana.',
           focalPoint: GeoPoint(19.2700, -103.7125),
           polylinePoints: [
-            GeoPoint(19.2612, -103.7125), // Taverna NY Style Pizza (Carranza 1310)
+            GeoPoint(19.2612, -103.7125), // Inicio Corredor Carranza Sur
             GeoPoint(19.2680, -103.7124), // Zona Residencial Carranza
             GeoPoint(19.2800, -103.7124), // Cervecería de la Costa Venustiano Carranza
           ],
-          tags: ['Pizza & Beer', 'Cervecería de la Costa', 'Cocina Urbana', 'Lounges'],
-          vibe: 'Craft Beer, NY Pizza & Urban Dining',
+          tags: ['Taprooms', 'Cervecería de la Costa', 'Cocina Urbana', 'Lounges'],
+          vibe: 'Craft Beer, Cocktails & Urban Dining',
           estimatedAverageDrivingSpeedKmH: 32.0,
         ),
 
