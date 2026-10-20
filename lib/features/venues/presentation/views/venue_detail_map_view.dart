@@ -209,9 +209,9 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                       );
                     }),
 
-                    // Easter Egg Discreto de Barezzito en Plaza Zentralia (19.2669, -103.6972)
+                    // Easter Egg Discreto de Barezzito (19.257904781349012, -103.7152190343091)
                     Marker(
-                      point: const ll.LatLng(19.2669, -103.6972),
+                      point: const ll.LatLng(19.257904781349012, -103.7152190343091),
                       width: _showBarezzitoTooltip ? 95.0 : 26.0,
                       height: _showBarezzitoTooltip ? 48.0 : 26.0,
                       alignment: _showBarezzitoTooltip

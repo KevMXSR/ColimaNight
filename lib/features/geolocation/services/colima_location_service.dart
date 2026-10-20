@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../core/constants/colima_geo_constants.dart';
-import '../../map/domain/models/nightlife_corridor.dart';
 import '../../map/domain/models/venue_location.dart';
 
 /// Resultado del cálculo de proximidad hacia un establecimiento
@@ -112,10 +111,8 @@ class ColimaLocationService {
     if (!hasPermission) return null;
 
     return await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 10),
-      ),
+      desiredAccuracy: LocationAccuracy.high,
+      timeLimit: const Duration(seconds: 10),
     );
   }
 

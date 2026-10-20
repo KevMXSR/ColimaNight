@@ -12,18 +12,18 @@ void main() {
       final venues = container.read(mockVenuesProvider);
 
       final casaColima = venues.firstWhere((v) => v.id == 'mezcaleria_casa_colima');
-      expect(casaColima.name, 'Mezcalería Casa Colima');
-      expect(casaColima.zone, 'Calle Venustiano Carranza 60, Centro, 28000 Colima, Col');
+      expect(casaColima.name, 'Casa Colima mezcaleria');
+      expect(casaColima.zone, 'Calle Venustiano Carranza 60, Centro, 28000 Colima, Col.');
       expect(casaColima.instagramHandle, '@casa.colima.mezcaleria');
-      expect(casaColima.latitude, 19.2443);
-      expect(casaColima.longitude, -103.7268);
+      expect(casaColima.latitude, 19.244704192799993);
+      expect(casaColima.longitude, -103.72786144335059);
 
       final losToros = venues.firstWhere((v) => v.id == 'los_toros_barra_taurina');
       expect(losToros.name, 'Los Toros Barra Taurina');
-      expect(losToros.zone, 'Emilio Carranza #164, Centro, 28000 Colima, Col');
+      expect(losToros.zone, 'Emilio Carranza #164, Centro, 28000 Colima, Col.');
       expect(losToros.instagramHandle, '@lostorosbarrataurina');
-      expect(losToros.latitude, 19.2430);
-      expect(losToros.longitude, -103.7205);
+      expect(losToros.latitude, 19.24266787069572);
+      expect(losToros.longitude, -103.722301619548);
     });
 
     test('Preserves ambient reference images for DMT Rock Bar and La Puerta Bar', () {
@@ -46,15 +46,15 @@ void main() {
       final venues = container.read(mockVenuesProvider);
 
       expect(venues.firstWhere((v) => v.id == 'el_guachi').zone,
-          'Calle Ignacio Sandoval 1943, Paseo de La Cantera, La Cantera, 28018 Colima, Col');
+          'Calle Ignacio Sandoval 1943, Paseo de La Cantera, La Cantera, 28018 Colima, Col.');
       expect(venues.firstWhere((v) => v.id == 'almada_cantina').zone,
-          'Calle Ignacio Sandoval 1906-Loc 4-5, Las Pergolas, 28018 Colima, Col');
+          'Calle Ignacio Sandoval 1906-Loc 4-5, Las Pergolas, 28018 Colima, Col.');
       expect(venues.firstWhere((v) => v.id == 'dos_puntos').zone,
-          'C. Santos Degollado 34, Centro, 28000 Colima, Col');
+          'C. Santos Degollado 34, Centro, 28000 Colima, Col.');
       expect(venues.firstWhere((v) => v.id == 'la_regional').zone,
-          'Calle Ignacio Sandoval 1866, Real Vista Hermosa, 28000 Colima, Col');
+          'Calle Ignacio Sandoval 1866, Real Vista Hermosa, 28000 Colima, Col.');
       expect(venues.firstWhere((v) => v.id == 'la_chintola').zone,
-          'Felipe Sevilla del Río 601, José María Morelos, 28000 Colima, Col');
+          '28010, Felipe Sevilla del Río 601, José María Morelos, 28000 Colima, Col.');
     });
 
     test('Hot right now venue is excluded from displayVenues list in feed', () {
@@ -104,23 +104,23 @@ void main() {
       final venues = container.read(mockVenuesProvider);
 
       final sanFernando = venues.firstWhere((v) => v.id == 'costa_san_fernando');
-      expect(sanFernando.latitude, 19.2488);
-      expect(sanFernando.longitude, -103.7225);
+      expect(sanFernando.latitude, 19.25238924521272);
+      expect(sanFernando.longitude, -103.72060620420548);
 
       final elTaurino = venues.firstWhere((v) => v.id == 'el_taurino');
-      expect(elTaurino.latitude, 19.2415);
-      expect(elTaurino.longitude, -103.7240);
+      expect(elTaurino.latitude, 19.241001022989938);
+      expect(elTaurino.longitude, -103.72426068358524);
 
       final low = venues.firstWhere((v) => v.id == 'low_social_club');
-      expect(low.latitude, 19.2412);
-      expect(low.longitude, -103.7262);
+      expect(low.latitude, 19.241007671540903);
+      expect(low.longitude, -103.72559862649845);
     });
 
-    test('Barezzito Easter Egg is correctly positioned at Plaza Zentralia', () {
+    test('Barezzito Easter Egg is correctly positioned at Av. Constitución', () {
       const barezzito = VenueLocation.barezzitoEasterEgg;
-      expect(barezzito.coordinates.latitude, 19.2669);
-      expect(barezzito.coordinates.longitude, -103.6972);
-      expect(barezzito.address.contains('Plaza Zentralia'), isTrue);
+      expect(barezzito.coordinates.latitude, 19.257904781349012);
+      expect(barezzito.coordinates.longitude, -103.7152190343091);
+      expect(barezzito.address.contains('Constitución'), isTrue);
     });
   });
 }
