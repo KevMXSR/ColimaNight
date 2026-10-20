@@ -64,8 +64,8 @@ class ColimaGeoConstants {
   // --------------------------------------------------------------------------
   // Parámetros de "Proof of Proximity" (Validación Antifraude de Reportes)
   // --------------------------------------------------------------------------
-  /// Radio estándar de validación de proximidad en metros (150 m)
-  static const double proofOfProximityRadiusMeters = 150.0;
+  /// Radio estándar de validación de proximidad en metros (80 m para precisión de local/terraza)
+  static const double proofOfProximityRadiusMeters = 80.0;
 
   /// Radio extendido para macro-plazas o macro-recintos (ej. Zentralia, Plaza Las Pérgolas, La Petatera)
   static const double macroVenueProximityRadiusMeters = 280.0;

@@ -250,7 +250,7 @@ class VenueLocation {
           currentOccupancyPercentage: 88,
           musicGenre: 'Jazz, Funk & Cumbia Fusión',
           activePromotion: 'Colimita, Páramo y Ticús de barril con tapas locales',
-          instagramHandle: 'cerveceriacolima',
+          instagramHandle: 'cerveceriadecolima',
           facebookPageId: 'CerveceriaDeColima',
           whatsappNumber: '+523123120101',
         ),
@@ -265,7 +265,7 @@ class VenueLocation {
           currentOccupancyPercentage: 65,
           musicGenre: 'Indie Pop & Tropical Beats',
           activePromotion: 'Tardes de cerveza y maridaje de autor',
-          instagramHandle: 'cerveceriacolima',
+          instagramHandle: 'cerveceriadecolima',
           whatsappNumber: '+523123120102',
         ),
 
@@ -285,7 +285,7 @@ class VenueLocation {
           musicGenre: 'Banda, Regional Mexicano & Pop Latino',
           activePromotion: 'Botana caliente de mariscos en consumo de bebidas',
           geofenceRadiusMeters: ColimaGeoConstants.proofOfProximityRadiusMeters,
-          instagramHandle: 'elguachicolima',
+          instagramHandle: 'guachirooftop',
           whatsappNumber: '+523121301010',
         ),
         const VenueLocation(
@@ -300,7 +300,7 @@ class VenueLocation {
           musicGenre: 'Norteño Acústico & Mixología Moderna',
           activePromotion: 'Tequilas y Mezcales premium al 3x2 antes de las 10 PM',
           geofenceRadiusMeters: ColimaGeoConstants.macroVenueProximityRadiusMeters,
-          instagramHandle: 'almadacantinafina',
+          instagramHandle: 'almada_cantina.fina',
           whatsappNumber: '+523121302020',
         ),
         const VenueLocation(
@@ -314,7 +314,7 @@ class VenueLocation {
           currentOccupancyPercentage: 70,
           musicGenre: 'Música Variada, Cumbia & Rock en Español',
           activePromotion: 'Cerveza de media nacional con botana tradicional',
-          instagramHandle: 'elgustitocolima',
+          instagramHandle: 'el_gustito_ignacio_sandoval',
           whatsappNumber: '+523121303030',
         ),
 
@@ -373,7 +373,7 @@ class VenueLocation {
           currentOccupancyPercentage: 65,
           musicGenre: 'Trova, Bohemia Acústica & Canción Latinoamericana',
           activePromotion: 'Cerveza y sangría con entremeses de la casa',
-          instagramHandle: 'lapuertabarcolima',
+          instagramHandle: 'lapuertadelperreo.dog',
           whatsappNumber: '+523121407070',
         ),
         const VenueLocation(
@@ -387,7 +387,7 @@ class VenueLocation {
           currentOccupancyPercentage: 84,
           musicGenre: 'House, Tech-House & Electrónica',
           activePromotion: 'Sin promoción activa',
-          instagramHandle: 'low.colima',
+          instagramHandle: 'lowclub.col',
         ),
         const VenueLocation(
           id: 'mezcaleria-casa-colima',
@@ -428,7 +428,7 @@ class VenueLocation {
           currentOccupancyPercentage: 86,
           musicGenre: 'Pop Latino, Regional & Crossover',
           activePromotion: 'Cubetazo nacional \$180 y chamorros al estilo Colima',
-          instagramHandle: 'laregionalcolima',
+          instagramHandle: 'la_regional_cantina',
           whatsappNumber: '+523121508080',
         ),
         const VenueLocation(
@@ -458,7 +458,7 @@ class VenueLocation {
           currentOccupancyPercentage: 88,
           musicGenre: 'Electro Cumbia, Afro House & Mezcal Sessions',
           activePromotion: 'Vuelos de mezcal oaxaqueño y michoacano 2x1',
-          instagramHandle: 'santomezcalcolima',
+          instagramHandle: 'mezcal.santo',
           whatsappNumber: '+523121601010',
         ),
       ];
