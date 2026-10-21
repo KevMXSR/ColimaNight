@@ -35,6 +35,7 @@ class VenueModel {
   final String? lastReportNote;
   final bool isPermanentlyClosed;
   final String? closedJokeNote;
+  final int? livePresenceCount; // Telemetría de presencia activa en radio de 80m
 
   const VenueModel({
     required this.id,
@@ -71,7 +72,16 @@ class VenueModel {
     this.lastReportNote,
     this.isPermanentlyClosed = false,
     this.closedJokeNote,
+    this.livePresenceCount,
   });
+
+  /// Telemetría de personas en vivo en radio de 80m sincronizada con el aforo
+  int get livePresence {
+    if (isPermanentlyClosed) return 0;
+    if (livePresenceCount != null) return livePresenceCount!;
+    final base = (capacityPercent * 1.5).round();
+    return base > 0 ? base : 12;
+  }
 
   /// Determina el color de aura/pin según su estado o vibe
   String get statusTag {
@@ -124,6 +134,7 @@ class VenueModel {
     String? lastReportNote,
     bool? isPermanentlyClosed,
     String? closedJokeNote,
+    int? livePresenceCount,
   }) {
     return VenueModel(
       id: id ?? this.id,
@@ -161,6 +172,7 @@ class VenueModel {
       lastReportNote: lastReportNote ?? this.lastReportNote,
       isPermanentlyClosed: isPermanentlyClosed ?? this.isPermanentlyClosed,
       closedJokeNote: closedJokeNote ?? this.closedJokeNote,
+      livePresenceCount: livePresenceCount ?? this.livePresenceCount,
     );
   }
 }

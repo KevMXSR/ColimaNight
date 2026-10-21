@@ -299,7 +299,7 @@ class VenueLocation {
           currentOccupancyPercentage: 85,
           musicGenre: 'Norteño Acústico & Mixología Moderna',
           activePromotion: 'Tequilas y Mezcales premium al 3x2 antes de las 10 PM',
-          geofenceRadiusMeters: ColimaGeoConstants.macroVenueProximityRadiusMeters,
+          geofenceRadiusMeters: ColimaGeoConstants.proofOfProximityRadiusMeters,
           instagramHandle: 'almada_cantina.fina',
           whatsappNumber: '+523121302020',
         ),

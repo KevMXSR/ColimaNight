@@ -63,30 +63,37 @@ class VenueCard extends StatelessWidget {
                       ),
                     ),
 
-                    // Badge de Aforo en esquina superior derecha
+                    // Badge de Telemetría en Vivo y Aforo en esquina superior derecha
                     Positioned(
                       top: 12,
                       right: 12,
-                      child: venue.securityStatus == 'active_alert'
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: AppColors.neonRedAlert,
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Alerta Altercado',
-                                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          NeonBadge.livePresence(venue.livePresence),
+                          const SizedBox(width: 6),
+                          venue.securityStatus == 'active_alert'
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.neonRedAlert,
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
-                                ],
-                              ),
-                            )
-                          : NeonBadge.capacity(venue.capacityPercent),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Alerta',
+                                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : NeonBadge.capacity(venue.capacityPercent),
+                        ],
+                      ),
                     ),
 
                     // Chip de Categoría & Vibe en esquina superior izquierda

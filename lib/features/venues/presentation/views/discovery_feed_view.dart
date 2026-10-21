@@ -10,6 +10,10 @@ import '../widgets/hot_right_now_card.dart';
 import '../widgets/venue_card.dart';
 import '../widgets/faded_red_report_button.dart';
 import 'venue_detail_map_view.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/widgets/auth_modal.dart';
+import '../../../monetization/presentation/widgets/patreon_support_modal.dart';
+import '../../../monetization/presentation/widgets/cyber_admob_card.dart';
 
 class DiscoveryFeedView extends ConsumerWidget {
   const DiscoveryFeedView({super.key});
@@ -38,6 +42,7 @@ class DiscoveryFeedView extends ConsumerWidget {
     final filteredVenues = ref.watch(filteredVenuesProvider);
     final hotVenue = ref.watch(hotRightNowVenueProvider);
     final searchQuery = ref.watch(searchQueryProvider);
+    final user = ref.watch(authProvider);
 
     // Evita duplicar en el listado inferior al establecimiento que ya está destacado en "Hot Right Now"
     final displayVenues = hotVenue != null && searchQuery.isEmpty
@@ -104,9 +109,84 @@ class DiscoveryFeedView extends ConsumerWidget {
                       ],
                     ),
 
-                    // Acciones Rápidas del Header
+                    // Acciones Rápidas del Header (Apoyo Patreon, Perfil/Auth, Mapa)
                     Row(
                       children: [
+                        // Botón Apoyo Comunitario / Patreon
+                        GestureDetector(
+                          onTap: () => PatreonSupportModal.show(context),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.neonAmber.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.neonAmber.withOpacity(0.5)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.neonAmber.withOpacity(0.2),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.favorite_rounded, color: AppColors.neonAmber, size: 16),
+                                if (user.isSupporter) ...[
+                                  const SizedBox(width: 4),
+                                  const Icon(Icons.star_rounded, color: AppColors.neonAmber, size: 14),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+
+                        // Botón de Perfil / Autenticación Social (Invitado vs Conectado)
+                        GestureDetector(
+                          onTap: () => AuthModal.show(
+                            context,
+                            onOpenSupporterModal: () => PatreonSupportModal.show(context),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: user.isGuest
+                                  ? AppColors.surfaceElevated.withOpacity(0.8)
+                                  : AppColors.neonViolet.withOpacity(0.25),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: user.isGuest ? AppColors.glassBorder : AppColors.neonViolet,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  user.isGuest ? Icons.person_outline_rounded : Icons.person_rounded,
+                                  color: user.isGuest ? AppColors.textSecondary : AppColors.neonCyan,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 5),
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 72),
+                                  child: Text(
+                                    user.isGuest ? 'Invitado' : user.displayName.split(' ').first,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTypography.badgeLabel.copyWith(
+                                      color: user.isGuest ? AppColors.textSecondary : Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+
                         // Botón para saltar al mapa completo
                         GestureDetector(
                           onTap: () {
@@ -115,7 +195,7 @@ class DiscoveryFeedView extends ConsumerWidget {
                             _navigateToDetail(context, ref, target);
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: AppColors.neonViolet.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(16),
@@ -123,13 +203,13 @@ class DiscoveryFeedView extends ConsumerWidget {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.map_outlined, color: AppColors.neonCyan, size: 18),
-                                const SizedBox(width: 6),
+                                const Icon(Icons.map_outlined, color: AppColors.neonCyan, size: 16),
+                                const SizedBox(width: 5),
                                 Text(
                                   'Mapa',
                                   style: AppTypography.bodyBold.copyWith(
                                     color: AppColors.neonCyan,
-                                    fontSize: 13,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ],
@@ -272,17 +352,31 @@ class DiscoveryFeedView extends ConsumerWidget {
                 ),
               )
             else
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final venue = displayVenues[index];
-                    return VenueCard(
-                      venue: venue,
-                      onTap: () => _navigateToDetail(context, ref, venue),
+              Builder(
+                builder: (context) {
+                  final List<Widget> feedWidgets = [];
+                  for (int i = 0; i < displayVenues.length; i++) {
+                    feedWidgets.add(
+                      VenueCard(
+                        venue: displayVenues[i],
+                        onTap: () => _navigateToDetail(context, ref, displayVenues[i]),
+                      ),
                     );
-                  },
-                  childCount: displayVenues.length,
-                ),
+                    // Intercala tarjeta publicitaria nativa Cyber-Night cada 6 establecimientos
+                    if ((i + 1) % 6 == 0 && (i + 1) < displayVenues.length) {
+                      feedWidgets.add(
+                        CyberAdMobCard(index: (i + 1) ~/ 6),
+                      );
+                    }
+                  }
+
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => feedWidgets[index],
+                      childCount: feedWidgets.length,
+                    ),
+                  );
+                },
               ),
 
             // Botón con tono rojo desvanecido al final de la pantalla para reportes anónimos

@@ -75,7 +75,32 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
 
 ---
 
-## 3. 🏗️ Arquitectura de Carpetas (Clean Architecture + Feature-First)
+## 3. 🔐 Fase 1: Autenticación, Telemetría de Presencia y Monetización
+
+### 3.1 Autenticación Social & Modo Invitado (`lib/features/auth/`)
+- **Modo Invitado Inmediato:** Navegación 100% libre sin bloqueos de registro obligatorio.
+- **Google Sign-In:** Inicio de sesión social ágil para guardar favoritos y sincronizar perfil.
+- **Botón de Perfil Reactivo:** Integrado en la barra superior del feed indicando el estado (`Invitado` o `Conectado como [Nombre]`), con acceso al modal de perfil.
+
+### 3.2 Telemetría de Presencia en Vivo (Perímetro 80 metros)
+- **Monitoreo en Tiempo Real:** Detección comunitaria de presencia activa en el perímetro de 80m de cada establecimiento.
+- **Insignias Dinámicas:** Contadores visuales `👥 X en vivo` y `👥 X en vivo (80m)` en `HotRightNowCard`, `VenueCard` y `VenueDetailBottomSheet`.
+
+### 3.3 Apoyo Comunitario al Estilo Patreon (`lib/features/monetization/`)
+- **Transparencia Total:** Justificación clara sobre el financiamiento de servidores en tiempo real, cartografía y monitoreo de seguridad.
+- **Niveles de Apoyo:**
+  - $25 MXN: Cerveza Virtual 🍺 (Insignia Supporter Bronce).
+  - $50 MXN: Ronda de Shots 🥃 (Insignia Supporter Plata).
+  - $100 MXN: Mesa VIP Supporter 👑 (Corona Dorada VIP en perfil).
+  - Patreon / Apoyo Libre: Enlace externo a pasarelas de pago.
+- **Botón de Donativo:** Acceso rápido con ícono de corazón/apoyo en la barra superior del feed.
+
+### 3.4 Publicidad Nativa Cyber-Night (Google AdMob Mockup)
+- **Tarjeta Patrocinada (`CyberAdMobCard`):** Banner nativo con efecto Glassmorphism y bordes ámbar/cian intercalado cada 6 establecimientos en el feed principal.
+
+---
+
+## 4. 🏗️ Arquitectura de Carpetas (Clean Architecture + Feature-First)
 
 ```
 lib/
@@ -86,25 +111,31 @@ lib/
 │   │   └── app_theme.dart          # Configuración global de ThemeData Dark
 │   └── widgets/
 │       ├── glass_container.dart    # BackdropFilter con bordes translúcidos
-│       ├── neon_badge.dart         # Píldoras dinámicas (% aforo, VIP, 2x1)
+│       ├── neon_badge.dart         # Píldoras dinámicas (% aforo, presencia en vivo, VIP, 2x1)
 │       └── pulsing_glow.dart       # Efecto de respiración y aura neón
 │
 ├── features/
+│   ├── auth/
+│   │   ├── domain/models/user_model.dart     # Modelo de usuario (Invitado, Social, Supporter)
+│   │   └── presentation/
+│   │       ├── providers/auth_provider.dart  # StateNotifier de sesión social y estatus supporter
+│   │       └── widgets/auth_modal.dart       # Modal Glassmorphism de acceso y perfil
+│   ├── monetization/
+│   │   └── presentation/widgets/
+│   │       ├── patreon_support_modal.dart    # Modal de apoyo comunitario Patreon ($25, $50, $100 MXN)
+│   │       └── cyber_admob_card.dart         # Tarjeta publicitaria nativa Glassmorphism cada 6 locales
 │   └── venues/
-│       ├── domain/
-│       │   └── models/
-│       │       └── venue_model.dart  # Entidad del bar con metadata nocturna
+│       ├── domain/models/venue_model.dart    # Entidad de bar con telemetría de presencia y metadata
 │       └── presentation/
-│           ├── providers/
-│           │   └── venue_providers.dart # Riverpod (22 locales conurbados, aforo reactivo)
+│           ├── providers/venue_providers.dart # Riverpod (22 locales conurbados, aforo reactivo)
 │           ├── widgets/
 │           │   ├── filter_chips_bar.dart
-│           │   ├── hot_right_now_card.dart
-│           │   ├── venue_card.dart
-│           │   ├── venue_detail_bottom_sheet.dart
+│           │   ├── hot_right_now_card.dart   # Tarjeta Hero con aforo + telemetría en vivo
+│           │   ├── venue_card.dart           # Tarjeta con insignia 👥 X en vivo
+│           │   ├── venue_detail_bottom_sheet.dart # Detalle con telemetría en radio de 80m
 │           │   └── faded_red_report_button.dart
 │           └── views/
-│               ├── discovery_feed_view.dart
+│               ├── discovery_feed_view.dart  # Feed con perfil, apoyo Patreon y ads intercalados
 │               └── venue_detail_map_view.dart
 │
 └── main.dart                       # Entrypoint con ProviderScope y orientación fija

@@ -1,0 +1,109 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Funciones auxiliares de verificación de roles con Custom Claims
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.role == 'admin';
+    }
+
+    function isVenueStaff(venueId) {
+      return isAuthenticated() && (
+        request.auth.token.role == 'admin' ||
+        (request.auth.token.role == 'venue_staff' && request.auth.token.assignedVenueId == venueId)
+      );
+    }
+
+    // =========================================================================
+    // 1. COLECCIÓN 'venues' (Bares y Terrazas de Colima)
+    // =========================================================================
+    match /venues/{venueId} {
+      // Lectura pública de locales comerciales
+      allow read: if true;
+
+      // El staff solo puede actualizar datos de menú/redes/promos pero NUNCA
+      // telemetría de aforo (liveAttendeesCount) ni estatus de seguridad
+      allow update: if isVenueStaff(venueId) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'securityStatus',
+          'liveAttendeesCount',
+          'currentOccupancyPercent',
+          'stats',
+          'active',
+          'isEasterEgg'
+        ]);
+
+      // Creación y borrado reservados para administradores globales
+      allow create, delete: if isAdmin();
+
+      // Subcolección de telemetría de presencia: solo Cloud Functions con Admin SDK
+      match /presence_heartbeats/{heartbeatId} {
+        allow read: if isAdmin() || isVenueStaff(venueId);
+        allow write: if false;
+      }
+
+      // Subcolección de eventos de redes del bar
+      match /events/{eventId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    // =========================================================================
+    // 2. COLECCIÓN 'incident_reports' (Auditoría Confidencial e Interna)
+    // =========================================================================
+    // Blindaje reputacional absoluto: ningún cliente puede leer ni escribir directamente.
+    // La ingesta pasa por Cloud Function con verificación Haversine de 80m.
+    match /incident_reports/{reportId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // =========================================================================
+    // 3. COLECCIÓN 'active_incidents' (Consenso y Alertas Públicas)
+    // =========================================================================
+    match /active_incidents/{venueId} {
+      // El público general SOLO puede leer cuando se alcanza el cuórum verificado (active_alert).
+      // Los conatos en 'internal_audit' permanecen 100% invisibles al público.
+      allow read: if resource.data.status == 'active_alert' || isVenueStaff(venueId);
+      allow write: if false;
+    }
+
+    // =========================================================================
+    // 4. COLECCIÓN 'events' (Pipeline de Eventos de Instagram)
+    // =========================================================================
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if false; // Gestionado por la función programada ingestSocialEvents
+    }
+
+    // =========================================================================
+    // 5. COLECCIÓN 'donations' (Modelo de Apoyo Comunitario / Patreon)
+    // =========================================================================
+    match /donations/{donationId} {
+      // Un usuario puede consultar sus propios donativos realizados
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      // Registro a través de Cloud Function recordCommunityDonation
+      allow write: if false;
+    }
+
+    // =========================================================================
+    // 6. COLECCIÓN 'device_reputations' (Sistema de Shadowban)
+    // =========================================================================
+    match /device_reputations/{reputationId} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // 7. PERFILES DE USUARIOS
+    // =========================================================================
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}

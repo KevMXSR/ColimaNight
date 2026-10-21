@@ -144,6 +144,7 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
+                  NeonBadge.livePresence(venue.livePresence, showRadius: true),
                   NeonBadge.capacity(venue.capacityPercent),
                   if (venue.hasLiveMusic)
                     NeonBadge.liveMusic(venue.liveMusicAct ?? 'En vivo'),
@@ -272,6 +273,27 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                 padding: const EdgeInsets.all(14),
                 child: Column(
                   children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.wifi_tethering_rounded, color: AppColors.neonCyan, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Presencia Comunitaria:',
+                          style: AppTypography.bodyBold,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${venue.livePresence} personas en radio de 80m',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.neonCyan,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         const Icon(Icons.access_time_rounded, color: AppColors.neonAmber, size: 18),

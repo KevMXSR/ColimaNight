@@ -102,9 +102,11 @@ class HotRightNowCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          NeonBadge.livePresence(venue.livePresence),
+                          const SizedBox(width: 6),
                           if (venue.isVipPresent) ...[
                             NeonBadge.vip(venue.vipNote ?? 'VIP'),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 6),
                           ],
                           NeonBadge.capacity(venue.capacityPercent),
                         ],

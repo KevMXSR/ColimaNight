@@ -4,6 +4,7 @@ import '../theme/app_typography.dart';
 
 enum BadgeType {
   capacity,
+  livePresence,
   liveMusic,
   vip,
   promo,
@@ -33,6 +34,15 @@ class NeonBadge extends StatelessWidget {
       type: BadgeType.capacity,
       capacityPercent: percent,
       icon: Icons.people_alt_rounded,
+    );
+  }
+
+  factory NeonBadge.livePresence(int count, {bool showRadius = false}) {
+    return NeonBadge(
+      label: showRadius ? '$count en vivo (80m)' : '$count en vivo',
+      type: BadgeType.livePresence,
+      icon: Icons.sensors_rounded,
+      customColor: AppColors.neonCyan,
     );
   }
 
@@ -76,6 +86,8 @@ class NeonBadge extends StatelessWidget {
         if (cap >= 85) return AppColors.neonRedAlert;
         if (cap >= 65) return AppColors.neonAmber;
         return AppColors.neonGreen;
+      case BadgeType.livePresence:
+        return AppColors.neonCyan;
       case BadgeType.liveMusic:
         return AppColors.neonMagenta;
       case BadgeType.vip:
@@ -113,7 +125,7 @@ class NeonBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (type == BadgeType.capacity) ...[
+          if (type == BadgeType.capacity || type == BadgeType.livePresence) ...[
             Container(
               width: 6,
               height: 6,
@@ -130,7 +142,8 @@ class NeonBadge extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 6),
-          ] else if (icon != null) ...[
+          ],
+          if (icon != null && type != BadgeType.capacity) ...[
             Icon(
               icon,
               size: 13,
