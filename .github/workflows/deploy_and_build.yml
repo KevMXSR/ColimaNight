@@ -1,0 +1,131 @@
+name: ColimaNight CI/CD - Web Deploy & Android APK Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ------------------------------------------------------------
+  # Job 1: Pruebas Automatizadas y Despliegue Web a GitHub Pages
+  # ------------------------------------------------------------
+  test_and_deploy_web:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Instalar Dependencias
+        run: flutter pub get
+
+      - name: Ejecutar Suite de Pruebas Unitarias
+        run: flutter test
+
+      - name: Compilar Versión Web Release
+        run: flutter build web --release --base-href "/Antigravity_Proyect_Management/"
+
+      - name: Configurar Páginas de GitHub
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+
+      - name: Subir Artefacto de Páginas
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'build/web'
+
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        if: github.ref == 'refs/heads/main'
+        uses: actions/deploy-pages@v4
+
+  # ------------------------------------------------------------
+  # Job 2: Compilación y Empaquetado de Android APK Release
+  # ------------------------------------------------------------
+  build_android_apk:
+    runs-on: ubuntu-latest
+    needs: test_and_deploy_web
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Instalar Dependencias
+        run: flutter pub get
+
+      - name: Compilar APK Android Release
+        run: flutter build apk --release
+
+      - name: Renombrar APK para Distribución
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ColimaNight-release.apk
+
+      - name: Subir Artefacto APK a GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ColimaNight-Android-Release-APK
+          path: build/app/outputs/flutter-apk/ColimaNight-release.apk
+          retention-days: 30
+
+      - name: Crear / Actualizar GitHub Release Nocturna
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-nightly
+          name: "ColimaNight v1.0.0 (Nightly Release APK & Web)"
+          body: |
+            ## 🍸 ColimaNight - Versión Móvil Android e Implementación Web
+            
+            ### 📱 Descarga para Android:
+            Descarga directamente el archivo **`ColimaNight-release.apk`** adjunto en los assets de esta versión para instalarlo en cualquier dispositivo Android.
+            
+            ### 🌐 Acceso Web Inmediato:
+            Accede desde cualquier navegador móvil o de escritorio en:
+            **https://kevmxsr.github.io/Antigravity_Proyect_Management/**
+            
+            ### ✨ Novedades:
+            - Catálogo con 25 establecimientos verificados y Easter Egg de Barezzito.
+            - Proof of Proximity geocerca de 80m.
+            - Blindaje de seguridad y cuórum de 5 reportes independientes en 10 min.
+            - Telemetría de aforo en vivo.
+            - Donativo estilo Patreon / Apoyo comunitario.
+          files: build/app/outputs/flutter-apk/ColimaNight-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

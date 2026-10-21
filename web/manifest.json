@@ -1,11 +1,11 @@
 {
-    "name": "colima_night",
-    "short_name": "colima_night",
+    "name": "ColimaNight",
+    "short_name": "ColimaNight",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A0A0F",
+    "theme_color": "#8A2BE2",
+    "description": "Guía y radar en tiempo real de la vida nocturna en Colima y Villa de Álvarez.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
