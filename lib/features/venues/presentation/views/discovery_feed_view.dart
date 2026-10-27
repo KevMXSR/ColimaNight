@@ -8,6 +8,8 @@ import '../providers/venue_providers.dart';
 import '../widgets/filter_chips_bar.dart';
 import '../widgets/hot_right_now_card.dart';
 import '../widgets/venue_card.dart';
+import '../widgets/venue_compact_list_tile.dart';
+import '../widgets/top_ranking_podium_bar.dart';
 import '../widgets/faded_red_report_button.dart';
 import 'venue_detail_map_view.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -43,6 +45,8 @@ class DiscoveryFeedView extends ConsumerWidget {
     final hotVenue = ref.watch(hotRightNowVenueProvider);
     final searchQuery = ref.watch(searchQueryProvider);
     final user = ref.watch(authProvider);
+    final viewMode = ref.watch(feedViewModeProvider);
+    final topRanked = ref.watch(topRankedVenuesProvider);
 
     // Evita duplicar en el listado inferior al establecimiento que ya está destacado en "Hot Right Now"
     final displayVenues = hotVenue != null && searchQuery.isEmpty
@@ -304,10 +308,19 @@ class DiscoveryFeedView extends ConsumerWidget {
               ),
             ],
 
-            // Encabezado de la Lista
+            // Podio / Carrusel Horizontal "Top Ranking de Hoy" (Top 5 más concurridos)
+            if (searchQuery.isEmpty && topRanked.isNotEmpty)
+              SliverToBoxAdapter(
+                child: TopRankingPodiumBar(
+                  topVenues: topRanked,
+                  onVenueTap: (v) => _navigateToDetail(context, ref, v),
+                ),
+              ),
+
+            // Encabezado de la Lista con Selector de Modo Dual (Fotos Inmersivas vs Lista Compacta)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 18, 16, 4),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -319,16 +332,117 @@ class DiscoveryFeedView extends ConsumerWidget {
                         fontSize: 14,
                       ),
                     ),
-                    Text(
-                      '${displayVenues.length} lugares',
-                      style: AppTypography.caption.copyWith(color: AppColors.neonCyan),
+                    Row(
+                      children: [
+                        // Selector de Vista (Fotos vs Lista Top)
+                        Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceElevated,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.glassBorder),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.cards,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: viewMode == ViewMode.cards
+                                        ? AppColors.neonCyan.withOpacity(0.2)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: viewMode == ViewMode.cards
+                                          ? AppColors.neonCyan
+                                          : Colors.transparent,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.view_agenda_rounded,
+                                        size: 13,
+                                        color: viewMode == ViewMode.cards
+                                            ? AppColors.neonCyan
+                                            : AppColors.textMuted,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Fotos',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: viewMode == ViewMode.cards
+                                              ? Colors.white
+                                              : AppColors.textMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.compact,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: viewMode == ViewMode.compact
+                                        ? AppColors.neonAmber.withOpacity(0.2)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: viewMode == ViewMode.compact
+                                          ? AppColors.neonAmber
+                                          : Colors.transparent,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.view_headline_rounded,
+                                        size: 13,
+                                        color: viewMode == ViewMode.compact
+                                            ? AppColors.neonAmber
+                                            : AppColors.textMuted,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Lista Top',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: viewMode == ViewMode.compact
+                                              ? Colors.white
+                                              : AppColors.textMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${displayVenues.length} lugares',
+                          style: AppTypography.caption.copyWith(color: AppColors.neonCyan),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
 
-            // Lista de Tarjetas de Establecimientos (excluyendo el que ya se muestra en 'Hot Right Now')
+            // Lista de Establecimientos (Renderiza modo inmersivo de tarjetas o modo compacto según la preferencia)
             if (displayVenues.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -356,11 +470,18 @@ class DiscoveryFeedView extends ConsumerWidget {
                 builder: (context) {
                   final List<Widget> feedWidgets = [];
                   for (int i = 0; i < displayVenues.length; i++) {
+                    final venue = displayVenues[i];
                     feedWidgets.add(
-                      VenueCard(
-                        venue: displayVenues[i],
-                        onTap: () => _navigateToDetail(context, ref, displayVenues[i]),
-                      ),
+                      viewMode == ViewMode.cards
+                          ? VenueCard(
+                              venue: venue,
+                              onTap: () => _navigateToDetail(context, ref, venue),
+                            )
+                          : VenueCompactListTile(
+                              venue: venue,
+                              rankNumber: i + 1,
+                              onTap: () => _navigateToDetail(context, ref, venue),
+                            ),
                     );
                     // Intercala tarjeta publicitaria nativa Cyber-Night cada 6 establecimientos
                     if ((i + 1) % 6 == 0 && (i + 1) < displayVenues.length) {

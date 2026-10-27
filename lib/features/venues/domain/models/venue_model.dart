@@ -1,3 +1,24 @@
+/// Representa un evento específico o de cartelera en un establecimiento
+class VenueEvent {
+  final String id;
+  final String title;
+  final String dateDisplay; // Ej: 'Viernes 31 Oct • 10:00 PM'
+  final String? artistOrDj; // Ej: 'DJ Set en Vivo & Reggaetón Hits'
+  final String? coverPrice; // Ej: '$100 MXN' o 'Entrada Libre'
+  final String? promoNote; // Ej: '2x1 en copeo antes de las 11 PM'
+  final bool isToday;
+
+  const VenueEvent({
+    required this.id,
+    required this.title,
+    required this.dateDisplay,
+    this.artistOrDj,
+    this.coverPrice,
+    this.promoNote,
+    this.isToday = false,
+  });
+}
+
 /// Modelo de Dominio para Establecimientos Nocturnos en Colima y Villa de Álvarez
 class VenueModel {
   final String id;
@@ -37,6 +58,15 @@ class VenueModel {
   final String? closedJokeNote;
   final int? livePresenceCount; // Telemetría de presencia activa en radio de 80m
 
+  // Nuevas propiedades: Cover, Horario y Reservaciones
+  final bool hasCover;
+  final String? coverDescription; // Ej: 'Sin cover', '$50 - $100 MXN', 'Cover $100 después de 11 PM'
+  final bool isOpenNow;
+  final String? closedReason; // Ej: 'Abre hoy a las 8:00 PM', 'Cerrado los lunes', 'Cerrado por remodelación'
+  final String? reservationPhone; // Ej: '+523121234567'
+  final String? whatsappReservation; // Número para enlace directo WhatsApp
+  final List<VenueEvent> upcomingEvents;
+
   const VenueModel({
     required this.id,
     required this.name,
@@ -73,6 +103,13 @@ class VenueModel {
     this.isPermanentlyClosed = false,
     this.closedJokeNote,
     this.livePresenceCount,
+    this.hasCover = false,
+    this.coverDescription,
+    this.isOpenNow = true,
+    this.closedReason,
+    this.reservationPhone,
+    this.whatsappReservation,
+    this.upcomingEvents = const [],
   });
 
   /// Telemetría de personas en vivo en radio de 80m sincronizada con el aforo
@@ -81,6 +118,23 @@ class VenueModel {
     if (livePresenceCount != null) return livePresenceCount!;
     final base = (capacityPercent * 1.5).round();
     return base > 0 ? base : 12;
+  }
+
+  /// Etiqueta visible del cover
+  String get coverTag {
+    if (!hasCover || coverDescription == null || coverDescription!.isEmpty) {
+      return 'Sin Cover';
+    }
+    return coverDescription!;
+  }
+
+  /// Etiqueta visible del horario / estatus de apertura
+  String get openStatusTag {
+    if (isPermanentlyClosed) return 'In Memoriam';
+    if (!isOpenNow) {
+      return closedReason ?? 'Cerrado Ahora';
+    }
+    return 'Abierto Ahora';
   }
 
   /// Determina el color de aura/pin según su estado o vibe
@@ -135,6 +189,13 @@ class VenueModel {
     bool? isPermanentlyClosed,
     String? closedJokeNote,
     int? livePresenceCount,
+    bool? hasCover,
+    String? coverDescription,
+    bool? isOpenNow,
+    String? closedReason,
+    String? reservationPhone,
+    String? whatsappReservation,
+    List<VenueEvent>? upcomingEvents,
   }) {
     return VenueModel(
       id: id ?? this.id,
@@ -173,6 +234,13 @@ class VenueModel {
       isPermanentlyClosed: isPermanentlyClosed ?? this.isPermanentlyClosed,
       closedJokeNote: closedJokeNote ?? this.closedJokeNote,
       livePresenceCount: livePresenceCount ?? this.livePresenceCount,
+      hasCover: hasCover ?? this.hasCover,
+      coverDescription: coverDescription ?? this.coverDescription,
+      isOpenNow: isOpenNow ?? this.isOpenNow,
+      closedReason: closedReason ?? this.closedReason,
+      reservationPhone: reservationPhone ?? this.reservationPhone,
+      whatsappReservation: whatsappReservation ?? this.whatsappReservation,
+      upcomingEvents: upcomingEvents ?? this.upcomingEvents,
     );
   }
 }

@@ -146,6 +146,57 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                 children: [
                   NeonBadge.livePresence(venue.livePresence, showRadius: true),
                   NeonBadge.capacity(venue.capacityPercent),
+                  // Badge de Cover
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: venue.hasCover
+                            ? AppColors.neonAmber.withOpacity(0.6)
+                            : AppColors.neonCyan.withOpacity(0.6),
+                      ),
+                    ),
+                    child: Text(
+                      '🎟️ ${venue.coverTag}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: venue.hasCover ? AppColors.neonAmber : AppColors.neonCyan,
+                      ),
+                    ),
+                  ),
+                  // Badge de Horario / Apertura
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.6),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          venue.isOpenNow ? Icons.access_time_filled_rounded : Icons.access_time_rounded,
+                          size: 13,
+                          color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          venue.isOpenNow ? 'Abierto (${venue.schedule})' : venue.openStatusTag,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (venue.hasLiveMusic)
                     NeonBadge.liveMusic(venue.liveMusicAct ?? 'En vivo'),
                   if (venue.isVipPresent)
@@ -191,6 +242,184 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                       ),
                     ],
                   ),
+                ),
+              ),
+
+              // Botón Directo de Reservaciones WhatsApp
+              if (venue.whatsappReservation != null || venue.reservationPhone != null) ...[
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () {
+                    final phone = venue.whatsappReservation ?? venue.reservationPhone ?? '523121234567';
+                    final msg = Uri.encodeComponent(
+                        'Hola, me gustaría consultar disponibilidad de mesa para hoy en ${venue.name} que vi en ColimaNight.');
+                    _launchUrl('https://wa.me/$phone?text=$msg');
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF25D366).withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFF25D366).withOpacity(0.6)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.chat_bubble_rounded, color: Color(0xFF25D366), size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          'RESERVAR MESA POR WHATSAPP',
+                          style: AppTypography.bodyBold.copyWith(
+                            color: const Color(0xFF25D366),
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
+              // Agenda de Eventos y Cartelera
+              if (venue.upcomingEvents.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(Icons.event_available_rounded, color: AppColors.neonViolet, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      'EVENTOS & CARTELERA',
+                      style: AppTypography.badgeLabel.copyWith(
+                        color: AppColors.neonViolet,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                ...venue.upcomingEvents.map((event) => Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: GlassContainer(
+                    borderRadius: 14,
+                    padding: const EdgeInsets.all(12),
+                    borderColor: event.isToday ? AppColors.neonViolet.withOpacity(0.6) : AppColors.glassBorder,
+                    fillColor: AppColors.surfaceElevated.withOpacity(0.6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (event.isToday) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonViolet,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  'HOY',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                            ],
+                            Expanded(
+                              child: Text(
+                                event.dateDisplay,
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.neonCyan,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            if (event.coverPrice != null)
+                              Text(
+                                event.coverPrice!,
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.neonAmber,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          event.title,
+                          style: AppTypography.bodyBold.copyWith(fontSize: 14),
+                        ),
+                        if (event.artistOrDj != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '🎵 ${event.artistOrDj}',
+                            style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                          ),
+                        ],
+                        if (event.promoNote != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            '⚡ ${event.promoNote}',
+                            style: AppTypography.caption.copyWith(color: AppColors.neonAmber),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                )),
+              ],
+
+              // Información de Admisión y Cover
+              const SizedBox(height: 20),
+              Text(
+                'INFORMACIÓN DE ADMISIÓN & COVER',
+                style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+              ),
+              const SizedBox(height: 10),
+              GlassContainer(
+                borderRadius: 14,
+                padding: const EdgeInsets.all(12),
+                borderColor: AppColors.glassBorder,
+                fillColor: AppColors.surfaceElevated.withOpacity(0.6),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: (venue.hasCover ? AppColors.neonAmber : AppColors.neonCyan).withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        venue.hasCover ? Icons.confirmation_number_rounded : Icons.check_circle_outline_rounded,
+                        color: venue.hasCover ? AppColors.neonAmber : AppColors.neonCyan,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            venue.hasCover ? 'Cover Requerido' : 'Admisión Libre / Sin Cover',
+                            style: AppTypography.bodyBold.copyWith(fontSize: 14),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            venue.coverDescription ??
+                                (venue.hasCover
+                                    ? 'Consulta detalles en puerta o reservación'
+                                    : 'Entrada libre sujeta a capacidad'),
+                            style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),

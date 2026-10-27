@@ -130,8 +130,14 @@ jobs:
             **https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/**
             
             ### ✨ Novedades:
-            - Catálogo con 25 establecimientos verificados y Easter Egg de Barezzito.
-            - Proof of Proximity geocerca de 80m.
+            - Catálogo con 27 establecimientos verificados (incorporando Foro DMT y Paraíso Drinks Colima) y Easter Egg de Barezzito.
+            - Modo Dual: Alternancia fluida entre Modo Inmersivo (Tarjetas con fotos) y Modo Compacto (Ranking / Lista rápida sin saturación visual).
+            - Top 5 Ranking de Hoy con podio interactivo en cabecera (Medallas Oro, Plata, Bronce).
+            - Cartelera y Agenda de Eventos en vivo por cada establecimiento.
+            - Información transparente de Cover y admisión (Sin Cover vs precio).
+            - Estatus operativo en tiempo real (Abierto / Horarios / Motivo de cierre).
+            - Enlace directo para Reservación de Mesas por WhatsApp con mensaje predeterminado.
+            - Proof of Proximity geocerca de 80m y permisos Android para segundo plano.
             - Blindaje de seguridad y cuórum de 5 reportes independientes en 10 min.
             - Telemetría de aforo en vivo.
             - Donativo estilo Patreon / Apoyo comunitario.

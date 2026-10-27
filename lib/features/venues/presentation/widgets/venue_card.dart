@@ -96,24 +96,62 @@ class VenueCard extends StatelessWidget {
                       ),
                     ),
 
-                    // Chip de Categoría & Vibe en esquina superior izquierda
+                    // Chip de Categoría & Estatus de apertura en esquina superior izquierda
                     Positioned(
                       top: 12,
                       left: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.65),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.glassBorder),
-                        ),
-                        child: Text(
-                          venue.category.toUpperCase(),
-                          style: AppTypography.badgeLabel.copyWith(
-                            color: AppColors.neonCyan,
-                            fontSize: 10,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.65),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.glassBorder),
+                            ),
+                            child: Text(
+                              venue.category.toUpperCase(),
+                              style: AppTypography.badgeLabel.copyWith(
+                                color: AppColors.neonCyan,
+                                fontSize: 10,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.6),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 5,
+                                  height: 5,
+                                  decoration: BoxDecoration(
+                                    color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  venue.isOpenNow ? 'Abierto' : 'Cerrado',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -200,11 +238,32 @@ class VenueCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Insignias dinámicas (Música en vivo, 2x1, VIP, Parking)
+                    // Insignias dinámicas (Cover, Eventos, Música en vivo, 2x1, VIP, Parking)
                     Wrap(
                       spacing: 8,
                       runSpacing: 6,
                       children: [
+                        // Badge de Cover
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceElevated.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: venue.hasCover
+                                  ? AppColors.neonAmber.withOpacity(0.6)
+                                  : AppColors.neonCyan.withOpacity(0.6),
+                            ),
+                          ),
+                          child: Text(
+                            '🎟️ ${venue.coverTag}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: venue.hasCover ? AppColors.neonAmber : AppColors.neonCyan,
+                            ),
+                          ),
+                        ),
                         if (venue.hasLiveMusic)
                           NeonBadge.liveMusic(venue.liveMusicAct ?? 'Banda en vivo'),
                         if (venue.hasPromo)
@@ -213,6 +272,32 @@ class VenueCard extends StatelessWidget {
                           NeonBadge.vip(venue.vipNote ?? 'VIP Presente'),
                         if (venue.parkingAvailable)
                           NeonBadge.parking('Estacionamiento'),
+                        if (venue.upcomingEvents.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.neonViolet.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.neonViolet.withOpacity(0.5)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.event_note_rounded, size: 12, color: AppColors.neonViolet),
+                                const SizedBox(width: 4),
+                                Text(
+                                  venue.upcomingEvents.first.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 10),

@@ -461,6 +461,41 @@ class VenueLocation {
           instagramHandle: 'mezcal.santo',
           whatsappNumber: '+523121601010',
         ),
+
+        // Centro Histórico - Foro Cultural
+        const VenueLocation(
+          id: 'foro_dmt',
+          name: 'Foro DMT',
+          category: VenueCategory.rockBar,
+          corridorId: CorridorId.centroHistorico,
+          address: 'C. Santos Degollado 50, Centro, 28000 Colima, Col.',
+          coordinates: GeoPoint(19.243385050696823, -103.72907994355953),
+          currentStatus: VenueStatus.specialEvent,
+          currentOccupancyPercentage: 82,
+          hasCover: true,
+          coverPriceMxn: 80.0,
+          musicGenre: 'Rock en Vivo / Indie / Alternativo',
+          activePromotion: 'Cerveza artesanal 2x1 hasta las 10 PM',
+          instagramHandle: 'foro_dmt',
+          whatsappNumber: '+523121234567',
+        ),
+
+        // Corredor Venustiano Carranza Norte / Esmeralda
+        const VenueLocation(
+          id: 'paraiso_drinks',
+          name: 'Paraíso Drinks Colima',
+          category: VenueCategory.terraceLounge,
+          corridorId: CorridorId.venustianoCarranza,
+          address: 'Av. de los Diamantes 140, Residencial Esmeralda Nte., 28017 Colima, Col.',
+          coordinates: GeoPoint(19.278276708508628, -103.70990174232882),
+          currentStatus: VenueStatus.available,
+          currentOccupancyPercentage: 80,
+          hasCover: false,
+          musicGenre: 'Drinks de Autor / Pop Latino / Precopeo',
+          activePromotion: '2x1 en coctelería de autor de 8 a 10 PM',
+          instagramHandle: 'paraisodrinkscolima',
+          whatsappNumber: '+523121234567',
+        ),
       ];
 
   /// Easter Egg Memorial de Barezzito

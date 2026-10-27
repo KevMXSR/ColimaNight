@@ -128,5 +128,70 @@ void main() {
       expect(barezzito.coordinates.longitude, -103.7152190343091);
       expect(barezzito.address.contains('Constitución'), isTrue);
     });
+
+    test('Active venues count is exactly 27 and excludes Taverna', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      expect(venues.length, equals(27));
+      expect(venues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
+      expect(VenueLocation.verifiedColimaVenues.length, equals(27));
+      expect(VenueLocation.verifiedColimaVenues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
+    });
+
+    test('Foro DMT and Paraíso Drinks Colima metadata, Instagram, and events are verified', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      final foroDmt = venues.firstWhere((v) => v.id == 'foro_dmt');
+      expect(foroDmt.name, equals('Foro DMT'));
+      expect(foroDmt.instagramHandle, equals('@foro_dmt'));
+      expect(foroDmt.latitude, equals(19.243385050696823));
+      expect(foroDmt.longitude, equals(-103.72907994355953));
+      expect(foroDmt.zone, equals('C. Santos Degollado 50, Centro, 28000 Colima, Col.'));
+      expect(foroDmt.hasCover, isTrue);
+      expect(foroDmt.coverTag, contains('\$80'));
+      expect(foroDmt.whatsappReservation, isNotNull);
+      expect(foroDmt.upcomingEvents.length, equals(2));
+
+      final paraisoDrinks = venues.firstWhere((v) => v.id == 'paraiso_drinks');
+      expect(paraisoDrinks.name, equals('Paraíso Drinks Colima'));
+      expect(paraisoDrinks.instagramHandle, equals('@paraisodrinkscolima'));
+      expect(paraisoDrinks.latitude, equals(19.278276708508628));
+      expect(paraisoDrinks.longitude, equals(-103.70990174232882));
+      expect(paraisoDrinks.zone, equals('Av. de los Diamantes 140, Residencial Esmeralda Nte., 28017 Colima, Col.'));
+      expect(paraisoDrinks.hasCover, isFalse);
+      expect(paraisoDrinks.coverTag, equals('Sin Cover'));
+      expect(paraisoDrinks.whatsappReservation, isNotNull);
+      expect(paraisoDrinks.upcomingEvents.length, equals(2));
+    });
+
+    test('Feed view mode toggles cleanly between cards and compact', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      expect(container.read(feedViewModeProvider), equals(ViewMode.cards));
+
+      container.read(feedViewModeProvider.notifier).state = ViewMode.compact;
+      expect(container.read(feedViewModeProvider), equals(ViewMode.compact));
+
+      container.read(feedViewModeProvider.notifier).state = ViewMode.cards;
+      expect(container.read(feedViewModeProvider), equals(ViewMode.cards));
+    });
+
+    test('Top ranked venues provider selects top 5 by occupancy/capacity', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final top5 = container.read(topRankedVenuesProvider);
+      expect(top5.length, equals(5));
+
+      for (int i = 0; i < top5.length - 1; i++) {
+        expect(top5[i].capacityPercent >= top5[i + 1].capacityPercent, isTrue);
+      }
+    });
   });
 }
