@@ -19,6 +19,23 @@ class VenueDetailBottomSheet extends ConsumerWidget {
     required this.scrollController,
   });
 
+  static Future<void> show(BuildContext context, VenueModel venue) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (_, controller) => VenueDetailBottomSheet(
+          venue: venue,
+          scrollController: controller,
+        ),
+      ),
+    );
+  }
+
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -206,7 +223,7 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                   if (venue.hasPromo)
                     NeonBadge.promo(venue.promoHeadline ?? 'Promo 2x1'),
                   if (venue.parkingAvailable)
-                    NeonBadge.parking(venue.parkingDetails ?? 'Valet Disponible'),
+                    NeonBadge.parking(venue.parkingDetails ?? 'Estacionamiento disponible'),
                 ],
               ),
               const SizedBox(height: 18),

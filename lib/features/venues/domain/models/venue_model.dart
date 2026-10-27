@@ -3,20 +3,32 @@ class VenueEvent {
   final String id;
   final String title;
   final String dateDisplay; // Ej: 'Viernes 31 Oct • 10:00 PM'
+  final DateTime? eventDate; // Fecha estructurada para validación estricta de 'HOY' vs futuro
   final String? artistOrDj; // Ej: 'DJ Set en Vivo & Reggaetón Hits'
-  final String? coverPrice; // Ej: '$100 MXN' o 'Entrada Libre'
+  final String? coverPrice; // Ej: 'Aprox. $100 MXN' o 'Entrada Libre'
   final String? promoNote; // Ej: '2x1 en copeo antes de las 11 PM'
-  final bool isToday;
+  final bool? forcedIsToday;
 
   const VenueEvent({
     required this.id,
     required this.title,
     required this.dateDisplay,
+    this.eventDate,
     this.artistOrDj,
     this.coverPrice,
     this.promoNote,
-    this.isToday = false,
+    this.forcedIsToday,
   });
+
+  /// Evalúa dinámicamente si el evento está ocurriendo HOY según DateTime.now()
+  bool get isToday {
+    if (forcedIsToday != null) return forcedIsToday!;
+    if (eventDate == null) return false;
+    final now = DateTime.now();
+    return eventDate!.year == now.year &&
+        eventDate!.month == now.month &&
+        eventDate!.day == now.day;
+  }
 }
 
 /// Modelo de Dominio para Establecimientos Nocturnos en Colima y Villa de Álvarez
@@ -112,12 +124,12 @@ class VenueModel {
     this.upcomingEvents = const [],
   });
 
-  /// Telemetría de personas en vivo en radio de 80m sincronizada con el aforo
+  /// Telemetría de personas en vivo en radio de 80m basada estrictamente en registro físico y geolocalización real
   int get livePresence {
     if (isPermanentlyClosed || !isOpenNow) return 0;
     if (livePresenceCount != null) return livePresenceCount!;
-    final base = (capacityPercent * 1.5).round();
-    return base > 0 ? base : 12;
+    // En fase de pruebas con usuarios reales registrados, no inflar artificialmente
+    return 0;
   }
 
   /// Indica si el establecimiento admite reservación previa de mesa.

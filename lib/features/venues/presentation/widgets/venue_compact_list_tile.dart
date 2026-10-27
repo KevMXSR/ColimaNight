@@ -106,12 +106,14 @@ class VenueCompactListTile extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: (venue.isOpenNow ? AppColors.neonGreen : Colors.black).withOpacity(venue.isOpenNow ? 0.12 : 0.5),
+                        color: venue.isOpenNow
+                            ? AppColors.neonGreen.withOpacity(0.12)
+                            : AppColors.neonRedAlert.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: venue.isOpenNow
                               ? AppColors.neonGreen.withOpacity(0.4)
-                              : Colors.white24,
+                              : AppColors.neonRedAlert.withOpacity(0.35),
                           width: 0.8,
                         ),
                       ),
@@ -119,16 +121,20 @@ class VenueCompactListTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            venue.isOpenNow ? Icons.circle : Icons.power_off_rounded,
+                            venue.isOpenNow ? Icons.circle : Icons.nightlight_round,
                             size: venue.isOpenNow ? 5 : 8,
-                            color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
+                            color: venue.isOpenNow
+                                ? AppColors.neonGreen
+                                : AppColors.neonRedAlert.withOpacity(0.9),
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            venue.isOpenNow ? 'Abierto' : 'Desenergizado',
+                            venue.isOpenNow ? 'Abierto' : 'Cerrado',
                             style: TextStyle(
                               fontSize: 9,
-                              color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
+                              color: venue.isOpenNow
+                                  ? AppColors.neonGreen
+                                  : AppColors.neonRedAlert.withOpacity(0.9),
                               fontWeight: FontWeight.w700,
                             ),
                           ),

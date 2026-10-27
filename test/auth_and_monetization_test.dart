@@ -81,7 +81,7 @@ void main() {
 
       expect(venueWithManualPresence.livePresence, 42);
 
-      const venueWithFallbackPresence = VenueModel(
+      const venueWithDefaultPresence = VenueModel(
         id: 'test_venue_2',
         name: 'Antro de Prueba',
         category: 'Antro',
@@ -99,8 +99,8 @@ void main() {
         estimatedMinutes: 8,
       );
 
-      // (90 * 1.5).round() = 135
-      expect(venueWithFallbackPresence.livePresence, 135);
+      // Sin check-ins registrados en fase de pruebas, no inflar artificialmente:
+      expect(venueWithDefaultPresence.livePresence, 0);
     });
 
     test('Live presence reflects operational status (positive when open, 0 when closed)', () {

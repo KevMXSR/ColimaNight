@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../providers/venue_providers.dart';
+import 'weekly_events_sheet.dart';
 
 class FilterChipsBar extends ConsumerWidget {
   const FilterChipsBar({super.key});
@@ -11,6 +12,8 @@ class FilterChipsBar extends ConsumerWidget {
     switch (filter) {
       case VenueFilterChip.all:
         return Icons.explore_rounded;
+      case VenueFilterChip.events:
+        return Icons.event_available_rounded;
       case VenueFilterChip.liveMusic:
         return Icons.music_note_rounded;
       case VenueFilterChip.promos:
@@ -42,6 +45,9 @@ class FilterChipsBar extends ConsumerWidget {
           return GestureDetector(
             onTap: () {
               ref.read(selectedFilterChipProvider.notifier).state = filter;
+              if (filter == VenueFilterChip.events) {
+                WeeklyEventsSheet.show(context);
+              }
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),

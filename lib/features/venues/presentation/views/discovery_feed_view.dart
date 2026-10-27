@@ -317,125 +317,144 @@ class DiscoveryFeedView extends ConsumerWidget {
                 ),
               ),
 
-            // Encabezado de la Lista con Selector de Modo Dual (Fotos Inmersivas vs Lista Compacta)
+            // Encabezado de la Lista con Selector Centrado y Agrandado [ Lista Top | Ambiente ]
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                child: Column(
                   children: [
-                    Text(
-                      searchQuery.isEmpty ? 'EXPLORA LA NOCHE' : 'RESULTADOS',
-                      style: AppTypography.h3.copyWith(
-                        letterSpacing: 0.5,
-                        color: AppColors.textSecondary,
-                        fontSize: 14,
-                      ),
-                    ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Selector de Vista (Fotos vs Lista Top)
-                        Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceElevated,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.glassBorder),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              GestureDetector(
-                                onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.cards,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: viewMode == ViewMode.cards
-                                        ? AppColors.neonCyan.withOpacity(0.2)
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: viewMode == ViewMode.cards
-                                          ? AppColors.neonCyan
-                                          : Colors.transparent,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.view_agenda_rounded,
-                                        size: 13,
-                                        color: viewMode == ViewMode.cards
-                                            ? AppColors.neonCyan
-                                            : AppColors.textMuted,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'Fotos',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: viewMode == ViewMode.cards
-                                              ? Colors.white
-                                              : AppColors.textMuted,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.compact,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: viewMode == ViewMode.compact
-                                        ? AppColors.neonAmber.withOpacity(0.2)
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: viewMode == ViewMode.compact
-                                          ? AppColors.neonAmber
-                                          : Colors.transparent,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.view_headline_rounded,
-                                        size: 13,
-                                        color: viewMode == ViewMode.compact
-                                            ? AppColors.neonAmber
-                                            : AppColors.textMuted,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'Lista Top',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: viewMode == ViewMode.compact
-                                              ? Colors.white
-                                              : AppColors.textMuted,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                        Text(
+                          searchQuery.isEmpty ? 'EXPLORA LA NOCHE' : 'RESULTADOS',
+                          style: AppTypography.h3.copyWith(
+                            letterSpacing: 0.5,
+                            color: AppColors.textSecondary,
+                            fontSize: 13,
                           ),
                         ),
-                        const SizedBox(width: 8),
                         Text(
                           '${displayVenues.length} lugares',
-                          style: AppTypography.caption.copyWith(color: AppColors.neonCyan),
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.neonCyan,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Selector Centrado, Agrandado e Invertido: [ Lista Top | Ambiente ]
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceElevated.withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.glassBorder, width: 1.2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // 1. Lista Top (primero)
+                            GestureDetector(
+                              onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.compact,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: viewMode == ViewMode.compact
+                                      ? AppColors.neonAmber.withOpacity(0.22)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: viewMode == ViewMode.compact
+                                        ? AppColors.neonAmber
+                                        : Colors.transparent,
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.view_headline_rounded,
+                                      size: 16,
+                                      color: viewMode == ViewMode.compact
+                                          ? AppColors.neonAmber
+                                          : AppColors.textMuted,
+                                    ),
+                                    const SizedBox(width: 7),
+                                    Text(
+                                      'Lista Top',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.3,
+                                        color: viewMode == ViewMode.compact
+                                            ? Colors.white
+                                            : AppColors.textMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            // 2. Ambiente (segundo, sustituye Fotos)
+                            GestureDetector(
+                              onTap: () => ref.read(feedViewModeProvider.notifier).state = ViewMode.cards,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: viewMode == ViewMode.cards
+                                      ? AppColors.neonCyan.withOpacity(0.22)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: viewMode == ViewMode.cards
+                                        ? AppColors.neonCyan
+                                        : Colors.transparent,
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.photo_library_rounded,
+                                      size: 16,
+                                      color: viewMode == ViewMode.cards
+                                          ? AppColors.neonCyan
+                                          : AppColors.textMuted,
+                                    ),
+                                    const SizedBox(width: 7),
+                                    Text(
+                                      'Ambiente',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.3,
+                                        color: viewMode == ViewMode.cards
+                                            ? Colors.white
+                                            : AppColors.textMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
