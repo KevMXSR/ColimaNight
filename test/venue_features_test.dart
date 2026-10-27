@@ -148,6 +148,8 @@ void main() {
 
       final foroDmt = venues.firstWhere((v) => v.id == 'foro_dmt');
       expect(foroDmt.name, equals('Foro DMT'));
+      expect(foroDmt.coverImageUrl, equals('assets/images/venues/foro_dmt.jpg'));
+      expect(foroDmt.galleryUrls, contains('assets/images/venues/foro_dmt_2.jpg'));
       expect(foroDmt.instagramHandle, equals('@foro_dmt'));
       expect(foroDmt.latitude, equals(19.243385050696823));
       expect(foroDmt.longitude, equals(-103.72907994355953));
@@ -159,6 +161,7 @@ void main() {
 
       final paraisoDrinks = venues.firstWhere((v) => v.id == 'paraiso_drinks');
       expect(paraisoDrinks.name, equals('Paraíso Drinks Colima'));
+      expect(paraisoDrinks.coverImageUrl, equals('assets/images/venues/paraiso_drinks.jpg'));
       expect(paraisoDrinks.instagramHandle, equals('@paraisodrinkscolima'));
       expect(paraisoDrinks.latitude, equals(19.278276708508628));
       expect(paraisoDrinks.longitude, equals(-103.70990174232882));
@@ -167,6 +170,54 @@ void main() {
       expect(paraisoDrinks.coverTag, equals('Sin Cover'));
       expect(paraisoDrinks.whatsappReservation, isNotNull);
       expect(paraisoDrinks.upcomingEvents.length, equals(2));
+    });
+
+    test('Cervecería de la Costa and Estación Colimita do not allow table reservations', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final noReservationVenues = venues.where((v) =>
+          v.id.startsWith('costa_') || v.id.startsWith('colimita_'));
+
+      expect(noReservationVenues, isNotEmpty);
+      for (final v in noReservationVenues) {
+        expect(v.hasTableReservation, isFalse,
+            reason: '${v.name} should NOT allow table reservations');
+        expect(v.whatsappReservation, isNull,
+            reason: '${v.name} whatsappReservation must be null');
+      }
+    });
+
+    test('Real-time operational status correctly reflects open and desenergizado venues', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      // Venues open on Tuesday afternoon (cantinas / cervecerías with kitchen)
+      final elTaurino = venues.firstWhere((v) => v.id == 'el_taurino');
+      expect(elTaurino.isOpenNow, isTrue);
+      expect(elTaurino.livePresence, greaterThan(0));
+
+      final costaTercerAnillo = venues.firstWhere((v) => v.id == 'costa_tercer_anillo');
+      expect(costaTercerAnillo.isOpenNow, isTrue);
+      expect(costaTercerAnillo.livePresence, greaterThan(0));
+
+      // Venues closed on Tuesday (nightclubs / rock bars opening later/weekend)
+      final elGuachi = venues.firstWhere((v) => v.id == 'el_guachi');
+      expect(elGuachi.isOpenNow, isFalse);
+      expect(elGuachi.livePresence, equals(0));
+      expect(elGuachi.closedReason, isNotNull);
+
+      final lowClub = venues.firstWhere((v) => v.id == 'low_social_club');
+      expect(lowClub.isOpenNow, isFalse);
+      expect(lowClub.livePresence, equals(0));
+      expect(lowClub.closedReason, contains('Jueves'));
+
+      final foroDmt = venues.firstWhere((v) => v.id == 'foro_dmt');
+      expect(foroDmt.isOpenNow, isFalse);
+      expect(foroDmt.livePresence, equals(0));
     });
 
     test('Feed view mode toggles cleanly between cards and compact', () {

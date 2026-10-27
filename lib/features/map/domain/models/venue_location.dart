@@ -107,7 +107,7 @@ class VenueLocation {
           musicGenre: 'Indie Rock, Tropical & House',
           activePromotion: 'Pintas Costera & Marejada 2x1 antes de las 9:00 PM',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550101',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-terraza-san-fernando',
@@ -121,7 +121,7 @@ class VenueLocation {
           musicGenre: 'Electro Pop & Sunset Beats',
           activePromotion: 'Jarras de Cerveza Artesanal y Hamburguesas en promo',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550102',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-ignacio-sandoval',
@@ -135,7 +135,7 @@ class VenueLocation {
           musicGenre: 'Rock Clásico & Funk',
           activePromotion: 'Degustación de 4 estilos craft por \$140',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550103',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-pablo-silva',
@@ -149,7 +149,7 @@ class VenueLocation {
           musicGenre: 'Crossover, Rock en Español & Pop',
           activePromotion: 'Cubetas artesanales con alitas en descuento',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550104',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-venustiano-carranza',
@@ -163,7 +163,7 @@ class VenueLocation {
           musicGenre: 'DJ Set en Vivo & Nu-Disco',
           activePromotion: 'Lanzamiento de edición especial de barril',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550105',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-venustiano-carranza-2',
@@ -177,7 +177,7 @@ class VenueLocation {
           musicGenre: 'DJ Set en Vivo & Nu-Disco',
           activePromotion: 'Pintas artesanales y cocina al carbón',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550105',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-la-paz',
@@ -191,7 +191,7 @@ class VenueLocation {
           musicGenre: 'Indie & Acoustic Sessions',
           activePromotion: 'Pintas seleccionadas a precio especial',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550106',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-la-paz-2',
@@ -205,7 +205,7 @@ class VenueLocation {
           musicGenre: 'Acoustic & Chill Beats',
           activePromotion: 'Happy hour en cervezas artesanales',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550106',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-griselda-alvarez',
@@ -219,7 +219,7 @@ class VenueLocation {
           musicGenre: 'Rock & Pop Alternativo',
           activePromotion: '2x1 en botanas al pedir jarra cervecera',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550107',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'costa-santa-fe',
@@ -233,7 +233,7 @@ class VenueLocation {
           musicGenre: 'Deep House & Sunset Grooves',
           activePromotion: 'Tasting flights y cócteles de ginebra artesanal',
           instagramHandle: 'cerveceriadelacosta',
-          whatsappNumber: '+523121550108',
+          // Sin reservacion de mesa
         ),
 
         // ====================================================================
@@ -252,7 +252,7 @@ class VenueLocation {
           activePromotion: 'Colimita, Páramo y Ticús de barril con tapas locales',
           instagramHandle: 'cerveceriadecolima',
           facebookPageId: 'CerveceriaDeColima',
-          whatsappNumber: '+523123120101',
+          // Sin reservacion de mesa
         ),
         const VenueLocation(
           id: 'estacion-colimita-constitucion',
@@ -266,7 +266,7 @@ class VenueLocation {
           musicGenre: 'Indie Pop & Tropical Beats',
           activePromotion: 'Tardes de cerveza y maridaje de autor',
           instagramHandle: 'cerveceriadecolima',
-          whatsappNumber: '+523123120102',
+          // Sin reservacion de mesa
         ),
 
         // ====================================================================

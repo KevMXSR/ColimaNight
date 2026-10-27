@@ -491,8 +491,10 @@ class _NightlifeMapViewState extends State<NightlifeMapView> {
               ),
               const SizedBox(width: 8),
 
-              // Botón WhatsApp Reservaciones
-              if (venue.whatsappNumber != null) ...[
+              // Botón WhatsApp Reservaciones (Excluye Costa y Colimita por política de no reservaciones)
+              if (venue.whatsappNumber != null &&
+                  !venue.id.startsWith('costa-') &&
+                  !venue.id.startsWith('estacion-colimita')) ...[
                 _buildIconActionButton(
                   icon: Icons.chat_rounded,
                   tooltip: 'Reservar por WhatsApp',

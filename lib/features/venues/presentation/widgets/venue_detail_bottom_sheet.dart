@@ -171,19 +171,21 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.15),
+                      color: (venue.isOpenNow ? AppColors.neonGreen : Colors.black).withOpacity(venue.isOpenNow ? 0.15 : 0.6),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.6),
+                        color: venue.isOpenNow
+                            ? AppColors.neonGreen.withOpacity(0.6)
+                            : Colors.white24,
                       ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          venue.isOpenNow ? Icons.access_time_filled_rounded : Icons.access_time_rounded,
+                          venue.isOpenNow ? Icons.access_time_filled_rounded : Icons.power_off_rounded,
                           size: 13,
-                          color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                          color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -191,7 +193,7 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
+                            color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
                           ),
                         ),
                       ],
@@ -245,8 +247,8 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                 ),
               ),
 
-              // Botón Directo de Reservaciones WhatsApp
-              if (venue.whatsappReservation != null || venue.reservationPhone != null) ...[
+              // Botón Directo de Reservaciones WhatsApp (Solo en locales que admiten reservación)
+              if (venue.hasTableReservation) ...[
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
@@ -278,6 +280,31 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ] else if (venue.id.startsWith('costa_') || venue.id.startsWith('colimita_')) ...[
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.white12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.info_outline_rounded, color: AppColors.textSecondary, size: 16),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Acceso libre por orden de llegada (Sin reservación)',
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

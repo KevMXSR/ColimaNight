@@ -103,13 +103,17 @@ void main() {
       expect(venueWithFallbackPresence.livePresence, 135);
     });
 
-    test('All mock venues have positive livePresence counts', () {
+    test('Live presence reflects operational status (positive when open, 0 when closed)', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
       for (final v in venues) {
-        expect(v.livePresence, greaterThan(0));
+        if (v.isOpenNow) {
+          expect(v.livePresence, greaterThan(0));
+        } else {
+          expect(v.livePresence, equals(0));
+        }
       }
     });
   });

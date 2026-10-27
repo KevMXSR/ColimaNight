@@ -17,143 +17,184 @@ class VenueCard extends StatelessWidget {
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: GestureDetector(
-        onTap: onTap,
-        child: GlassContainer(
-          borderRadius: 22,
-          padding: EdgeInsets.zero,
-          borderColor: AppColors.glassBorder,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Sección Imagen Superior con Badges Flotantes
-              SizedBox(
-                height: 160,
-                width: double.infinity,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    AppVenueImage(
-                      imageUrl: venue.coverImageUrl,
-                      fit: BoxFit.cover,
-                      alignment: venue.id == 'costa_carranza_2'
-                          ? const Alignment(0, -0.3)
-                          : Alignment.center,
-                      heroTag: 'venue_cover_${venue.id}',
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-                    ),
+    Widget cardContent = GlassContainer(
+      borderRadius: 22,
+      padding: EdgeInsets.zero,
+      borderColor: venue.isOpenNow ? AppColors.glassBorder : Colors.white12,
+      fillColor: venue.isOpenNow
+          ? AppColors.surfaceElevated.withOpacity(0.85)
+          : AppColors.surface.withOpacity(0.4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Sección Imagen Superior con Badges Flotantes
+          SizedBox(
+            height: 160,
+            width: double.infinity,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                AppVenueImage(
+                  imageUrl: venue.coverImageUrl,
+                  fit: BoxFit.cover,
+                  alignment: venue.id == 'costa_carranza_2'
+                      ? const Alignment(0, -0.3)
+                      : Alignment.center,
+                  heroTag: 'venue_cover_${venue.id}',
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+                ),
 
-                    // Gradiente oscuro para contraste de textos
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.4),
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.85),
-                          ],
-                          stops: const [0.0, 0.4, 1.0],
+                // Gradiente oscuro para contraste de textos
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.4),
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.85),
+                      ],
+                      stops: const [0.0, 0.4, 1.0],
+                    ),
+                  ),
+                ),
+
+                // Badge de Telemetría en Vivo y Aforo en esquina superior derecha
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (venue.isOpenNow)
+                        NeonBadge.livePresence(venue.livePresence)
+                      else
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.bedtime_rounded, size: 11, color: Colors.white60),
+                              SizedBox(width: 4),
+                              Text(
+                                'Inactivo',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(width: 6),
+                      venue.securityStatus == 'active_alert'
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonRedAlert,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Alerta',
+                                    style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : (venue.isOpenNow
+                              ? NeonBadge.capacity(venue.capacityPercent)
+                              : Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: Colors.white24),
+                                  ),
+                                  child: const Text(
+                                    '0% Aforo',
+                                    style: TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )),
+                    ],
+                  ),
+                ),
+
+                // Chip de Categoría & Estatus de apertura en esquina superior izquierda
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.65),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: venue.isOpenNow ? AppColors.glassBorder : Colors.white24),
+                        ),
+                        child: Text(
+                          venue.category.toUpperCase(),
+                          style: AppTypography.badgeLabel.copyWith(
+                            color: venue.isOpenNow ? AppColors.neonCyan : Colors.white70,
+                            fontSize: 10,
+                          ),
                         ),
                       ),
-                    ),
-
-                    // Badge de Telemetría en Vivo y Aforo en esquina superior derecha
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          NeonBadge.livePresence(venue.livePresence),
-                          const SizedBox(width: 6),
-                          venue.securityStatus == 'active_alert'
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.neonRedAlert,
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        'Alerta',
-                                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : NeonBadge.capacity(venue.capacityPercent),
-                        ],
-                      ),
-                    ),
-
-                    // Chip de Categoría & Estatus de apertura en esquina superior izquierda
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.65),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.glassBorder),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: (venue.isOpenNow ? AppColors.neonGreen : Colors.black).withOpacity(venue.isOpenNow ? 0.2 : 0.7),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: venue.isOpenNow
+                                ? AppColors.neonGreen.withOpacity(0.6)
+                                : Colors.white24,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              venue.isOpenNow ? Icons.circle : Icons.power_off_rounded,
+                              size: venue.isOpenNow ? 6 : 10,
+                              color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
                             ),
-                            child: Text(
-                              venue.category.toUpperCase(),
-                              style: AppTypography.badgeLabel.copyWith(
-                                color: AppColors.neonCyan,
+                            const SizedBox(width: 4),
+                            Text(
+                              venue.isOpenNow ? 'Abierto' : 'Desenergizado',
+                              style: TextStyle(
                                 fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: (venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber).withOpacity(0.6),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 5,
-                                  height: 5,
-                                  decoration: BoxDecoration(
-                                    color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  venue.isOpenNow ? 'Abierto' : 'Cerrado',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: venue.isOpenNow ? AppColors.neonGreen : AppColors.neonAmber,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
+                  ),
+                ),
 
                     // Nombre y Rating superpuestos en la base de la imagen
                     Positioned(
@@ -300,6 +341,35 @@ class VenueCard extends StatelessWidget {
                           ),
                       ],
                     ),
+                    // Horario / Próxima apertura cuando está desenergizado
+                    if (!venue.isOpenNow) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.white12),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.access_time_rounded, size: 13, color: Colors.white70),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                venue.closedReason ?? 'Cerrado ahora',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
                     const SizedBox(height: 10),
 
                     // Separador sutil
@@ -342,7 +412,29 @@ class VenueCard extends StatelessWidget {
               ),
             ],
           ),
+        );
+
+    // Efecto desenergizado / blanco y negro si el local está cerrado
+    if (!venue.isOpenNow) {
+      cardContent = ColorFiltered(
+        colorFilter: const ColorFilter.matrix(<double>[
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0,      0,      0,      1, 0,
+        ]),
+        child: Opacity(
+          opacity: 0.65,
+          child: cardContent,
         ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: GestureDetector(
+        onTap: onTap,
+        child: cardContent,
       ),
     );
   }

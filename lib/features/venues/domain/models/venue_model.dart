@@ -114,10 +114,30 @@ class VenueModel {
 
   /// Telemetría de personas en vivo en radio de 80m sincronizada con el aforo
   int get livePresence {
-    if (isPermanentlyClosed) return 0;
+    if (isPermanentlyClosed || !isOpenNow) return 0;
     if (livePresenceCount != null) return livePresenceCount!;
     final base = (capacityPercent * 1.5).round();
     return base > 0 ? base : 12;
+  }
+
+  /// Indica si el establecimiento admite reservación previa de mesa.
+  /// Cervecería de la Costa y Estación Colimita operan exclusivamente por orden de llegada (sin reservaciones).
+  bool get hasTableReservation {
+    if (isPermanentlyClosed) return false;
+    final lowerId = id.toLowerCase();
+    final lowerName = name.toLowerCase();
+    if (lowerId.startsWith('costa_') ||
+        lowerId.startsWith('costa-') ||
+        lowerId.startsWith('colimita_') ||
+        lowerId.startsWith('estacion-colimita') ||
+        lowerName.contains('cervecería de la costa') ||
+        lowerName.contains('cerveceria de la costa') ||
+        lowerName.contains('estación colimita') ||
+        lowerName.contains('estacion colimita')) {
+      return false;
+    }
+    return (whatsappReservation != null && whatsappReservation!.isNotEmpty) ||
+        (reservationPhone != null && reservationPhone!.isNotEmpty);
   }
 
   /// Etiqueta visible del cover

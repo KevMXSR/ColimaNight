@@ -31,8 +31,8 @@ final List<VenueModel> _initialVenues = [
     ],
     rating: 4.9,
     reviewsCount: 412,
-    capacityPercent: 94,
-    isHotRightNow: true,
+    capacityPercent: 0,
+    isHotRightNow: false,
     hotReason: '🔥 El club con mayor afluencia de la noche y aforo al 94%',
     hasLiveMusic: true,
     liveMusicAct: 'DJ Sets en vivo & Reggaetón Hits',
@@ -52,9 +52,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 21:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -108,7 +110,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -161,7 +163,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -213,7 +215,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -265,7 +267,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -317,7 +319,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -369,7 +371,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -421,7 +423,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -473,7 +475,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -525,7 +527,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -577,7 +579,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -636,7 +638,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -689,7 +691,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
-    whatsappReservation: '523121234567',
+    // No admite reservación de mesa
     upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
@@ -727,7 +729,7 @@ final List<VenueModel> _initialVenues = [
     ],
     rating: 4.8,
     reviewsCount: 510,
-    capacityPercent: 86,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Banda de Rock en vivo: Tributos en directo',
@@ -747,9 +749,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 20:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -781,7 +785,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 390,
-    capacityPercent: 82,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -800,9 +804,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Abre hoy a las 5:00 PM',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -834,8 +840,8 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 490,
-    capacityPercent: 78,
-    isHotRightNow: false,
+    capacityPercent: 62,
+    isHotRightNow: true,
     hasLiveMusic: true,
     liveMusicAct: 'Trío bohemio tradicional',
     isVipPresent: false,
@@ -856,7 +862,9 @@ final List<VenueModel> _initialVenues = [
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    hotReason: '🔥 Cantina concurrida de mediodía en el Centro con botanas tradicionales',
+      livePresenceCount: 62,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -889,7 +897,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.6,
     reviewsCount: 340,
-    capacityPercent: 75,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Funk, Reggae & Rock Acústico',
@@ -908,9 +916,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre el Jueves 21:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -942,7 +952,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.8,
     reviewsCount: 260,
-    capacityPercent: 84,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'DJ Sets en vivo: House & Tech-House',
@@ -961,9 +971,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre el Jueves 22:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -999,7 +1011,7 @@ final List<VenueModel> _initialVenues = [
     ],
     rating: 4.9,
     reviewsCount: 310,
-    capacityPercent: 81,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Noches de Trova, Son Jarocho y Acústico',
@@ -1020,9 +1032,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 19:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1054,7 +1068,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 275,
-    capacityPercent: 78,
+    capacityPercent: 58,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -1076,7 +1090,8 @@ final List<VenueModel> _initialVenues = [
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    livePresenceCount: 58,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1110,7 +1125,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.9,
     reviewsCount: 520,
-    capacityPercent: 89,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Mariachi y show en vivo',
@@ -1130,9 +1145,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Abre hoy a las 6:00 PM',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1164,7 +1181,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 610,
-    capacityPercent: 84,
+    capacityPercent: 52,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -1184,7 +1201,8 @@ final List<VenueModel> _initialVenues = [
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
     isOpenNow: true,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    livePresenceCount: 52,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1218,7 +1236,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.6,
     reviewsCount: 370,
-    capacityPercent: 81,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Banda sinaloense en vivo',
@@ -1238,9 +1256,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Abre hoy a las 5:00 PM',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1272,7 +1292,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.7,
     reviewsCount: 310,
-    capacityPercent: 76,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -1291,9 +1311,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Abre hoy a las 4:00 PM',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1325,7 +1347,7 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [],
     rating: 4.9,
     reviewsCount: 295,
-    capacityPercent: 82,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -1344,9 +1366,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$150 MXN (Incluye bebida)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 20:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'guachi_perreo_night',
         title: 'Viernes de Perreo Old School & Tech-House',
@@ -1376,13 +1400,13 @@ final List<VenueModel> _initialVenues = [
     zone: 'C. Santos Degollado 50, Centro, 28000 Colima, Col.',
     description:
         'Espacio cultural y alternativo en el Centro de Colima con rock en vivo, teatro y arte independiente.',
-    coverImageUrl: 'assets/images/venues/dmt_rock_bar.jpg',
-    galleryUrls: [
-      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
+    coverImageUrl: 'assets/images/venues/foro_dmt.jpg',
+    galleryUrls: const [
+      'assets/images/venues/foro_dmt_2.jpg',
     ],
     rating: 4.8,
     reviewsCount: 310,
-    capacityPercent: 82,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: true,
     liveMusicAct: 'Rock en Vivo & Bandas Emergentes',
@@ -1402,9 +1426,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: true,
     coverDescription: 'Cover: \$80 MXN (Banda en vivo)',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 20:00',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'foro_dmt_rock_live',
         title: 'Noche de Rock Local & Bandas Emergentes',
@@ -1434,13 +1460,13 @@ final List<VenueModel> _initialVenues = [
     zone: 'Av. de los Diamantes 140, Residencial Esmeralda Nte., 28017 Colima, Col.',
     description:
         'Terraza de coctelería y precopeo con drinks de autor sobre Av. de los Diamantes.',
-    coverImageUrl: 'assets/images/venues/costa_carranza_1.jpg',
-    galleryUrls: [
-      'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80',
+    coverImageUrl: 'assets/images/venues/paraiso_drinks.jpg',
+    galleryUrls: const [
+      'assets/images/venues/paraiso_drinks.jpg',
     ],
     rating: 4.7,
     reviewsCount: 290,
-    capacityPercent: 80,
+    capacityPercent: 0,
     isHotRightNow: false,
     hasLiveMusic: false,
     isVipPresent: false,
@@ -1459,9 +1485,11 @@ final List<VenueModel> _initialVenues = [
     activeIncidentReportsCount: 0,
     hasCover: false,
     coverDescription: 'Sin Cover',
-    isOpenNow: true,
+    isOpenNow: false,
     whatsappReservation: '523121234567',
-    upcomingEvents: [
+    closedReason: 'Cerrado hoy · Abre Miércoles 19:30',
+      livePresenceCount: 0,
+      upcomingEvents: [
       VenueEvent(
         id: 'paraiso_tropical_friday',
         title: 'Viernes Tropical: Drinks de Autor 2x1',
@@ -1639,8 +1667,13 @@ final selectedVenueProvider = StateProvider<VenueModel?>((ref) {
 final hotRightNowVenueProvider = Provider<VenueModel?>((ref) {
   final venues = ref.watch(mockVenuesProvider);
   try {
-    return venues.firstWhere((v) => v.isHotRightNow);
+    return venues.firstWhere((v) => v.isHotRightNow && v.isOpenNow);
   } catch (_) {
+    final openVenues = venues.where((v) => v.isOpenNow && !v.isPermanentlyClosed).toList();
+    if (openVenues.isNotEmpty) {
+      openVenues.sort((a, b) => b.capacityPercent.compareTo(a.capacityPercent));
+      return openVenues.first;
+    }
     return venues.isNotEmpty ? venues.first : null;
   }
 });
@@ -1651,7 +1684,7 @@ final filteredVenuesProvider = Provider<List<VenueModel>>((ref) {
   final activeChip = ref.watch(selectedFilterChipProvider);
   final allVenues = ref.watch(mockVenuesProvider);
 
-  return allVenues.where((venue) {
+  final list = allVenues.where((venue) {
     // Filtro por texto
     final matchesQuery = query.isEmpty ||
         venue.name.toLowerCase().contains(query) ||
@@ -1677,6 +1710,13 @@ final filteredVenuesProvider = Provider<List<VenueModel>>((ref) {
         return venue.isVipPresent;
     }
   }).toList();
+    // Priorizar establecimientos energizados / abiertos al frente
+    list.sort((a, b) {
+      if (a.isOpenNow && !b.isOpenNow) return -1;
+      if (!a.isOpenNow && b.isOpenNow) return 1;
+      return b.capacityPercent.compareTo(a.capacityPercent);
+    });
+    return list;
 });
 
 /// Modos de visualización del Feed principal (Modo Inmersivo de Tarjetas vs Modo Compacto Ranking)
@@ -1691,6 +1731,10 @@ final feedViewModeProvider = StateProvider<ViewMode>((ref) => ViewMode.cards);
 /// Proveedor con los 5 establecimientos más concurridos ("Top Ranking de la Noche")
 final topRankedVenuesProvider = Provider<List<VenueModel>>((ref) {
   final all = ref.watch(mockVenuesProvider).where((v) => !v.isPermanentlyClosed).toList();
-  all.sort((a, b) => b.capacityPercent.compareTo(a.capacityPercent));
+  all.sort((a, b) {
+    if (a.isOpenNow && !b.isOpenNow) return -1;
+    if (!a.isOpenNow && b.isOpenNow) return 1;
+    return b.capacityPercent.compareTo(a.capacityPercent);
+  });
   return all.take(5).toList();
 });
