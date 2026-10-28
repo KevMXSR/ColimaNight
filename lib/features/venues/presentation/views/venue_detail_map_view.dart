@@ -87,7 +87,6 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   late String _selectedVenueId;
   final MapController _mapController = MapController();
   double _currentZoom = 15.2;
-  bool _showBarezzitoTooltip = false;
   AppMapStyle _selectedMapStyle = AppMapStyle.cyberNeon;
 
   @override
@@ -208,96 +207,6 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                         ),
                       );
                     }),
-
-                    // Easter Egg Discreto de Barezzito (19.257904781349012, -103.7152190343091)
-                    Marker(
-                      point: const ll.LatLng(19.257904781349012, -103.7152190343091),
-                      width: _showBarezzitoTooltip ? 95.0 : 26.0,
-                      height: _showBarezzitoTooltip ? 48.0 : 26.0,
-                      alignment: _showBarezzitoTooltip
-                          ? Alignment.bottomCenter
-                          : Alignment.center,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _showBarezzitoTooltip = !_showBarezzitoTooltip;
-                          });
-                        },
-                        child: _showBarezzitoTooltip
-                            ? Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 7, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF14141F)
-                                          .withOpacity(0.95),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          color: Colors.white24, width: 0.8),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.6),
-                                          blurRadius: 6,
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Text(
-                                      '💀 Barezzito (RIP)',
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 9.0,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Container(
-                                    width: 18,
-                                    height: 18,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF1C1C28)
-                                          .withOpacity(0.9),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.white30, width: 1.0),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        '💀',
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Container(
-                                width: 22,
-                                height: 22,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF14141F)
-                                      .withOpacity(0.85),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Colors.white24, width: 1.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.4),
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    '💀',
-                                    style: TextStyle(fontSize: 10),
-                                  ),
-                                ),
-                              ),
-                      ),
-                    ),
                   ],
                 ),
               ],

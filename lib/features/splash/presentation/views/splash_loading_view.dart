@@ -21,6 +21,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
   bool _isVideoInitialized = false;
   bool _hasNavigated = false;
   Timer? _safetyTimer;
+  Timer? _fallbackTimer;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -40,9 +41,9 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
 
     _startVideoPlayback();
 
-    // Temporizador de respaldo: si por alguna razón el reproductor del sistema no responde,
-    // se asegura el avance suave tras 12 segundos (el video dura 10s)
-    _safetyTimer = Timer(const Duration(milliseconds: 12500), () {
+    // Temporizador de respaldo: si por alguna razón el reproductor del sistema no responde
+    // o se bloquea el autoplay en el navegador web, se asegura el avance fluido
+    _safetyTimer = Timer(const Duration(milliseconds: 3500), () {
       _navigateToFeed();
     });
   }
@@ -87,6 +88,11 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
         setState(() {
           _isVideoInitialized = false;
         });
+        // Si el video falla en inicializar (ej. políticas de autoplay en web),
+        // avanzar con transición suave sin bloquear la experiencia del usuario
+        _fallbackTimer = Timer(const Duration(milliseconds: 1200), () {
+          _navigateToFeed();
+        });
       }
     }
   }
@@ -117,6 +123,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
     if (_hasNavigated || !mounted) return;
     _hasNavigated = true;
     _safetyTimer?.cancel();
+    _fallbackTimer?.cancel();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
@@ -139,6 +146,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
   @override
   void dispose() {
     _safetyTimer?.cancel();
+    _fallbackTimer?.cancel();
     _pulseController.dispose();
     _videoController?.removeListener(_onVideoControllerUpdate);
     _videoController?.dispose();
@@ -154,9 +162,12 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
 
     return Scaffold(
       backgroundColor: const Color(0xFF06070B),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _navigateToFeed,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
           // Capa 1: Video Oficial a Pantalla Completa (Full Cover) o Fallback Neón
           if (isPlayingVideo)
             SizedBox.expand(
@@ -332,6 +343,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }

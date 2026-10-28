@@ -1035,42 +1035,6 @@ final List<VenueModel> _initialVenues = [
     livePresenceCount: 2,
     upcomingEvents: [],
   ),
-
-  // --- BAREZZITO (EASTER EGG IN MEMORIAM) ---
-  const VenueModel(
-    id: 'barezzito_easter_egg',
-    name: 'Barezzito Colima',
-    category: 'Antro & Sushi Bar (In Memoriam)',
-    zone: 'Av. Constitución, Vista Hermosa, Colima, Col.',
-    description:
-        'El templo de la fiesta nocturna de los 2010s en Constitución. Hoy cerrado, pero recordado siempre.',
-    coverImageUrl: 'assets/images/venues/barezzito.jpg',
-    galleryUrls: [],
-    rating: 4.9,
-    reviewsCount: 999,
-    capacityPercent: 0,
-    isHotRightNow: false,
-    hasLiveMusic: false,
-    isVipPresent: false,
-    hasPromo: false,
-    parkingAvailable: false,
-    parkingDetails: 'Sin estacionamiento',
-    latitude: 19.257904781349012,
-    longitude: -103.7152190343091,
-    vibeGenre: 'Pop 2010s / Fiesta Retro / Nostalgia Colimense',
-    schedule: 'Cerrado Permanentemente',
-    estimatedMinutes: 0,
-    securityStatus: 'normal',
-    activeIncidentReportsCount: 0,
-    isPermanentlyClosed: true,
-    closedJokeNote: '🪦 In Memoriam • "Aquí bailamos todos"',
-    hasCover: false,
-    coverDescription: 'Sin Cover',
-    isOpenNow: false,
-    closedReason: 'Cerrado Permanentemente · In Memoriam',
-    livePresenceCount: 0,
-    upcomingEvents: [],
-  ),
 ];
 
 class VenuesNotifier extends StateNotifier<List<VenueModel>> {

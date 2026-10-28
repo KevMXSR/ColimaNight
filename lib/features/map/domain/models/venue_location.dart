@@ -519,7 +519,6 @@ class VenueLocation {
   /// Lista que incluye los 21 establecimientos comerciales activos más el Easter Egg histórico
   static List<VenueLocation> get allVenuesIncludingEasterEgg => [
         ...verifiedColimaVenues,
-        barezzitoEasterEgg,
       ];
 
   /// Alias de compatibilidad hacia atrás (retorna los 21 comercios activos)

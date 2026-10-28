@@ -1,7 +1,7 @@
 import 'dart:io';
 
 void main() async {
-  final port = 8080;
+  const port = 8080;
   final webDir = Directory('build/web');
 
   if (!webDir.existsSync()) {
@@ -14,7 +14,6 @@ void main() async {
   print('🍸 Servidor Local de ColimaNight iniciado con éxito!');
   print('📡 Acceso local en PC:        http://localhost:$port');
 
-  // Buscar IP local para acceso desde smartphone en la misma red Wi-Fi
   try {
     final interfaces = await NetworkInterface.list(type: InternetAddressType.IPv4);
     for (final iface in interfaces) {
@@ -31,6 +30,14 @@ void main() async {
 
   await for (final HttpRequest request in server) {
     var path = request.uri.path;
+
+    // Normalizar si la solicitud incluye el prefijo del repositorio /ColimaNight/
+    if (path.startsWith('/ColimaNight/')) {
+      path = path.substring('/ColimaNight'.length);
+    } else if (path == '/ColimaNight') {
+      path = '/';
+    }
+
     if (path.isEmpty || path == '/') {
       path = '/index.html';
     }
@@ -38,20 +45,34 @@ void main() async {
     final sanitizedPath = path.replaceAll('..', '');
     var file = File('${webDir.path}$sanitizedPath');
 
+    // SPA fallback: Solo reescribir a index.html si es una ruta de navegación (sin extensión de archivo)
+    final hasFileExtension = sanitizedPath.contains('.') && !sanitizedPath.endsWith('.html');
     if (!file.existsSync() || file.statSync().type == FileSystemEntityType.directory) {
-      file = File('${webDir.path}/index.html');
+      if (!hasFileExtension) {
+        file = File('${webDir.path}/index.html');
+      }
     }
 
-    if (file.existsSync()) {
+    if (file.existsSync() && file.statSync().type == FileSystemEntityType.file) {
       final ext = file.path.split('.').last.toLowerCase();
       final mime = _getMimeType(ext);
       request.response.headers.contentType = ContentType.parse(mime);
-      request.response.headers.add('Cache-Control', 'no-cache');
+      request.response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate');
       request.response.headers.add('Access-Control-Allow-Origin', '*');
-      await file.openRead().pipe(request.response);
+      request.response.headers.add('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+      request.response.headers.add('Cross-Origin-Opener-Policy', 'same-origin');
+      request.response.headers.add('Cross-Origin-Embedder-Policy', 'require-corp');
+
+      if (request.method == 'HEAD') {
+        request.response.headers.contentLength = file.lengthSync();
+        await request.response.close();
+      } else {
+        await file.openRead().pipe(request.response);
+      }
     } else {
       request.response.statusCode = HttpStatus.notFound;
-      request.response.write('404 Not Found');
+      request.response.headers.contentType = ContentType.text;
+      request.response.write('404 Not Found: $path');
       await request.response.close();
     }
   }
@@ -62,6 +83,7 @@ String _getMimeType(String ext) {
     case 'html':
       return 'text/html; charset=utf-8';
     case 'js':
+    case 'mjs':
       return 'application/javascript; charset=utf-8';
     case 'json':
       return 'application/json; charset=utf-8';
