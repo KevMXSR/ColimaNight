@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
 import 'package:colima_night/features/map/domain/models/venue_location.dart';
+import 'package:colima_night/core/constants/colima_geo_constants.dart';
 
 void main() {
   group('Venue Data & Deduplication Tests', () {
@@ -132,6 +133,13 @@ void main() {
       expect(venues.any((v) => v.name.toLowerCase().contains('barezzito')), isFalse);
       expect(VenueLocation.verifiedColimaVenues.length, equals(27));
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
+    });
+    test('Barezzito Easter Egg is correctly positioned on map at Av. Constitucion 1450', () {
+      const barezzito = VenueLocation.barezzitoEasterEgg;
+      expect(barezzito.coordinates.latitude, equals(19.257904781349012));
+      expect(barezzito.coordinates.longitude, equals(-103.7152190343091));
+      expect(barezzito.address, contains('Constitución 1450'));
+      expect(barezzito.currentStatus, equals(VenueStatus.memorial));
     });
 
     test('Foro DMT and Paraíso Drinks Colima metadata, Instagram, and events are verified', () {

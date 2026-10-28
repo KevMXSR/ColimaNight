@@ -88,6 +88,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
   final MapController _mapController = MapController();
   double _currentZoom = 15.2;
   AppMapStyle _selectedMapStyle = AppMapStyle.cyberNeon;
+  int _barezzitoEasterEggStep = 0;
 
   @override
   void initState() {
@@ -123,6 +124,115 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
           venueId: currentVenue.id,
         );
       },
+    );
+  }
+
+  Widget _buildBarezzitoEasterEggPin() {
+    String label;
+    switch (_barezzitoEasterEggStep) {
+      case 1:
+        label = '💀 Barezzito';
+        break;
+      case 2:
+        label = '🪦 RIP';
+        break;
+      case 3:
+        label = '🕯️ In Memoriam';
+        break;
+      case 4:
+        label = 'Av. Constitución 1450';
+        break;
+      default:
+        label = '';
+    }
+
+    if (_barezzitoEasterEggStep > 0) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+            decoration: BoxDecoration(
+              color: const Color(0xFF14141F).withOpacity(0.95),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white30, width: 0.9),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.7),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1C1C28).withOpacity(0.95),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white54, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: const Center(
+              child: Text(
+                '💀',
+                style: TextStyle(fontSize: 10),
+              ),
+            ),
+          ),
+          const CustomPaint(
+            size: Size(6, 5),
+            painter: _PinTipPainter(color: Colors.white54),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: const Color(0xFF14141F).withOpacity(0.85),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white24, width: 1.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Text(
+              '💀',
+              style: TextStyle(fontSize: 10),
+            ),
+          ),
+        ),
+        const CustomPaint(
+          size: Size(6, 5),
+          painter: _PinTipPainter(color: Colors.white24),
+        ),
+      ],
     );
   }
 
@@ -207,6 +317,21 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
                         ),
                       );
                     }),
+                    // Easter Egg Histórico de Barezzito en el Mapa (Av. Constitución 1450)
+                    Marker(
+                      point: const ll.LatLng(19.257904781349012, -103.7152190343091),
+                      width: _barezzitoEasterEggStep > 0 ? 150.0 : 24.0,
+                      height: _barezzitoEasterEggStep > 0 ? 54.0 : 28.0,
+                      alignment: Alignment.bottomCenter,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _barezzitoEasterEggStep = (_barezzitoEasterEggStep + 1) % 5;
+                          });
+                        },
+                        child: _buildBarezzitoEasterEggPin(),
+                      ),
+                    ),
                   ],
                 ),
               ],

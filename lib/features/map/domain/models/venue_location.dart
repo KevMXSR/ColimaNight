@@ -504,7 +504,7 @@ class VenueLocation {
     name: 'Barezzito (RIP Memorial)',
     category: VenueCategory.memorialHistoric,
     corridorId: CorridorId.constitucionSanFernando,
-    address: 'Av. Constitución, Vista Hermosa, Colima, Col.',
+    address: 'Av. Constitución 1450, Jardines Vista Hermosa III, Colima, Col.',
     coordinates: GeoPoint(19.257904781349012, -103.7152190343091),
     currentStatus: VenueStatus.memorial,
     currentOccupancyPercentage: 0,
