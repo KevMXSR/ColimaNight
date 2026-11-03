@@ -1,21 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../venues/presentation/views/discovery_feed_view.dart';
+import '../providers/manifesto_provider.dart';
+import 'cinematic_manifesto_view.dart';
 
 /// Pantalla de Carga (Splash Screen) cinemática para ColimaNight
 /// Reproduce a pantalla completa el video oficial de arranque (atractivo visual obligatorio),
-/// asegurando reproducción automática sin bloqueos y transición fluida al feed.
-class SplashLoadingView extends StatefulWidget {
+/// asegurando reproducción automática sin bloqueos y transición fluida al manifiesto o feed.
+class SplashLoadingView extends ConsumerStatefulWidget {
   const SplashLoadingView({super.key});
 
   @override
-  State<SplashLoadingView> createState() => _SplashLoadingViewState();
+  ConsumerState<SplashLoadingView> createState() => _SplashLoadingViewState();
 }
 
-class _SplashLoadingViewState extends State<SplashLoadingView>
+class _SplashLoadingViewState extends ConsumerState<SplashLoadingView>
     with SingleTickerProviderStateMixin {
   VideoPlayerController? _videoController;
   bool _isVideoInitialized = false;
@@ -44,7 +47,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
     // Temporizador de respaldo: si por alguna razón el reproductor del sistema no responde
     // o se bloquea el autoplay en el navegador web, se asegura el avance fluido
     _safetyTimer = Timer(const Duration(milliseconds: 3500), () {
-      _navigateToFeed();
+      _navigateToNextScreen();
     });
   }
 
@@ -78,7 +81,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
         if (duration > Duration.zero) {
           _safetyTimer?.cancel();
           _safetyTimer = Timer(duration + const Duration(milliseconds: 400), () {
-            _navigateToFeed();
+            _navigateToNextScreen();
           });
         }
       }
@@ -91,7 +94,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
         // Si el video falla en inicializar (ej. políticas de autoplay en web),
         // avanzar con transición suave sin bloquear la experiencia del usuario
         _fallbackTimer = Timer(const Duration(milliseconds: 1200), () {
-          _navigateToFeed();
+          _navigateToNextScreen();
         });
       }
     }
@@ -112,24 +115,30 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
     final position = val.position;
     final duration = val.duration;
 
-    // Cuando el video llega a su fin, transicionar automáticamente al feed principal
+    // Cuando el video llega a su fin, transicionar automáticamente al manifiesto o feed
     if (duration > Duration.zero &&
         position >= duration - const Duration(milliseconds: 200)) {
-      _navigateToFeed();
+      _navigateToNextScreen();
     }
   }
 
-  void _navigateToFeed() {
+  void _navigateToNextScreen() {
     if (_hasNavigated || !mounted) return;
     _hasNavigated = true;
     _safetyTimer?.cancel();
     _fallbackTimer?.cancel();
 
+    final shouldShowManifesto =
+        ref.read(manifestoViewCountProvider.notifier).shouldAutoShow;
+
+    final Widget nextScreen = shouldShowManifesto
+        ? const CinematicManifestoView()
+        : const DiscoveryFeedView();
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 700),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const DiscoveryFeedView(),
+        pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: CurvedAnimation(
@@ -164,7 +173,7 @@ class _SplashLoadingViewState extends State<SplashLoadingView>
       backgroundColor: const Color(0xFF06070B),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: _navigateToFeed,
+        onTap: _navigateToNextScreen,
         child: Stack(
           fit: StackFit.expand,
           children: [

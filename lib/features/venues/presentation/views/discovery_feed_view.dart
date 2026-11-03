@@ -16,6 +16,7 @@ import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../auth/presentation/widgets/auth_modal.dart';
 import '../../../monetization/presentation/widgets/patreon_support_modal.dart';
 import '../../../monetization/presentation/widgets/cyber_admob_card.dart';
+import '../../../splash/presentation/views/cinematic_manifesto_view.dart';
 
 class DiscoveryFeedView extends ConsumerWidget {
   const DiscoveryFeedView({super.key});
@@ -113,9 +114,52 @@ class DiscoveryFeedView extends ConsumerWidget {
                       ],
                     ),
 
-                    // Acciones Rápidas del Header (Apoyo Patreon, Perfil/Auth, Mapa)
+                    // Acciones Rápidas del Header (Manifiesto, Apoyo Patreon, Perfil/Auth, Mapa)
                     Row(
                       children: [
+                        // Botón Manifiesto Cinematográfico (Historia & Dedicatoria del Creador)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(milliseconds: 500),
+                                pageBuilder: (context, animation, secondaryAnimation) =>
+                                    const CinematicManifestoView(isManualReplay: true),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeInOut,
+                                    ),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.neonViolet.withOpacity(0.18),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.neonViolet.withOpacity(0.55)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.neonViolet.withOpacity(0.25),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.auto_stories_rounded, color: AppColors.neonCyan, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+
                         // Botón Apoyo Comunitario / Patreon
                         GestureDetector(
                           onTap: () => PatreonSupportModal.show(context),
