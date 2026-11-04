@@ -39,6 +39,41 @@ void main() {
       expect(laPuerta.coverImageUrl, 'assets/images/venues/la_puerta_bar.jpg');
     });
 
+    test('All venues have verified local ambient photos and zero Unsplash / external URLs in gallery', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      for (final v in venues) {
+        // Ninguna foto de portada ni de galería debe ser de Unsplash o remota
+        expect(v.coverImageUrl.startsWith('assets/images/venues/'), isTrue,
+            reason: '${v.name} coverImageUrl debe ser local en assets/images/venues/');
+        expect(v.coverImageUrl.contains('unsplash'), isFalse,
+            reason: '${v.name} no debe contener imágenes de Unsplash');
+
+        for (final g in v.galleryUrls) {
+          expect(g.startsWith('assets/images/venues/'), isTrue,
+              reason: '${v.name} gallery item ($g) debe ser local');
+          expect(g.contains('unsplash'), isFalse,
+              reason: '${v.name} galería no debe contener imágenes de Unsplash');
+        }
+
+        // ambientPhotos debe contener al menos 1 foto oficial local
+        expect(v.ambientPhotos, isNotEmpty);
+        expect(v.ambientPhotos.every((p) => p.startsWith('assets/images/venues/')), isTrue);
+      }
+
+      // Verificación específica de los foros con eventos
+      final guachi = venues.firstWhere((v) => v.id == 'el_guachi');
+      expect(guachi.ambientPhotos, contains('assets/images/venues/el_guachi.jpg'));
+      expect(guachi.galleryUrls.any((p) => p.contains('unsplash')), isFalse);
+
+      final foroDmt = venues.firstWhere((v) => v.id == 'foro_dmt');
+      expect(foroDmt.ambientPhotos, contains('assets/images/venues/foro_dmt.jpg'));
+      expect(foroDmt.ambientPhotos, contains('assets/images/venues/foro_dmt_2.jpg'));
+    });
+
     test('Verified addresses match reference folder names', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);

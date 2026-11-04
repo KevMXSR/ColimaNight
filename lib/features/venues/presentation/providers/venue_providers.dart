@@ -30,8 +30,7 @@ final List<VenueModel> _initialVenues = [
         'Club nocturno sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería.',
     coverImageUrl: 'assets/images/venues/el_guachi.jpg',
     galleryUrls: [
-      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80',
+      'assets/images/venues/el_guachi.jpg',
     ],
     rating: 4.9,
     reviewsCount: 412,
@@ -536,7 +535,9 @@ final List<VenueModel> _initialVenues = [
     description:
         'Cervecería de autor con jardín, pizzas artesanales y DJ sets al aire libre.',
     coverImageUrl: 'assets/images/venues/dos_puntos.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/dos_puntos.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 390,
     capacityPercent: 0,
@@ -654,7 +655,9 @@ final List<VenueModel> _initialVenues = [
     description:
         'Club vanguardista sobre Hidalgo con música electrónica, coctelería y gran iluminación.',
     coverImageUrl: 'assets/images/venues/low_social_club.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/low_social_club.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 390,
     capacityPercent: 0,
@@ -949,6 +952,7 @@ final List<VenueModel> _initialVenues = [
         'Espacio cultural y alternativo en el Centro de Colima con rock en vivo, teatro y arte independiente.',
     coverImageUrl: 'assets/images/venues/foro_dmt.jpg',
     galleryUrls: [
+      'assets/images/venues/foro_dmt.jpg',
       'assets/images/venues/foro_dmt_2.jpg',
     ],
     rating: 4.8,

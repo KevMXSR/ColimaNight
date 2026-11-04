@@ -501,25 +501,41 @@ class VenueDetailBottomSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
 
-              // Galería Visual / Vibe del Lugar
-              if (venue.galleryUrls.isNotEmpty) ...[
-                Text(
-                  'FOTOS DEL AMBIENTE',
-                  style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+              // Galería Visual / Vibe del Lugar (Archivos oficiales locales)
+              if (venue.ambientPhotos.isNotEmpty) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'FOTOS DEL AMBIENTE',
+                      style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+                    ),
+                    Text(
+                      'Archivos oficiales verificados',
+                      style: AppTypography.caption.copyWith(color: AppColors.textMuted, fontSize: 11),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  height: 100,
+                  height: 110,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    itemCount: venue.galleryUrls.length,
+                    itemCount: venue.ambientPhotos.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 10),
                     itemBuilder: (context, index) {
-                      return AppVenueImage(
-                        imageUrl: venue.galleryUrls[index],
-                        width: 140,
-                        fit: BoxFit.cover,
-                        borderRadius: BorderRadius.circular(14),
+                      final photoUrl = venue.ambientPhotos[index];
+                      return GestureDetector(
+                        onTap: () => _openImageLightbox(context, photoUrl, venue.name),
+                        child: Hero(
+                          tag: 'ambient_photo_${venue.id}_$index',
+                          child: AppVenueImage(
+                            imageUrl: photoUrl,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -609,6 +625,54 @@ class VenueDetailBottomSheet extends ConsumerWidget {
               const SizedBox(height: 32),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _openImageLightbox(BuildContext context, String imageUrl, String venueName) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                color: Colors.black87,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InteractiveViewer(
+                      maxScale: 3.5,
+                      child: AppVenueImage(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      color: AppColors.surfaceElevated,
+                      child: Text(
+                        'Foto oficial del ambiente • $venueName',
+                        textAlign: TextAlign.center,
+                        style: AppTypography.caption.copyWith(color: Colors.white70),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            IconButton(
+              padding: const EdgeInsets.all(12),
+              icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
         ),
       ),
     );

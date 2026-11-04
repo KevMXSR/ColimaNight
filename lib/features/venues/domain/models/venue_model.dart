@@ -132,6 +132,13 @@ class VenueModel {
     return 0;
   }
 
+  /// Lista oficial de fotografías de ambiente del establecimiento,
+  /// garantizando que siempre provengan de los archivos oficiales locales.
+  List<String> get ambientPhotos {
+    if (galleryUrls.isNotEmpty) return galleryUrls;
+    return [coverImageUrl];
+  }
+
   /// Indica si el establecimiento admite reservación previa de mesa.
   /// Cervecería de la Costa y Estación Colimita operan exclusivamente por orden de llegada (sin reservaciones).
   bool get hasTableReservation {
