@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import '../../domain/models/venue_location.dart';
+import '../../../../core/constants/colima_geo_constants.dart';
 
 /// Generador de marcadores BitmapDescriptor personalizados usando el Canvas de Flutter
 /// para Renderizado de alta definición (Retina/OLED) con resplandor neón dinámico.

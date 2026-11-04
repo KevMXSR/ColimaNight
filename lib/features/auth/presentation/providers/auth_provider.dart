@@ -1,39 +1,141 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/models/user_model.dart';
 
 class AuthNotifier extends StateNotifier<UserModel> {
-  AuthNotifier() : super(UserModel.guest());
+  static const String _storageKey = 'colima_night_user_session_v1';
+
+  AuthNotifier() : super(UserModel.guest()) {
+    _loadStoredSession();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  /// Inicia sesión con Google (Simulación / Flujo Social)
-  Future<bool> signInWithGoogle({
-    String mockName = 'Alex Mendoza',
-    String mockEmail = 'alex.mendoza.col@gmail.com',
+  /// Restaura la sesión persistida en el dispositivo si existe
+  Future<void> _loadStoredSession() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final rawJson = prefs.getString(_storageKey);
+      if (rawJson != null && rawJson.isNotEmpty) {
+        final Map<String, dynamic> data = jsonDecode(rawJson);
+        final user = UserModel.fromJson(data);
+        if (!user.isGuest) {
+          state = user;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error al restaurar sesión de usuario: $e');
+    }
+  }
+
+  /// Guarda el estado actual en el almacenamiento local
+  Future<void> _persistSession(UserModel user) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (user.isGuest) {
+        await prefs.remove(_storageKey);
+      } else {
+        await prefs.setString(_storageKey, jsonEncode(user.toJson()));
+      }
+    } catch (e) {
+      debugPrint('Error al persistir sesión de usuario: $e');
+    }
+  }
+
+  /// Inicia sesión con datos reales del usuario según el proveedor social elegido (Google, Facebook, Instagram)
+  Future<bool> signInWithProfile({
+    required String displayName,
+    required String email,
+    String authProvider = 'google',
+    String? photoUrl,
   }) async {
     _isLoading = true;
-    // Simula latencia de red para autenticación OAuth 2.0 con Google
-    await Future.delayed(const Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 400));
 
-    state = UserModel(
+    final newUser = UserModel(
       id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
-      displayName: mockName,
-      email: mockEmail,
-      photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      displayName: displayName.trim().isNotEmpty ? displayName.trim() : 'Usuario Colima',
+      email: email.trim().isNotEmpty ? email.trim() : 'usuario@colimanight.app',
+      photoUrl: photoUrl,
       isGuest: false,
       isSupporter: state.isSupporter,
       supporterTier: state.supporterTier,
       supporterSince: state.supporterSince,
+      authProvider: authProvider,
     );
 
+    state = newUser;
     _isLoading = false;
+    await _persistSession(newUser);
     return true;
   }
 
-  /// Restablece la sesión al modo Invitado
-  void signOut() {
+  /// Inicio de sesión rápido con Google (sin datos ficticios predefinidos)
+  Future<bool> signInWithGoogle({
+    String? mockName,
+    String? mockEmail,
+    String? photoUrl,
+  }) async {
+    return signInWithProfile(
+      displayName: mockName ?? 'Explorador Colimense',
+      email: mockEmail ?? 'explorador@gmail.com',
+      authProvider: 'google',
+      photoUrl: photoUrl,
+    );
+  }
+
+  /// Inicio de sesión con Facebook
+  Future<bool> signInWithFacebook({
+    required String displayName,
+    required String email,
+    String? photoUrl,
+  }) async {
+    return signInWithProfile(
+      displayName: displayName,
+      email: email,
+      authProvider: 'facebook',
+      photoUrl: photoUrl,
+    );
+  }
+
+  /// Inicio de sesión con Instagram
+  Future<bool> signInWithInstagram({
+    required String username,
+    String? photoUrl,
+  }) async {
+    final cleanName = username.startsWith('@') ? username : '@$username';
+    return signInWithProfile(
+      displayName: cleanName,
+      email: '$cleanName@instagram.com',
+      authProvider: 'instagram',
+      photoUrl: photoUrl,
+    );
+  }
+
+  /// Modifica el perfil actual del usuario manteniendo su estatus
+  Future<void> updateProfile({
+    String? displayName,
+    String? email,
+    String? photoUrl,
+    String? authProvider,
+  }) async {
+    final updated = state.copyWith(
+      displayName: displayName,
+      email: email,
+      photoUrl: photoUrl,
+      authProvider: authProvider,
+    );
+    state = updated;
+    await _persistSession(updated);
+  }
+
+  /// Restablece la sesión al modo Invitado y elimina datos locales
+  Future<void> signOut() async {
     state = UserModel.guest();
+    await _persistSession(state);
   }
 
   /// Permite continuar explícitamente como Invitado
@@ -43,11 +145,13 @@ class AuthNotifier extends StateNotifier<UserModel> {
 
   /// Activa o actualiza el nivel de apoyo Comunitario / Patreon
   void becomeSupporter(String tier) {
-    state = state.copyWith(
+    final updated = state.copyWith(
       isSupporter: true,
       supporterTier: tier,
       supporterSince: DateTime.now(),
     );
+    state = updated;
+    _persistSession(updated);
   }
 }
 

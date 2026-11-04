@@ -325,17 +325,37 @@ void main() {
       }
     });
 
-    test('Weekly events provider aggregates verified events with correct isToday evaluation', () {
+    test('Weekly events provider aggregates verified events with correct isToday evaluation and active dates in November', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final weeklyEvents = container.read(weeklyEventsProvider);
       expect(weeklyEvents, isNotEmpty);
+      expect(weeklyEvents.length, greaterThanOrEqualTo(4));
 
-      // Los eventos de fin de semana (viernes/sábado) no deben marcar isToday en martes
+      // Verificar que todos los eventos tienen fecha válida en noviembre o posterior (no en octubre)
       for (final item in weeklyEvents) {
-        expect(item.event.isToday, isFalse,
-            reason: '${item.event.title} no debe tener badge HOY fuera de su fecha');
+        expect(item.event.eventDate, isNotNull);
+        expect(item.event.dateDisplay.contains('Oct'), isFalse,
+            reason: '${item.event.title} no debe tener fechas del mes pasado (Octubre)');
+        expect(item.event.dateDisplay.contains('Nov'), isTrue,
+            reason: '${item.event.title} debe estar programado para Noviembre');
+
+        // Los eventos de fin de semana no deben marcar isToday en un día diferente
+        final now = DateTime.now();
+        final isActuallyToday = item.event.eventDate!.year == now.year &&
+            item.event.eventDate!.month == now.month &&
+            item.event.eventDate!.day == now.day;
+        expect(item.event.isToday, isActuallyToday,
+            reason: '${item.event.title} isToday debe coincidir estrictamente con el día en curso');
+      }
+
+      // Verificar orden cronológico
+      for (int i = 0; i < weeklyEvents.length - 1; i++) {
+        final a = weeklyEvents[i].event.eventDate!;
+        final b = weeklyEvents[i + 1].event.eventDate!;
+        expect(a.isBefore(b) || a.isAtSameMomentAs(b), isTrue,
+            reason: 'Los eventos deben estar ordenados cronológicamente');
       }
     });
 

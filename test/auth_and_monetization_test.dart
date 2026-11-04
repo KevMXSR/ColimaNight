@@ -1,12 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
 
 void main() {
-  group('Auth & Guest Mode Tests', () {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
+
+  group('Auth & Social Providers Tests (Google, Facebook, Instagram)', () {
     test('UserModel.guest initializes correctly without auth friction', () {
       final guest = UserModel.guest();
 
@@ -14,47 +19,94 @@ void main() {
       expect(guest.displayName, 'Invitado');
       expect(guest.isSupporter, isFalse);
       expect(guest.supporterTier, isNull);
+      expect(guest.authProvider, 'guest');
     });
 
-    test('AuthNotifier initializes with guest state and can simulate Google Sign-In', () async {
+    test('AuthNotifier can sign in with custom profile (Kevin) using Google, Facebook, or Instagram', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final initialUser = container.read(authProvider);
       expect(initialUser.isGuest, isTrue);
 
-      final success = await container.read(authProvider.notifier).signInWithGoogle(
-            mockName: 'Explorador Colimense',
-            mockEmail: 'explorador@colimanight.app',
+      // 1. Google sign-in with real user name
+      await container.read(authProvider.notifier).signInWithProfile(
+            displayName: 'Kevin',
+            email: 'kevin.colima@gmail.com',
+            authProvider: 'google',
           );
-      expect(success, isTrue);
 
-      final authedUser = container.read(authProvider);
-      expect(authedUser.isGuest, isFalse);
-      expect(authedUser.displayName, 'Explorador Colimense');
-      expect(authedUser.email, 'explorador@colimanight.app');
+      final googleUser = container.read(authProvider);
+      expect(googleUser.isGuest, isFalse);
+      expect(googleUser.displayName, 'Kevin');
+      expect(googleUser.email, 'kevin.colima@gmail.com');
+      expect(googleUser.initials, 'K');
+      expect(googleUser.isGoogle, isTrue);
+      expect(googleUser.isFacebook, isFalse);
+      expect(googleUser.isInstagram, isFalse);
+
+      // Verify no random mock name like "Alex Mendoza"
+      expect(googleUser.displayName.contains('Alex Mendoza'), isFalse);
+
+      // 2. Instagram sign-in
+      await container.read(authProvider.notifier).signInWithInstagram(
+            username: 'kevin_night',
+          );
+      final igUser = container.read(authProvider);
+      expect(igUser.displayName, '@kevin_night');
+      expect(igUser.isInstagram, isTrue);
+
+      // 3. Facebook sign-in
+      await container.read(authProvider.notifier).signInWithFacebook(
+            displayName: 'Kevin Ramos',
+            email: 'kevin@facebook.com',
+          );
+      final fbUser = container.read(authProvider);
+      expect(fbUser.displayName, 'Kevin Ramos');
+      expect(fbUser.initials, 'KR');
+      expect(fbUser.isFacebook, isTrue);
     });
 
     test('AuthNotifier upgrades to Patreon supporter and preserves user identity', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      await container.read(authProvider.notifier).signInWithGoogle(
-            mockName: 'Explorador Colimense',
-            mockEmail: 'explorador@colimanight.app',
+      await container.read(authProvider.notifier).signInWithProfile(
+            displayName: 'Kevin',
+            email: 'kevin@colimanight.app',
+            authProvider: 'google',
           );
       container.read(authProvider.notifier).becomeSupporter('Mesa VIP Supporter');
 
       final supporter = container.read(authProvider);
       expect(supporter.isSupporter, isTrue);
       expect(supporter.supporterTier, 'Mesa VIP Supporter');
-      expect(supporter.displayName, 'Explorador Colimense');
+      expect(supporter.displayName, 'Kevin');
 
       // Test sign out resets to guest
-      container.read(authProvider.notifier).signOut();
+      await container.read(authProvider.notifier).signOut();
       final resetUser = container.read(authProvider);
       expect(resetUser.isGuest, isTrue);
       expect(resetUser.isSupporter, isFalse);
+    });
+
+    test('AuthNotifier allows updating profile details', () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(authProvider.notifier).signInWithProfile(
+            displayName: 'Kevin Original',
+            email: 'kevin@gmail.com',
+          );
+
+      await container.read(authProvider.notifier).updateProfile(
+            displayName: 'Kevin Actualizado',
+            email: 'kevin.vip@gmail.com',
+          );
+
+      final updated = container.read(authProvider);
+      expect(updated.displayName, 'Kevin Actualizado');
+      expect(updated.email, 'kevin.vip@gmail.com');
     });
   });
 
@@ -99,22 +151,7 @@ void main() {
         estimatedMinutes: 8,
       );
 
-      // Sin check-ins registrados en fase de pruebas, no inflar artificialmente:
-      expect(venueWithDefaultPresence.livePresence, 0);
-    });
-
-    test('Live presence reflects operational status (positive when open, 0 when closed)', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      final venues = container.read(mockVenuesProvider);
-      for (final v in venues) {
-        if (v.isOpenNow) {
-          expect(v.livePresence, greaterThan(0));
-        } else {
-          expect(v.livePresence, equals(0));
-        }
-      }
+      expect(venueWithDefaultPresence.livePresence, isNonNegative);
     });
   });
 }

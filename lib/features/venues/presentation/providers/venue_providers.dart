@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/venue_model.dart';
+import '../../domain/utils/event_date_helper.dart';
 
 enum VenueFilterChip {
   all('Todos'),
@@ -20,7 +21,7 @@ enum VenueFilterChip {
 // covers verificados y estacionamientos validados según especificación oficial.
 final List<VenueModel> _initialVenues = [
   // --- EL GUACHI ---
-  const VenueModel(
+  VenueModel(
     id: 'el_guachi',
     name: 'El Guachi',
     category: 'Club & Antro',
@@ -62,22 +63,20 @@ final List<VenueModel> _initialVenues = [
       VenueEvent(
         id: 'guachi_friday_reggaeton',
         title: 'Viernes de Reggaetón & Tech-House',
-        dateDisplay: 'Viernes 30 Oct • 10:30 PM',
-        eventDate: null,
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 22, minute: 30)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 22, minute: 30),
         artistOrDj: 'DJ Residente & Sets Urbanos',
         coverPrice: 'Aprox. \$100 MXN',
         promoNote: 'Promociones en copeo antes de medianoche',
-        forcedIsToday: false,
       ),
       VenueEvent(
         id: 'guachi_saturday_party',
         title: 'Sábado Night Club & Fiesta Total',
-        dateDisplay: 'Sábado 31 Oct • 10:00 PM',
-        eventDate: null,
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 22, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 22, minute: 0),
         artistOrDj: 'DJ Invitado de Guadalajara',
         coverPrice: 'Aprox. \$100 MXN',
         promoNote: 'Mesas VIP y servicio de botellas',
-        forcedIsToday: false,
       ),
     ],
   ),
@@ -529,7 +528,7 @@ final List<VenueModel> _initialVenues = [
   ),
 
   // --- DOS PUNTOS CERVECERÍA ---
-  const VenueModel(
+  VenueModel(
     id: 'dos_puntos',
     name: 'Dos Puntos Cervecería',
     category: 'Taproom & Bar',
@@ -567,12 +566,11 @@ final List<VenueModel> _initialVenues = [
       VenueEvent(
         id: 'dospuntos_saturday_night',
         title: 'Noche Dos Puntos & Cerveza Artesanal',
-        dateDisplay: 'Sábado 31 Oct • 9:00 PM',
-        eventDate: null,
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 0),
         artistOrDj: 'DJ Residente en Terraza',
         coverPrice: 'Hasta \$180 MXN',
         promoNote: 'Cervezas artesanales de barril y cocina urbana',
-        forcedIsToday: false,
       ),
     ],
   ),
@@ -648,7 +646,7 @@ final List<VenueModel> _initialVenues = [
   ),
 
   // --- LOW SOCIAL CLUB ---
-  const VenueModel(
+  VenueModel(
     id: 'low_social_club',
     name: 'Low Social Club',
     category: 'Club & Loungewear',
@@ -686,12 +684,11 @@ final List<VenueModel> _initialVenues = [
       VenueEvent(
         id: 'low_club_friday',
         title: 'Low Sessions: Electronic & Urban Club',
-        dateDisplay: 'Viernes 30 Oct • 11:00 PM',
-        eventDate: null,
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 23, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 23, minute: 0),
         artistOrDj: 'DJ Residente & Visuales Inmersivos',
         coverPrice: 'Aprox. \$100 MXN',
         promoNote: 'Acceso club y coctelería de autor',
-        forcedIsToday: false,
       ),
     ],
   ),
@@ -943,7 +940,7 @@ final List<VenueModel> _initialVenues = [
   ),
 
   // --- FORO DMT ---
-  const VenueModel(
+  VenueModel(
     id: 'foro_dmt',
     name: 'Foro DMT',
     category: 'Foro Cultural & Rock Bar',
@@ -983,12 +980,11 @@ final List<VenueModel> _initialVenues = [
       VenueEvent(
         id: 'foro_dmt_rock_friday',
         title: 'Concierto en Vivo: Noche de Rock & Tributo',
-        dateDisplay: 'Viernes 30 Oct • 9:30 PM',
-        eventDate: null,
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 30)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 30),
         artistOrDj: 'Bandas Locales Invitadas',
         coverPrice: 'Cover según evento en vivo',
         promoNote: 'Cerveza artesanal y comida de autor',
-        forcedIsToday: false,
       ),
     ],
   ),
@@ -1189,14 +1185,27 @@ class ConsolidatedEventItem {
 final weeklyEventsProvider = Provider<List<ConsolidatedEventItem>>((ref) {
   final venues = ref.watch(mockVenuesProvider);
   final List<ConsolidatedEventItem> items = [];
+  final now = DateTime.now();
+  final startOfToday = DateTime(now.year, now.month, now.day);
+
   for (final venue in venues) {
     for (final event in venue.upcomingEvents) {
+      // Excluir eventos cuya fecha ya haya pasado en días anteriores
+      if (event.eventDate != null && event.eventDate!.isBefore(startOfToday)) {
+        continue;
+      }
       items.add(ConsolidatedEventItem(event: event, venue: venue));
     }
   }
+
+  // Orden cronológico: eventos de hoy primero, luego fecha ascendente, luego título
   items.sort((a, b) {
     if (a.event.isToday && !b.event.isToday) return -1;
     if (!a.event.isToday && b.event.isToday) return 1;
+    if (a.event.eventDate != null && b.event.eventDate != null) {
+      final dateComparison = a.event.eventDate!.compareTo(b.event.eventDate!);
+      if (dateComparison != 0) return dateComparison;
+    }
     return a.event.title.compareTo(b.event.title);
   });
   return items;
