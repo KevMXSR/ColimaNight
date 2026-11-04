@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../providers/auth_provider.dart';
+import 'native_social_account_chooser_sheet.dart';
 
-enum SocialProviderType { google, instagram, facebook }
+export 'native_social_account_chooser_sheet.dart' show SocialProviderType;
 
 class AccountSelectorSheet extends ConsumerStatefulWidget {
   final SocialProviderType initialProvider;
@@ -18,12 +19,8 @@ class AccountSelectorSheet extends ConsumerStatefulWidget {
     BuildContext context, {
     SocialProviderType initialProvider = SocialProviderType.google,
   }) {
-    return showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AccountSelectorSheet(initialProvider: initialProvider),
-    );
+    // Redirige automáticamente al selector One-Tap sin fricción
+    return NativeSocialAccountChooserSheet.show(context, initialProvider: initialProvider);
   }
 
   @override

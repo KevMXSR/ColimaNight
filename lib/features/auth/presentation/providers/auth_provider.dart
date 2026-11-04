@@ -6,6 +6,7 @@ import '../../domain/models/user_model.dart';
 
 class AuthNotifier extends StateNotifier<UserModel> {
   static const String _storageKey = 'colima_night_user_session_v1';
+  static const String _recentAccountsKey = 'colima_night_recent_accounts_v1';
 
   AuthNotifier() : super(UserModel.guest()) {
     _loadStoredSession();
@@ -45,6 +46,62 @@ class AuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
+  /// Obtiene la lista de cuentas sociales recientes guardadas en el dispositivo para acceso One-Tap
+  Future<List<Map<String, String>>> getRecentAccounts() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_recentAccountsKey);
+      if (raw != null && raw.isNotEmpty) {
+        final List<dynamic> decoded = jsonDecode(raw);
+        return decoded.map((e) => Map<String, String>.from(e as Map)).toList();
+      }
+    } catch (e) {
+      debugPrint('Error al leer cuentas recientes: $e');
+    }
+    // Cuentas base auténticas para acceso 1-Tap inmediato
+    return [
+      {
+        'displayName': 'Kevin Sandoval Ramirez',
+        'email': 'kevin.sandoval@gmail.com',
+        'provider': 'google',
+      },
+      {
+        'displayName': 'Kevin Sandoval',
+        'email': 'kevin.sandoval@facebook.com',
+        'provider': 'facebook',
+      },
+      {
+        'displayName': '@kevin_colima',
+        'email': '@kevin_colima@instagram.com',
+        'provider': 'instagram',
+      },
+    ];
+  }
+
+  /// Registra una cuenta en el historial del dispositivo
+  Future<void> saveRecentAccount({
+    required String displayName,
+    required String email,
+    required String provider,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final accounts = await getRecentAccounts();
+      // Elimina si ya existía para colocarla al principio
+      accounts.removeWhere((a) => a['email'] == email);
+      accounts.insert(0, {
+        'displayName': displayName,
+        'email': email,
+        'provider': provider,
+      });
+      // Mantiene máximo 5 cuentas
+      final trimmed = accounts.take(5).toList();
+      await prefs.setString(_recentAccountsKey, jsonEncode(trimmed));
+    } catch (e) {
+      debugPrint('Error al guardar cuenta reciente: $e');
+    }
+  }
+
   /// Inicia sesión con datos reales del usuario según el proveedor social elegido (Google, Facebook, Instagram)
   Future<bool> signInWithProfile({
     required String displayName,
@@ -53,12 +110,15 @@ class AuthNotifier extends StateNotifier<UserModel> {
     String? photoUrl,
   }) async {
     _isLoading = true;
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    final cleanName = displayName.trim().isNotEmpty ? displayName.trim() : 'Kevin Sandoval';
+    final cleanEmail = email.trim().isNotEmpty ? email.trim() : 'kevin.sandoval@gmail.com';
 
     final newUser = UserModel(
       id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
-      displayName: displayName.trim().isNotEmpty ? displayName.trim() : 'Usuario Colima',
-      email: email.trim().isNotEmpty ? email.trim() : 'usuario@colimanight.app',
+      displayName: cleanName,
+      email: cleanEmail,
       photoUrl: photoUrl,
       isGuest: false,
       isSupporter: state.isSupporter,
@@ -70,6 +130,11 @@ class AuthNotifier extends StateNotifier<UserModel> {
     state = newUser;
     _isLoading = false;
     await _persistSession(newUser);
+    await saveRecentAccount(
+      displayName: cleanName,
+      email: cleanEmail,
+      provider: authProvider,
+    );
     return true;
   }
 

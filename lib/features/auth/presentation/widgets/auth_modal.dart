@@ -5,6 +5,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../providers/auth_provider.dart';
 import 'account_selector_sheet.dart';
+import 'native_social_account_chooser_sheet.dart';
 
 class AuthModal extends ConsumerStatefulWidget {
   final VoidCallback? onOpenSupporterModal;
@@ -30,7 +31,7 @@ class AuthModal extends ConsumerStatefulWidget {
 class _AuthModalState extends ConsumerState<AuthModal> {
   Future<void> _openAccountSelector(SocialProviderType provider) async {
     Navigator.of(context).pop();
-    await AccountSelectorSheet.show(context, initialProvider: provider);
+    await NativeSocialAccountChooserSheet.show(context, initialProvider: provider);
   }
 
   Color _getProviderColor(String provider) {

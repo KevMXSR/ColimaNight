@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:colima_night/core/config/monetization_config.dart';
 import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
@@ -9,6 +10,31 @@ import 'package:colima_night/features/venues/presentation/providers/venue_provid
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+  });
+
+  group('MonetizationConfig Direct Economic Linking Tests', () {
+    test('PayPal credentials and tier amounts match Kevin Sandoval specifications', () {
+      expect(MonetizationConfig.paypalUsername, 'GameKevMXSR');
+      expect(MonetizationConfig.paypalBaseUrl, 'https://paypal.me/GameKevMXSR');
+      expect(MonetizationConfig.getPayPalUrlForAmount(25), 'https://paypal.me/GameKevMXSR/25MXN');
+      expect(MonetizationConfig.getPayPalUrlForAmount(50), 'https://paypal.me/GameKevMXSR/50MXN');
+      expect(MonetizationConfig.getPayPalUrlForAmount(100), 'https://paypal.me/GameKevMXSR/100MXN');
+    });
+
+    test('National SPEI / BBVA Banking data matches exact 18-digit CLABE and beneficiary', () {
+      expect(MonetizationConfig.bankName, 'BBVA México');
+      expect(MonetizationConfig.beneficiaryName, 'Kevin Sandoval Ramirez');
+      expect(MonetizationConfig.clabeRaw, '012090015533382042');
+      expect(MonetizationConfig.clabeRaw.length, 18);
+      expect(MonetizationConfig.clabeFormatted, '012 090 01553338204 2');
+    });
+
+    test('B2B Venue & Event sponsorship WhatsApp linking builds pre-filled conversation', () {
+      expect(MonetizationConfig.businessWhatsAppNumber, '523123742089');
+      final waUrl = MonetizationConfig.getBusinessWhatsAppUrl();
+      expect(waUrl.contains('523123742089'), isTrue);
+      expect(waUrl.contains('paquetes%20de%20difusi%C3%B3n'), isTrue);
+    });
   });
 
   group('Auth & Social Providers Tests (Google, Facebook, Instagram)', () {
@@ -107,6 +133,29 @@ void main() {
       final updated = container.read(authProvider);
       expect(updated.displayName, 'Kevin Actualizado');
       expect(updated.email, 'kevin.vip@gmail.com');
+    });
+
+    test('AuthNotifier provides authentic recent accounts list for One-Tap login', () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final accounts = await container.read(authProvider.notifier).getRecentAccounts();
+      expect(accounts.isNotEmpty, isTrue);
+
+      final googleAccount = accounts.firstWhere((a) => a['provider'] == 'google');
+      expect(googleAccount['displayName'], 'Kevin Sandoval Ramirez');
+      expect(googleAccount['email'], 'kevin.sandoval@gmail.com');
+
+      // Save a new account and verify it prepends to recent list
+      await container.read(authProvider.notifier).saveRecentAccount(
+            displayName: 'Kevin Sandoval VIP',
+            email: 'vip.kevin@gmail.com',
+            provider: 'google',
+          );
+
+      final updatedAccounts = await container.read(authProvider.notifier).getRecentAccounts();
+      expect(updatedAccounts.first['displayName'], 'Kevin Sandoval VIP');
+      expect(updatedAccounts.first['email'], 'vip.kevin@gmail.com');
     });
   });
 

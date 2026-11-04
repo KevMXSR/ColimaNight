@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/config/monetization_config.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
@@ -15,10 +16,18 @@ class CyberAdMobCard extends StatelessWidget {
 
   static final List<Map<String, String>> _mockAds = [
     {
+      'title': '¿Tienes un Antro o Evento? • Anúnciate Aquí',
+      'tagline': 'Destaca tu fiesta en la Cartelera de Colima Night y asegura asistencia con aforo verificado.',
+      'actionText': 'Ver Paquetes de Publicidad',
+      'url': MonetizationConfig.getBusinessWhatsAppUrl(),
+      'imageUrl': 'assets/images/venues/danzt/danzt_1.jpg',
+      'tag': 'PATROCINIO EXCLUSIVO',
+    },
+    {
       'title': 'Safe Ride Colima • Taxi Nocturno Seguro',
       'tagline': 'Tarifas fijas nocturnas, unidades con GPS y chofer designado.',
       'actionText': 'Pedir Chofer Seguro',
-      'url': 'https://wa.me/523121234567?text=Hola,%20solicito%20chofer%20seguro%20de%20noche',
+      'url': 'https://wa.me/${MonetizationConfig.businessWhatsAppNumber}?text=Hola,%20solicito%20chofer%20seguro%20de%20noche',
       'imageUrl': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1000&q=80',
       'tag': 'TRANSPORTE SEGURO',
     },
@@ -42,6 +51,7 @@ class CyberAdMobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ad = _mockAds[index % _mockAds.length];
+    final isAsset = ad['imageUrl']!.startsWith('assets/');
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -61,12 +71,18 @@ class CyberAdMobCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-                    child: CachedNetworkImage(
-                      imageUrl: ad['imageUrl']!,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Container(color: AppColors.surfaceElevated),
-                      errorWidget: (_, __, ___) => Container(color: AppColors.surface),
-                    ),
+                    child: isAsset
+                        ? Image.asset(
+                            ad['imageUrl']!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(color: AppColors.surface),
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: ad['imageUrl']!,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(color: AppColors.surfaceElevated),
+                            errorWidget: (_, __, ___) => Container(color: AppColors.surface),
+                          ),
                   ),
 
                   // Gradiente Cyber
