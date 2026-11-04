@@ -70,7 +70,28 @@ void main() {
       expect(find.text('Cerrar'), findsOneWidget);
     });
 
-    testWidgets('CinematicManifestoView advances through all 4 approved scenes',
+    testWidgets('CinematicManifestoView does not auto-advance and waits for click or tap',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: CinematicManifestoView(isManualReplay: true),
+          ),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.textContaining('CARTA DEL CREADOR'), findsOneWidget);
+
+      // Advance clock by 10 simulated seconds without touching
+      await tester.pump(const Duration(seconds: 10));
+
+      // It must STILL be on Scene 1 (no auto-advance)
+      expect(find.textContaining('CARTA DEL CREADOR'), findsOneWidget);
+      expect(find.textContaining('LA REALIDAD DE LA NOCHE'), findsNothing);
+    });
+
+    testWidgets('CinematicManifestoView advances manually through all 5 approved scenes',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         const ProviderScope(
@@ -114,11 +135,30 @@ void main() {
         findsOneWidget,
       );
 
-      // Scene 3 -> Tap forward button to Scene 4
+      // Scene 3 -> Tap forward button to Scene 4 ("Asistencia a la App")
       await tester.tap(forwardIcon);
       await tester.pump(const Duration(milliseconds: 650));
 
       // Scene 4 text requested by user
+      expect(find.textContaining('ASISTENCIA A LA APP'), findsOneWidget);
+      expect(
+        find.textContaining('Colima Night cobra vida gracias a ti'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Mientras más comunidad se sume, mejor y más precisa será nuestra brújula'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Conéctate y ayúdanos a mostrar la información más precisa del ambiente'),
+        findsOneWidget,
+      );
+
+      // Scene 4 -> Tap forward button to Scene 5 ("Nuestra Comunidad & Bienvenida")
+      await tester.tap(forwardIcon);
+      await tester.pump(const Duration(milliseconds: 650));
+
+      // Scene 5 text requested by user
       expect(find.textContaining('NUESTRA COMUNIDAD'), findsOneWidget);
       expect(
         find.textContaining('Hecho con el corazón, espero y te sirva'),

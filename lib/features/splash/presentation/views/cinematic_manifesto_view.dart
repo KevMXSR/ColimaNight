@@ -46,7 +46,6 @@ class CinematicManifestoView extends ConsumerStatefulWidget {
 class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
     with SingleTickerProviderStateMixin {
   int _currentSceneIndex = 0;
-  Timer? _autoPacingTimer;
   late AnimationController _glowController;
   late Animation<double> _glowAnimation;
 
@@ -80,6 +79,15 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
       accentColor: AppColors.neonCyan,
     ),
     _ManifestoScene(
+      badge: 'ASISTENCIA A LA APP',
+      title: 'El Pulso Colectivo',
+      narrativeText:
+          'Colima Night cobra vida gracias a ti: Mientras más comunidad se sume, mejor y más precisa será nuestra brújula para saber exactamente cómo está el aforo esta noche. Conéctate y ayúdanos a mostrar la información más precisa del ambiente.',
+      footerNote: 'Telemetría comunitaria y presencia física en tiempo real',
+      icon: Icons.cell_tower_rounded,
+      accentColor: AppColors.neonGreen,
+    ),
+    _ManifestoScene(
       badge: 'NUESTRA COMUNIDAD',
       title: 'Cuidar Cada Salida Juntos',
       narrativeText:
@@ -110,48 +118,27 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
         ref.read(manifestoViewCountProvider.notifier).recordView();
       });
     }
-
-    _startAutoPacing();
-  }
-
-  void _startAutoPacing() {
-    _autoPacingTimer?.cancel();
-    // Ritmo relajado de lectura: 6.5 segundos por escena
-    _autoPacingTimer = Timer(const Duration(milliseconds: 6500), () {
-      if (!mounted) return;
-      if (_currentSceneIndex < _scenes.length - 1) {
-        setState(() {
-          _currentSceneIndex++;
-        });
-        _startAutoPacing();
-      }
-    });
   }
 
   void _nextScene() {
-    _autoPacingTimer?.cancel();
     if (_currentSceneIndex < _scenes.length - 1) {
       setState(() {
         _currentSceneIndex++;
       });
-      _startAutoPacing();
     } else {
       _enterApp();
     }
   }
 
   void _previousScene() {
-    _autoPacingTimer?.cancel();
     if (_currentSceneIndex > 0) {
       setState(() {
         _currentSceneIndex--;
       });
-      _startAutoPacing();
     }
   }
 
   void _enterApp() {
-    _autoPacingTimer?.cancel();
     if (widget.isManualReplay) {
       Navigator.of(context).pop();
     } else {
@@ -176,7 +163,6 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
 
   @override
   void dispose() {
-    _autoPacingTimer?.cancel();
     _glowController.dispose();
     super.dispose();
   }
@@ -487,7 +473,7 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'Toca la pantalla para continuar',
+                                'Toca la pantalla para avanzar',
                                 style: AppTypography.caption.copyWith(
                                   color: Colors.white54,
                                   fontSize: 11.5,
