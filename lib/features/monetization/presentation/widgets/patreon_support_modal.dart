@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/monetization_config.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -60,38 +59,6 @@ class PatreonSupportModal extends ConsumerWidget {
 
     final payPalUrl = MonetizationConfig.getPayPalUrlForAmount(mxnAmount);
     await MonetizationConfig.launchUrlSafe(payPalUrl);
-  }
-
-  void _copyClabeToClipboard(BuildContext context) {
-    Clipboard.setData(const ClipboardData(text: MonetizationConfig.clabeRaw));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: AppColors.surfaceElevated,
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle_rounded, color: AppColors.neonCyan),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '¡CLABE BBVA copiada al portapapeles!',
-                    style: AppTypography.bodyBold.copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    'Pégala en tu app bancaria para transferir directamente a Kevin Sandoval Ramirez.',
-                    style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 4),
-      ),
-    );
   }
 
   @override
@@ -247,143 +214,7 @@ class PatreonSupportModal extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // ==========================================
-            // SECCIÓN 2: TRANSFERENCIA SPEI (MÉXICO)
-            // ==========================================
-            Row(
-              children: [
-                const Icon(Icons.account_balance_rounded, color: AppColors.neonCyan, size: 18),
-                const SizedBox(width: 8),
-                Text(
-                  'TRANSFERENCIA BANCARIA DIRECTA (SPEI)',
-                  style: AppTypography.badgeLabel.copyWith(
-                    color: AppColors.neonCyan,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceElevated,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.neonCyan.withOpacity(0.35)),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.neonCyan.withOpacity(0.08),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF004481), // BBVA Blue
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              'BBVA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 11,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            MonetizationConfig.bankName,
-                            style: AppTypography.bodyBold.copyWith(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        'Sin Comisión',
-                        style: AppTypography.caption.copyWith(color: AppColors.neonCyan, fontSize: 11),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Titular / Beneficiario:',
-                    style: AppTypography.caption.copyWith(color: AppColors.textSecondary, fontSize: 11),
-                  ),
-                  Text(
-                    MonetizationConfig.beneficiaryName,
-                    style: AppTypography.bodyBold.copyWith(fontSize: 14, color: Colors.white),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Cuenta CLABE (18 dígitos):',
-                    style: AppTypography.caption.copyWith(color: AppColors.textSecondary, fontSize: 11),
-                  ),
-                  const SizedBox(height: 2),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppColors.glassBorder),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          MonetizationConfig.clabeFormatted,
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.neonCyan,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => _copyClabeToClipboard(context),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.neonCyan.withOpacity(0.18),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: AppColors.neonCyan, width: 1),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.copy_rounded, size: 14, color: AppColors.neonCyan),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Copiar',
-                                  style: AppTypography.caption.copyWith(
-                                    color: AppColors.neonCyan,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // ==========================================
-            // SECCIÓN 3: B2B EVENTOS Y ESTABLECIMIENTOS
+            // SECCIÓN 2: B2B EVENTOS Y ESTABLECIMIENTOS
             // ==========================================
             Row(
               children: [
