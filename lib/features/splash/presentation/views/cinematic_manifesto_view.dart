@@ -96,6 +96,15 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
       icon: Icons.favorite_rounded,
       accentColor: AppColors.neonMagenta,
     ),
+    _ManifestoScene(
+      badge: 'EL FUTURO • EXPANSIÓN ESTATAL',
+      title: 'Próximamente: Tecomán & Manzanillo',
+      narrativeText:
+          'Colima Night apenas comienza.\n\nConforme nuestra comunidad crezca y según la respuesta de ustedes, expandiremos este radar honesto hacia la costa y el puerto: Tecomán y Manzanillo.\n\nConstruyendo, paso a paso, la red de cobertura nocturna más confiable de todo el estado.',
+      footerNote: 'Expansión gradual impulsada por la respuesta comunitaria',
+      icon: Icons.waves_rounded,
+      accentColor: AppColors.neonCyan,
+    ),
   ];
 
   @override

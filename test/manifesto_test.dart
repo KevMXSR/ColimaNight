@@ -169,7 +169,19 @@ void main() {
         findsOneWidget,
       );
 
-      // Final CTA button appears
+      // Scene 5 -> Tap forward button to Scene 6 ("El Futuro: Tecomán & Manzanillo")
+      await tester.tap(forwardIcon);
+      await tester.pump(const Duration(milliseconds: 650));
+
+      // Scene 6 text: Expansión Tecomán y Manzanillo
+      expect(find.textContaining('EL FUTURO • EXPANSIÓN ESTATAL'), findsOneWidget);
+      expect(find.textContaining('Próximamente: Tecomán & Manzanillo'), findsOneWidget);
+      expect(
+        find.textContaining('expandiremos este radar honesto hacia la costa y el puerto: Tecomán y Manzanillo'),
+        findsOneWidget,
+      );
+
+      // Final CTA button appears on Scene 6
       expect(find.text('ENTRAR A COLIMA NIGHT'), findsOneWidget);
     });
   });

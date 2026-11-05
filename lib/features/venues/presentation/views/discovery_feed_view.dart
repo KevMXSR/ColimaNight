@@ -11,6 +11,7 @@ import '../widgets/venue_card.dart';
 import '../widgets/venue_compact_list_tile.dart';
 import '../widgets/top_ranking_podium_bar.dart';
 import '../widgets/faded_red_report_button.dart';
+import '../widgets/expansion_roadmap_modal.dart';
 import 'venue_detail_map_view.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../auth/presentation/widgets/auth_modal.dart';
@@ -106,10 +107,43 @@ class DiscoveryFeedView extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        Text(
-                          'Colima & Villa de Álvarez • En Vivo',
-                          style: AppTypography.caption.copyWith(
-                            color: AppColors.textSecondary,
+                        GestureDetector(
+                          onTap: () => ExpansionRoadmapModal.show(context),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Colima & VDA',
+                                style: AppTypography.caption.copyWith(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonCyan.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: AppColors.neonCyan.withOpacity(0.4)),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.waves_rounded, size: 10, color: AppColors.neonCyan),
+                                    SizedBox(width: 3),
+                                    Text(
+                                      'Próx: Tecomán & Mzo',
+                                      style: TextStyle(
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.neonCyan,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
