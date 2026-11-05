@@ -16,6 +16,7 @@ import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../auth/presentation/widgets/auth_modal.dart';
 import '../../../monetization/presentation/widgets/patreon_support_modal.dart';
 import '../../../monetization/presentation/widgets/cyber_admob_card.dart';
+import '../../../monetization/presentation/widgets/neon_ad_banner.dart';
 import '../../../splash/presentation/views/cinematic_manifesto_view.dart';
 
 class DiscoveryFeedView extends ConsumerWidget {
@@ -562,6 +563,14 @@ class DiscoveryFeedView extends ConsumerWidget {
                   );
                 },
               ),
+
+            // Banner de Anuncio Cyber-Night Glassmorphism (Modelo 1)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(top: 8, bottom: 4),
+                child: NeonAdBanner(),
+              ),
+            ),
 
             // Botón con tono rojo desvanecido al final de la pantalla para reportes anónimos
             const SliverToBoxAdapter(

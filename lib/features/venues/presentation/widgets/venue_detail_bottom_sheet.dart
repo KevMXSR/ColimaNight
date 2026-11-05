@@ -8,6 +8,7 @@ import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../domain/models/venue_model.dart';
 import 'faded_red_report_button.dart';
+import '../../../transport/presentation/widgets/neon_ride_button.dart';
 
 class VenueDetailBottomSheet extends ConsumerWidget {
   final VenueModel venue;
@@ -262,6 +263,15 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                     ],
                   ),
                 ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // Botón de Transporte Inteligente Cyber-Night (DiDi / Uber)
+              NeonRideButton(
+                latitude: venue.latitude,
+                longitude: venue.longitude,
+                barName: venue.name,
               ),
 
               // Botón Directo de Reservaciones WhatsApp (Solo en locales que admiten reservación)
