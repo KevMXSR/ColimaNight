@@ -263,25 +263,26 @@ class PatreonSupportModal extends ConsumerWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  // Botón de WhatsApp Business
+                  // Botón de Contacto por Correo Oficial
                   SizedBox(
                     width: double.infinity,
-                    height: 46,
+                    height: 48,
                     child: ElevatedButton.icon(
                       onPressed: () => MonetizationConfig.launchUrlSafe(
-                        MonetizationConfig.getBusinessWhatsAppUrl(),
+                        MonetizationConfig.getContactEmailUrl(),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF25D366), // WhatsApp Green
+                        backgroundColor: AppColors.surface,
+                        side: BorderSide(color: AppColors.neonCyan.withOpacity(0.6), width: 1.2),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         elevation: 4,
                       ),
-                      icon: const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 20),
+                      icon: const Icon(Icons.email_outlined, color: AppColors.neonCyan, size: 20),
                       label: Text(
-                        'Hablar por WhatsApp (${MonetizationConfig.businessWhatsAppDisplay})',
+                        'Escribir a Soporte (${MonetizationConfig.contactEmail})',
                         style: AppTypography.bodyBold.copyWith(
                           color: Colors.white,
-                          fontSize: 13,
+                          fontSize: 12,
                         ),
                       ),
                     ),

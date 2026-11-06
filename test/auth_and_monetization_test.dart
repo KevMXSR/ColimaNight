@@ -28,11 +28,19 @@ void main() {
       expect(MonetizationConfig.clabeFormatted, '012 090 01553338204 2');
     });
 
-    test('B2B Venue & Event sponsorship WhatsApp linking builds pre-filled conversation', () {
-      expect(MonetizationConfig.businessWhatsAppNumber, '523123742089');
-      final waUrl = MonetizationConfig.getBusinessWhatsAppUrl();
-      expect(waUrl.contains('523123742089'), isTrue);
-      expect(waUrl.contains('paquetes%20de%20difusi%C3%B3n'), isTrue);
+    test('Official B2B Contact Email linking builds structured mailto uri', () {
+      expect(MonetizationConfig.contactEmail, 'contact.colimanight@gmail.com');
+      final emailUrl = MonetizationConfig.getContactEmailUrl();
+      expect(emailUrl.startsWith('mailto:contact.colimanight@gmail.com'), isTrue);
+      expect(emailUrl.contains('subject='), isTrue);
+      expect(emailUrl.contains('body='), isTrue);
+
+      final customUrl = MonetizationConfig.getContactEmailUrl(
+        subject: 'Patrocinio VIP',
+        body: 'Quiero anunciarme',
+      );
+      expect(customUrl.contains('subject=Patrocinio%20VIP'), isTrue);
+      expect(customUrl.contains('body=Quiero%20anunciarme'), isTrue);
     });
   });
 

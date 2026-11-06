@@ -18,16 +18,21 @@ class CyberAdMobCard extends StatelessWidget {
     {
       'title': '¿Tienes un Antro o Evento? • Anúnciate Aquí',
       'tagline': 'Destaca tu fiesta en la Cartelera de Colima Night y asegura asistencia con aforo verificado.',
-      'actionText': 'Ver Paquetes de Publicidad',
-      'url': MonetizationConfig.getBusinessWhatsAppUrl(),
-      'imageUrl': 'assets/images/venues/danzt/danzt_1.jpg',
+      'actionText': 'Contactar por Correo',
+      'url': MonetizationConfig.getContactEmailUrl(
+        subject: 'Anuncio B2B en Colima Night',
+        body: 'Hola equipo de Colima Night, me interesa anunciar mi negocio en la app.',
+      ),
+      'imageUrl': 'assets/images/branding/logo_colimanight_official.png',
       'tag': 'PATROCINIO EXCLUSIVO',
     },
     {
-      'title': 'Safe Ride Colima • Taxi Nocturno Seguro',
-      'tagline': 'Tarifas fijas nocturnas, unidades con GPS y chofer designado.',
-      'actionText': 'Pedir Chofer Seguro',
-      'url': 'https://wa.me/${MonetizationConfig.businessWhatsAppNumber}?text=Hola,%20solicito%20chofer%20seguro%20de%20noche',
+      'title': 'Safe Ride Colima • Chofer & Taxi Nocturno',
+      'tagline': 'Tarifas fijas nocturnas, unidades verificadas y chofer designado.',
+      'actionText': 'Más Información',
+      'url': MonetizationConfig.getContactEmailUrl(
+        subject: 'Convenio de Transporte Safe Ride',
+      ),
       'imageUrl': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1000&q=80',
       'tag': 'TRANSPORTE SEGURO',
     },

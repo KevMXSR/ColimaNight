@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
+import '../../../../core/widgets/dynamic_brand_background.dart';
 import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/filter_chips_bar.dart';
@@ -10,7 +11,7 @@ import '../widgets/hot_right_now_card.dart';
 import '../widgets/venue_card.dart';
 import '../widgets/venue_compact_list_tile.dart';
 import '../widgets/top_ranking_podium_bar.dart';
-import '../widgets/nightlife_digital_flyer_card.dart';
+import '../widgets/live_acts_lineup_section.dart';
 import '../widgets/faded_red_report_button.dart';
 import '../widgets/expansion_roadmap_modal.dart';
 import 'venue_detail_map_view.dart';
@@ -51,6 +52,7 @@ class DiscoveryFeedView extends ConsumerWidget {
     final user = ref.watch(authProvider);
     final viewMode = ref.watch(feedViewModeProvider);
     final topRanked = ref.watch(topRankedVenuesProvider);
+    final activeFilter = ref.watch(selectedFilterChipProvider);
 
     // Evita duplicar en el listado inferior al establecimiento que ya está destacado en "Hot Right Now"
     final displayVenues = hotVenue != null && searchQuery.isEmpty
@@ -59,11 +61,13 @@ class DiscoveryFeedView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
+      body: DynamicBrandBackground(
+        type: BrandBackgroundType.primaryLogo,
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
             // Header Principal con Logo Neón y Status Nocturno
             SliverToBoxAdapter(
               child: Padding(
@@ -357,10 +361,10 @@ class DiscoveryFeedView extends ConsumerWidget {
               ),
             ),
 
-            // Banner Interactivo y Colapsable de Cartelera Digital (ColimaNight Live Flyer)
-            if (searchQuery.isEmpty)
+            // Cartelera Adaptativa de Música en Vivo (cuando el filtro Música en Vivo está activo)
+            if (activeFilter == VenueFilterChip.liveMusic && searchQuery.isEmpty)
               const SliverToBoxAdapter(
-                child: NightlifeDigitalFlyerCard(),
+                child: LiveActsLineupSection(),
               ),
 
             // Sección "HOT RIGHT NOW" (Visible si no hay búsqueda activa)
@@ -628,6 +632,7 @@ class DiscoveryFeedView extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
 import 'package:colima_night/features/venues/presentation/widgets/flyer_lightbox_dialog.dart';
+import 'package:colima_night/features/venues/presentation/widgets/live_acts_lineup_section.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -173,6 +177,76 @@ void main() {
       expect(find.text('VER EN INSTAGRAM DEL ESTABLECIMIENTO'), findsOneWidget);
       expect(find.textContaining('@guachirooftop'), findsWidgets);
       expect(find.textContaining('2x1 en mixología'), findsOneWidget);
+    });
+  });
+
+  group('Cryptographic Image Uniqueness & Non-Collision Tests', () {
+    test('All venue flyers have unique MD5 hashes and no duplicate binaries exist', () {
+      final flyerFiles = [
+        'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
+        'assets/images/venues/flyers/dos_puntos_flyer.jpg',
+        'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
+        'assets/images/venues/flyers/low_social_flyer.jpg',
+        'assets/images/venues/flyers/foro_dmt_rock_flyer.jpg',
+      ];
+
+      final Map<String, String> hashes = {};
+      for (final path in flyerFiles) {
+        final file = File(path);
+        expect(file.existsSync(), isTrue, reason: 'File must exist on disk: $path');
+        final bytes = file.readAsBytesSync();
+        final md5Hash = md5.convert(bytes).toString();
+        
+        expect(hashes.containsKey(md5Hash), isFalse,
+            reason: 'Collision detected! $path shares binary content with ${hashes[md5Hash]}');
+        hashes[md5Hash] = path;
+      }
+
+      // Explicit check: Bar La Puerta flyer must NOT equal Dos Puntos flyer or Dos Puntos cover
+      final puertaFlyer = md5.convert(File('assets/images/venues/flyers/bar_la_puerta_flyer.jpg').readAsBytesSync()).toString();
+      final dosPuntosFlyer = md5.convert(File('assets/images/venues/flyers/dos_puntos_flyer.jpg').readAsBytesSync()).toString();
+      final dosPuntosCover = md5.convert(File('assets/images/venues/dos_puntos.jpg').readAsBytesSync()).toString();
+
+      expect(puertaFlyer != dosPuntosFlyer, isTrue);
+      expect(puertaFlyer != dosPuntosCover, isTrue);
+    });
+  });
+
+  group('LiveActsLineupSection Adaptive Genre Music Tests', () {
+    testWidgets('LiveActsLineupSection renders adaptive genre badges and live acts', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: LiveActsLineupSection(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify Header
+      expect(find.text('CARTELERA DE MÚSICA EN VIVO & DJS'), findsOneWidget);
+
+      // Verify Genre Badges rendered
+      expect(find.text('ROCK & METAL'), findsOneWidget);
+      expect(find.text('TECH-HOUSE & DJS'), findsWidgets);
+      expect(find.text('PERREO & URBANO'), findsOneWidget);
+      expect(find.text('INDIE & VINYL'), findsOneWidget);
+      expect(find.text('MARIACHI & BOHEMIA'), findsOneWidget);
+
+      // Verify specific acts
+      expect(find.text('Bandas Locales & Noche de Rock en Vivo'), findsOneWidget);
+      expect(find.text('DJ Sets Perreo Old School & Urbano'), findsOneWidget);
+      expect(find.text('DJ Set en Terraza & Mezclas Funk / Indie'), findsOneWidget);
+      expect(find.text('Mariachi & Banda Acústica en Vivo'), findsOneWidget);
+
+      // Verify buttons
+      expect(find.text('Ver Local'), findsWidgets);
+      expect(find.text('Ruta'), findsWidgets);
     });
   });
 }

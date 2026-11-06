@@ -45,6 +45,11 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
 - **Póster Minimalista Suizo (`colimanight_minimalist_poster.html`):** Formato editorial con coordenadas geográficas y código QR para exhibición en barras y accesos de los 22 establecimientos.
 - **Plantilla Instagram Stories 9:16 (`colimanight_instagram_story_ad_secondary.png`):** Banner vertical publicitario de alta resolución con el logotipo secundario, titulares VIP y llamado a la acción deslizable.
 
+### 1.6 Fondos Dinámicos de la Aplicación (`DynamicBrandBackground`)
+- **Pantalla Principal (`DiscoveryFeedView`):** Utiliza el **Logotipo Oficial Primario** (`BrandBackgroundType.primaryLogo`) en un fondo fijo con respiración sutil neón (`1.0` a `1.03x`), resplandores magenta y cyan, y viñeta gradual de absorción que garantiza un contraste del 100% en las tarjetas y textos.
+- **Pantallas Secundarias & Modales (`WeeklyEventsSheet`):** Utilizan el **Mapa Neón Cartográfico de Colima** (`BrandBackgroundType.neonMapSecondary` / `colima_neon_map_bg.png`) con respiración suave y desenfoque oscuro.
+- **Optimización de Rendimiento:** Aislado mediante `RepaintBoundary` para asegurar 60/120 FPS sin consumo extra de batería.
+
 ---
 
 ## 2. 📱 Catálogo Oficial de Establecimientos (22 Puntos Verificados)

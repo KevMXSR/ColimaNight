@@ -146,10 +146,13 @@ class ExpansionRoadmapModal extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  const message =
-                      'Hola Kevin, me gustaría recomendar un lugar/evento para la futura expansión de Tecomán y Manzanillo en Colima Night.';
-                  final waUrl = MonetizationConfig.getBusinessWhatsAppUrl(message);
-                  MonetizationConfig.launchUrlSafe(waUrl);
+                  final emailUrl = MonetizationConfig.getContactEmailUrl(
+                    subject: 'Sugerencia de Expansión • Tecomán y Manzanillo',
+                    body: 'Hola equipo de Colima Night,\n\n'
+                        'Me gustaría recomendar un lugar/evento para la futura expansión de Tecomán y Manzanillo en la plataforma:\n\n'
+                        'Nombre del lugar:\nMunicipio (Tecomán / Manzanillo):\nInstagram / Ubicación:\n\nSaludos.',
+                  );
+                  MonetizationConfig.launchUrlSafe(emailUrl);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.neonCyan.withOpacity(0.18),

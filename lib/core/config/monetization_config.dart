@@ -29,21 +29,24 @@ class MonetizationConfig {
   static const String clabeFormatted = '012 090 01553338204 2';
 
   // ==========================================
-  // 3. VINCULACIÓN COMERCIAL B2B (ANUNCIANTES / EVENTOS)
+  // 3. CANAL OFICIAL DE CONTACTO & PATROCINIOS B2B
   // ==========================================
-  /// Número oficial de WhatsApp Business (Código país México: 52)
-  static const String businessWhatsAppNumber = '523123742089';
-  static const String businessWhatsAppDisplay = '(+52) 312 374 2089';
+  /// Correo oficial de atención y patrocinios de Colima Night
+  static const String contactEmail = 'contact.colimanight@gmail.com';
 
-  /// Mensaje pre-cargado para dueños de bares, antros y organizadores de eventos
-  static const String defaultSponsorMessage =
-      'Hola Kevin, me interesa anunciar mi evento/establecimiento en Colima Night. '
-      '¿Me podrías compartir los paquetes de difusión, banner y presencia destacada en el radar?';
+  /// Asunto y mensaje predeterminado para anunciantes, antros y eventos
+  static const String defaultSponsorSubject = 'Contacto y Patrocinios • Colima Night';
+  static const String defaultSponsorBody =
+      'Hola equipo de Colima Night,\n\n'
+      'Me interesa anunciar mi evento o establecimiento en la plataforma. '
+      '¿Me podrían compartir los paquetes de difusión, banner y presencia destacada en el radar?\n\n'
+      'Saludos cordiales.';
 
-  /// Construye el enlace de WhatsApp listo para abrir la conversación
-  static String getBusinessWhatsAppUrl([String? customMessage]) {
-    final message = Uri.encodeComponent(customMessage ?? defaultSponsorMessage);
-    return 'https://wa.me/$businessWhatsAppNumber?text=$message';
+  /// Construye el enlace 'mailto:' listo para abrir el cliente de correo
+  static String getContactEmailUrl({String? subject, String? body}) {
+    final cleanSubject = Uri.encodeComponent(subject ?? defaultSponsorSubject);
+    final cleanBody = Uri.encodeComponent(body ?? defaultSponsorBody);
+    return 'mailto:$contactEmail?subject=$cleanSubject&body=$cleanBody';
   }
 
   /// Método utilitario seguro para abrir URLs externas

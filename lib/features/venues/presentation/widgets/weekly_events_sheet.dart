@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_venue_image.dart';
+import '../../../../core/widgets/dynamic_brand_background.dart';
 import '../providers/venue_providers.dart';
 import 'flyer_lightbox_dialog.dart';
 import 'venue_detail_bottom_sheet.dart';
@@ -32,8 +33,13 @@ class WeeklyEventsSheet extends ConsumerWidget {
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
       ),
-      child: Column(
-        children: [
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: DynamicBrandBackground(
+          type: BrandBackgroundType.neonMapSecondary,
+          opacity: 0.18,
+          child: Column(
+            children: [
           // Drag Handle
           const SizedBox(height: 12),
           Container(
@@ -450,6 +456,8 @@ class WeeklyEventsSheet extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 }
