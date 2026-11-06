@@ -4,6 +4,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../domain/models/venue_model.dart';
+import '../../domain/utils/venue_schedule_evaluator.dart';
 
 /// Tarjeta de lista compacta y estilizada para escanear rápidamente la vida nocturna
 class VenueCompactListTile extends StatelessWidget {
@@ -20,7 +21,8 @@ class VenueCompactListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final occupancyColor = !venue.isOpenNow
+    final scheduleStatus = venue.dynamicScheduleStatus;
+    final occupancyColor = !scheduleStatus.isOpenNow
         ? Colors.grey.shade700
         : (venue.capacityPercent >= 85
             ? AppColors.neonRedAlert
@@ -31,10 +33,10 @@ class VenueCompactListTile extends StatelessWidget {
     Widget tileContent = GlassContainer(
       borderRadius: 16,
       padding: const EdgeInsets.all(10),
-      borderColor: venue.isOpenNow
+      borderColor: scheduleStatus.isOpenNow
           ? AppColors.glassBorder.withOpacity(0.5)
           : Colors.white12,
-      fillColor: venue.isOpenNow
+      fillColor: scheduleStatus.isOpenNow
           ? AppColors.surfaceElevated.withOpacity(0.65)
           : AppColors.surface.withOpacity(0.35),
       child: Row(
@@ -106,14 +108,10 @@ class VenueCompactListTile extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: venue.isOpenNow
-                            ? AppColors.neonGreen.withOpacity(0.12)
-                            : AppColors.neonRedAlert.withOpacity(0.15),
+                        color: scheduleStatus.badgeType.backgroundColor,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: venue.isOpenNow
-                              ? AppColors.neonGreen.withOpacity(0.4)
-                              : AppColors.neonRedAlert.withOpacity(0.35),
+                          color: scheduleStatus.badgeType.borderColor,
                           width: 0.8,
                         ),
                       ),
@@ -121,20 +119,16 @@ class VenueCompactListTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            venue.isOpenNow ? Icons.circle : Icons.nightlight_round,
-                            size: venue.isOpenNow ? 5 : 8,
-                            color: venue.isOpenNow
-                                ? AppColors.neonGreen
-                                : AppColors.neonRedAlert.withOpacity(0.9),
+                            scheduleStatus.badgeType.icon,
+                            size: scheduleStatus.isOpenNow ? 5 : 8,
+                            color: scheduleStatus.badgeType.color,
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            venue.isOpenNow ? 'Abierto' : 'Cerrado',
+                            scheduleStatus.badgeLabel,
                             style: TextStyle(
                               fontSize: 9,
-                              color: venue.isOpenNow
-                                  ? AppColors.neonGreen
-                                  : AppColors.neonRedAlert.withOpacity(0.9),
+                              color: scheduleStatus.badgeType.color,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -180,7 +174,7 @@ class VenueCompactListTile extends StatelessWidget {
                     const SizedBox(width: 6),
 
                     // Cover o Horario de Apertura
-                    if (venue.isOpenNow)
+                    if (scheduleStatus.isOpenNow)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                         decoration: BoxDecoration(
@@ -202,18 +196,20 @@ class VenueCompactListTile extends StatelessWidget {
                     else
                       Expanded(
                         child: Text(
-                          venue.closedReason ?? 'Cerrado ahora',
+                          scheduleStatus.detailedStatus,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white70,
+                            color: scheduleStatus.badgeType == VenueBadgeType.openingToday
+                                ? AppColors.neonAmber
+                                : Colors.white70,
                           ),
                         ),
                       ),
 
-                    if (venue.isOpenNow) ...[
+                    if (scheduleStatus.isOpenNow) ...[
                       const Spacer(),
                       // Distancia
                       Text(

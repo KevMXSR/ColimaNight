@@ -282,7 +282,12 @@ void main() {
       for (final v in costaVenues) {
         expect(v.hasCover, isFalse, reason: '${v.name} NO debe cobrar cover');
         expect(v.coverTag, equals('Sin Cover'));
-        expect(v.upcomingEvents, isEmpty, reason: '${v.name} sin eventos ficticios');
+        if (v.id == 'costa_carranza') {
+          expect(v.upcomingEvents.length, equals(1));
+          expect(v.upcomingEvents.first.isSportsMatch, isTrue);
+        } else {
+          expect(v.upcomingEvents, isEmpty, reason: '${v.name} sin eventos ficticios');
+        }
       }
 
       final colimitaVenues = venues.where((v) => v.id.startsWith('colimita_')).toList();

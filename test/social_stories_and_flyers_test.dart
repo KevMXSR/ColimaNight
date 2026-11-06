@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -234,13 +233,16 @@ void main() {
       // Verify Genre Badges rendered
       expect(find.text('ROCK & METAL'), findsOneWidget);
       expect(find.text('TECH-HOUSE & DJS'), findsWidgets);
-      expect(find.text('PERREO & URBANO'), findsOneWidget);
+      expect(find.text('PERREO & URBANO'), findsWidgets);
       expect(find.text('INDIE & VINYL'), findsOneWidget);
       expect(find.text('MARIACHI & BOHEMIA'), findsOneWidget);
+      expect(find.text('TRANSMISIÓN DEPORTIVA HD'), findsOneWidget);
 
       // Verify specific acts
       expect(find.text('Bandas Locales & Noche de Rock en Vivo'), findsOneWidget);
-      expect(find.text('DJ Sets Perreo Old School & Urbano'), findsOneWidget);
+      expect(find.text('DJ Sets Perreo Old School & Snacks'), findsOneWidget);
+      expect(find.text('La Puerta del Perreo • Bellakeo Underground'), findsOneWidget);
+      expect(find.text('⚽ Clásico Nacional en Pantalla Gigante HD'), findsOneWidget);
       expect(find.text('DJ Set en Terraza & Mezclas Funk / Indie'), findsOneWidget);
       expect(find.text('Mariachi & Banda Acústica en Vivo'), findsOneWidget);
 

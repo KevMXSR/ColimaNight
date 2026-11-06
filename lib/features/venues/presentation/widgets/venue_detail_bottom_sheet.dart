@@ -186,37 +186,40 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  // Badge de Horario / Apertura
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: (venue.isOpenNow ? AppColors.neonGreen : Colors.black).withOpacity(venue.isOpenNow ? 0.15 : 0.6),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: venue.isOpenNow
-                            ? AppColors.neonGreen.withOpacity(0.6)
-                            : Colors.white24,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          venue.isOpenNow ? Icons.access_time_filled_rounded : Icons.power_off_rounded,
-                          size: 13,
-                          color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          venue.isOpenNow ? 'Abierto (${venue.schedule})' : venue.openStatusTag,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: venue.isOpenNow ? AppColors.neonGreen : Colors.white70,
+                  // Badge Dinámico de Horario / Apertura
+                  Builder(
+                    builder: (context) {
+                      final status = venue.dynamicScheduleStatus;
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: status.badgeType.backgroundColor,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: status.badgeType.borderColor,
                           ),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              status.badgeType.icon,
+                              size: 13,
+                              color: status.badgeType.color,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              status.isOpenNow ? 'Abierto (${venue.schedule})' : status.detailedStatus,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: status.badgeType.color,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   if (venue.hasLiveMusic)
                     NeonBadge.liveMusic(venue.liveMusicAct ?? 'En vivo'),
@@ -638,10 +641,23 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                       width: (MediaQuery.of(context).size.width - 50) / 2,
                       child: _SocialButton(
                         icon: Icons.camera_alt_rounded,
-                        label: 'Club Principal',
+                        label: venue.secondaryInstagramHandle == '@lapuertadelperreo.dog'
+                            ? 'La Puerta del Perreo'
+                            : (venue.id == 'el_guachi' ? 'Club Principal' : 'Instagram Secundario'),
                         handle: venue.secondaryInstagramHandle!,
                         color: const Color(0xFF833AB4),
                         onTap: () => _launchUrl(venue.secondaryInstagramUrl ?? 'https://instagram.com/${venue.secondaryInstagramHandle!.replaceAll('@', '')}'),
+                      ),
+                    ),
+                  if (venue.facebookUrl != null)
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 50) / 2,
+                      child: _SocialButton(
+                        icon: Icons.facebook_rounded,
+                        label: 'Facebook Oficial',
+                        handle: venue.facebookHandle ?? 'Facebook',
+                        color: const Color(0xFF1877F2),
+                        onTap: () => _launchUrl(venue.facebookUrl!),
                       ),
                     ),
                   if (venue.tikTokHandle != null)

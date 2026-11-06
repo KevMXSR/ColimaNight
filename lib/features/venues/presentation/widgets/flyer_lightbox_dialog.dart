@@ -30,9 +30,11 @@ class FlyerLightboxDialog extends StatelessWidget {
 
   Future<void> _launchInstagram(BuildContext context) async {
     final targetUrl = event.sourceInstagramUrl ??
-        (venue.instagramHandle != null
-            ? 'https://instagram.com/${venue.instagramHandle!.replaceAll('@', '')}'
-            : 'https://instagram.com');
+        (event.sourceInstagramHandle != null
+            ? 'https://instagram.com/${event.sourceInstagramHandle!.replaceAll('@', '')}'
+            : (venue.instagramHandle != null
+                ? 'https://instagram.com/${venue.instagramHandle!.replaceAll('@', '')}'
+                : 'https://instagram.com'));
 
     final uri = Uri.parse(targetUrl);
     if (await canLaunchUrl(uri)) {
@@ -46,6 +48,14 @@ class FlyerLightboxDialog extends StatelessWidget {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _launchPresale(BuildContext context) async {
+    if (event.presaleUrl == null) return;
+    final uri = Uri.parse(event.presaleUrl!);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -226,6 +236,53 @@ class FlyerLightboxDialog extends StatelessWidget {
                                   ),
                                 ),
                               ],
+                            ),
+                          ),
+                        ],
+
+                        // Botón de Preventa Oficial (sólo si se obtuvo enlace directo de preventa)
+                        if (event.presaleUrl != null && event.presaleUrl!.isNotEmpty) ...[
+                          GestureDetector(
+                            onTap: () => _launchPresale(context),
+                            child: Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonGreen.withOpacity(0.18),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: AppColors.neonGreen, width: 1.2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.neonGreen.withOpacity(0.25),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.confirmation_number_rounded, color: AppColors.neonGreen, size: 18),
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      event.presalePrice != null
+                                          ? 'COMPRAR PREVENTA (${event.presalePrice})'
+                                          : 'COMPRAR BOLETOS / PREVENTA',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: AppColors.neonGreen,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 12,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  const Icon(Icons.open_in_new_rounded, color: AppColors.neonGreen, size: 14),
+                                ],
+                              ),
                             ),
                           ),
                         ],

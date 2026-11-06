@@ -1,3 +1,5 @@
+import '../utils/venue_schedule_evaluator.dart';
+
 /// Representa un evento específico o de cartelera en un establecimiento
 class VenueEvent {
   final String id;
@@ -13,6 +15,14 @@ class VenueEvent {
   final String? sourceInstagramHandle; // Ej: '@guachirooftop', '@barlapuerta'
   final bool isStoryAnnouncement; // Indica si proviene de anuncio de historias efímeras
   final String? specialSchedule; // Ej: 'Apertura especial 7:00 PM para Snacks & Drinks'
+  final String? presaleUrl; // Enlace directo para compra de preventa (obtenido de fuente oficial)
+  final String? presalePrice; // Ej: 'Preventa Especial: $120 MXN (Fase 1)'
+  final bool isPresaleActive;
+  final bool isSportsMatch; // Indica si es transmisión deportiva en vivo (fútbol, boxeo)
+  final String? matchTeams; // Ej: 'Chivas vs América • Clásico Nacional'
+  final String? broadcastDetails; // Ej: 'Pantalla gigante, audio en vivo y cubetazo'
+  final bool isVideoStory; // Indica si proviene de un video reel o video en historia
+  final String? sourceFacebookUrl; // Enlace directo a publicación o perfil de Facebook
 
   const VenueEvent({
     required this.id,
@@ -28,6 +38,14 @@ class VenueEvent {
     this.sourceInstagramHandle,
     this.isStoryAnnouncement = false,
     this.specialSchedule,
+    this.presaleUrl,
+    this.presalePrice,
+    this.isPresaleActive = false,
+    this.isSportsMatch = false,
+    this.matchTeams,
+    this.broadcastDetails,
+    this.isVideoStory = false,
+    this.sourceFacebookUrl,
   });
 
   /// Evalúa dinámicamente si el evento está ocurriendo HOY según DateTime.now()
@@ -70,6 +88,7 @@ class VenueModel {
   final String? secondaryInstagramUrl; // Enlace directo a perfil secundario
   final String? tikTokHandle;
   final String? facebookUrl;
+  final String? facebookHandle;
   final String vibeGenre;
   final String schedule;
   final int estimatedMinutes; // Minutos estimados de llegada
@@ -119,6 +138,7 @@ class VenueModel {
     this.secondaryInstagramUrl,
     this.tikTokHandle,
     this.facebookUrl,
+    this.facebookHandle,
     required this.vibeGenre,
     required this.schedule,
     this.estimatedMinutes = 8,
@@ -181,13 +201,16 @@ class VenueModel {
     return coverDescription!;
   }
 
+  /// Estado operativo dinámico calculado en tiempo real sin incongruencias
+  VenueScheduleStatus get dynamicScheduleStatus => VenueScheduleEvaluator.evaluate(this);
+
+  /// Indica si el establecimiento está efectivamente en servicio ahora mismo
+  bool get isEffectivelyOpen => dynamicScheduleStatus.isOpenNow;
+
   /// Etiqueta visible del horario / estatus de apertura
   String get openStatusTag {
-    if (isPermanentlyClosed) return 'In Memoriam';
-    if (!isOpenNow) {
-      return closedReason ?? 'Cerrado Ahora';
-    }
-    return 'Abierto Ahora';
+    if (isPermanentlyClosed) return closedJokeNote ?? 'In Memoriam';
+    return dynamicScheduleStatus.detailedStatus;
   }
 
   /// Determina el color de aura/pin según su estado o vibe
@@ -234,6 +257,7 @@ class VenueModel {
     String? secondaryInstagramUrl,
     String? tikTokHandle,
     String? facebookUrl,
+    String? facebookHandle,
     String? vibeGenre,
     String? schedule,
     int? estimatedMinutes,
@@ -280,6 +304,7 @@ class VenueModel {
       secondaryInstagramUrl: secondaryInstagramUrl ?? this.secondaryInstagramUrl,
       tikTokHandle: tikTokHandle ?? this.tikTokHandle,
       facebookUrl: facebookUrl ?? this.facebookUrl,
+      facebookHandle: facebookHandle ?? this.facebookHandle,
       vibeGenre: vibeGenre ?? this.vibeGenre,
       schedule: schedule ?? this.schedule,
       estimatedMinutes: estimatedMinutes ?? this.estimatedMinutes,

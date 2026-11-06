@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../domain/models/venue_model.dart';
+import '../../domain/utils/venue_schedule_evaluator.dart';
 
 class VenueCard extends StatelessWidget {
   final VenueModel venue;
@@ -17,13 +18,13 @@ class VenueCard extends StatelessWidget {
   });
 
   @override
-  @override
   Widget build(BuildContext context) {
+    final scheduleStatus = venue.dynamicScheduleStatus;
     Widget cardContent = GlassContainer(
       borderRadius: 22,
       padding: EdgeInsets.zero,
-      borderColor: venue.isOpenNow ? AppColors.glassBorder : Colors.white12,
-      fillColor: venue.isOpenNow
+      borderColor: scheduleStatus.isOpenNow ? AppColors.glassBorder : Colors.white12,
+      fillColor: scheduleStatus.isOpenNow
           ? AppColors.surfaceElevated.withOpacity(0.85)
           : AppColors.surface.withOpacity(0.4),
       child: Column(
@@ -70,7 +71,7 @@ class VenueCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (venue.isOpenNow)
+                      if (scheduleStatus.isOpenNow)
                         NeonBadge.livePresence(venue.livePresence)
                       else
                         Container(
@@ -116,7 +117,7 @@ class VenueCard extends StatelessWidget {
                                 ],
                               ),
                             )
-                          : (venue.isOpenNow
+                          : (scheduleStatus.isOpenNow
                               ? NeonBadge.capacity(venue.capacityPercent)
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -150,12 +151,12 @@ class VenueCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.65),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: venue.isOpenNow ? AppColors.glassBorder : Colors.white24),
+                          border: Border.all(color: scheduleStatus.isOpenNow ? AppColors.glassBorder : Colors.white24),
                         ),
                         child: Text(
                           venue.category.toUpperCase(),
                           style: AppTypography.badgeLabel.copyWith(
-                            color: venue.isOpenNow ? AppColors.neonCyan : Colors.white70,
+                            color: scheduleStatus.isOpenNow ? AppColors.neonCyan : Colors.white70,
                             fontSize: 10,
                           ),
                         ),
@@ -164,35 +165,27 @@ class VenueCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: venue.isOpenNow
-                              ? AppColors.neonGreen.withOpacity(0.2)
-                              : AppColors.neonRedAlert.withOpacity(0.18),
+                          color: scheduleStatus.badgeType.backgroundColor,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: venue.isOpenNow
-                                ? AppColors.neonGreen.withOpacity(0.6)
-                                : AppColors.neonRedAlert.withOpacity(0.4),
+                            color: scheduleStatus.badgeType.borderColor,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              venue.isOpenNow ? Icons.circle : Icons.nightlight_round,
-                              size: venue.isOpenNow ? 6 : 10,
-                              color: venue.isOpenNow
-                                  ? AppColors.neonGreen
-                                  : AppColors.neonRedAlert.withOpacity(0.9),
+                              scheduleStatus.badgeType.icon,
+                              size: scheduleStatus.isOpenNow ? 6 : 10,
+                              color: scheduleStatus.badgeType.color,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              venue.isOpenNow ? 'Abierto' : 'Cerrado',
+                              scheduleStatus.badgeLabel,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
-                                color: venue.isOpenNow
-                                    ? AppColors.neonGreen
-                                    : AppColors.neonRedAlert.withOpacity(0.9),
+                                color: scheduleStatus.badgeType.color,
                               ),
                             ),
                           ],
@@ -347,27 +340,41 @@ class VenueCard extends StatelessWidget {
                           ),
                       ],
                     ),
-                    // Horario / Próxima apertura cuando está desenergizado
-                    if (!venue.isOpenNow) ...[
+                    // Horario / Próxima apertura cuando está desenergizado o abre más tarde hoy
+                    if (!scheduleStatus.isOpenNow) ...[
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: scheduleStatus.badgeType == VenueBadgeType.openingToday
+                              ? AppColors.neonAmber.withOpacity(0.12)
+                              : Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white12),
+                          border: Border.all(
+                            color: scheduleStatus.badgeType == VenueBadgeType.openingToday
+                                ? AppColors.neonAmber.withOpacity(0.4)
+                                : Colors.white12,
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.access_time_rounded, size: 13, color: Colors.white70),
+                            Icon(
+                              scheduleStatus.badgeType.icon,
+                              size: 13,
+                              color: scheduleStatus.badgeType == VenueBadgeType.openingToday
+                                  ? AppColors.neonAmber
+                                  : Colors.white70,
+                            ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                venue.closedReason ?? 'Cerrado ahora',
-                                style: const TextStyle(
+                                scheduleStatus.detailedStatus,
+                                style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white70,
+                                  color: scheduleStatus.badgeType == VenueBadgeType.openingToday
+                                      ? AppColors.neonAmber
+                                      : Colors.white70,
                                 ),
                               ),
                             ),
@@ -420,8 +427,10 @@ class VenueCard extends StatelessWidget {
           ),
         );
 
-    // Efecto desenergizado / blanco y negro si el local está cerrado
-    if (!venue.isOpenNow) {
+    // Efecto desenergizado / blanco y negro únicamente si el local está cerrado hoy o clausurado
+    if (!scheduleStatus.isOpenNow &&
+        (scheduleStatus.badgeType == VenueBadgeType.closedToday ||
+            scheduleStatus.badgeType == VenueBadgeType.permanentlyClosed)) {
       cardContent = ColorFiltered(
         colorFilter: const ColorFilter.matrix(<double>[
           0.2126, 0.7152, 0.0722, 0, 0,

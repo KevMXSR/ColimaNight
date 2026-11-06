@@ -16,7 +16,8 @@ enum LiveMusicGenreType {
   techHouse,
   perreo,
   craftIndie,
-  mariachiAcoustic;
+  mariachiAcoustic,
+  sportsLive;
 
   String get label {
     switch (this) {
@@ -30,6 +31,8 @@ enum LiveMusicGenreType {
         return 'INDIE & VINYL';
       case LiveMusicGenreType.mariachiAcoustic:
         return 'MARIACHI & BOHEMIA';
+      case LiveMusicGenreType.sportsLive:
+        return 'TRANSMISIÓN DEPORTIVA HD';
     }
   }
 
@@ -45,6 +48,8 @@ enum LiveMusicGenreType {
         return const Color(0xFF2DD4BF); // Teal craft
       case LiveMusicGenreType.mariachiAcoustic:
         return const Color(0xFFFBBF24); // Ámbar dorado
+      case LiveMusicGenreType.sportsLive:
+        return const Color(0xFF10B981); // Verde esmeralda deportivo
     }
   }
 
@@ -60,6 +65,8 @@ enum LiveMusicGenreType {
         return const Color(0xFF38BDF8);
       case LiveMusicGenreType.mariachiAcoustic:
         return const Color(0xFFD97706);
+      case LiveMusicGenreType.sportsLive:
+        return const Color(0xFF34D399);
     }
   }
 
@@ -75,6 +82,8 @@ enum LiveMusicGenreType {
         return const Color(0xFF06181A);
       case LiveMusicGenreType.mariachiAcoustic:
         return const Color(0xFF1C1304);
+      case LiveMusicGenreType.sportsLive:
+        return const Color(0xFF042014);
     }
   }
 
@@ -90,6 +99,8 @@ enum LiveMusicGenreType {
         return Icons.album_rounded;
       case LiveMusicGenreType.mariachiAcoustic:
         return Icons.music_note_rounded;
+      case LiveMusicGenreType.sportsLive:
+        return Icons.sports_soccer_rounded;
     }
   }
 
@@ -130,6 +141,13 @@ enum LiveMusicGenreType {
           color: Colors.white,
           letterSpacing: 0.2,
         );
+      case LiveMusicGenreType.sportsLive:
+        return const TextStyle(
+          fontSize: 16.5,
+          fontWeight: FontWeight.w900,
+          color: Colors.white,
+          letterSpacing: 0.4,
+        );
     }
   }
 }
@@ -147,6 +165,14 @@ class _LiveActEntry {
   final String? flyerImageUrl;
   final String? sourceInstagramUrl;
   final String? sourceInstagramHandle;
+  final String? sourceFacebookUrl;
+  final bool isPresaleActive;
+  final String? presalePrice;
+  final String? presaleUrl;
+  final bool isSportsMatch;
+  final String? matchTeams;
+  final String? broadcastDetails;
+  final bool isVideoStory;
   final VenueModel venue;
   final VenueEvent? event;
 
@@ -162,6 +188,14 @@ class _LiveActEntry {
     this.flyerImageUrl,
     this.sourceInstagramUrl,
     this.sourceInstagramHandle,
+    this.sourceFacebookUrl,
+    this.isPresaleActive = false,
+    this.presalePrice,
+    this.presaleUrl,
+    this.isSportsMatch = false,
+    this.matchTeams,
+    this.broadcastDetails,
+    this.isVideoStory = false,
     required this.venue,
     this.event,
   });
@@ -178,7 +212,7 @@ class LiveActsLineupSection extends ConsumerWidget {
     for (final venue in venues) {
       if (!venue.hasLiveMusic && venue.upcomingEvents.isEmpty) continue;
 
-      // 1. Foro DMT (Rock & Indie)
+      // 1. Foro DMT (Rock & Indie + Preventa verificada)
       if (venue.id == 'foro_dmt') {
         final ev = venue.upcomingEvents.firstWhere(
           (e) => e.id == 'foro_dmt_rock_friday',
@@ -196,12 +230,16 @@ class LiveActsLineupSection extends ConsumerWidget {
           flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/foro_dmt_rock_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/foro_dmt/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@foro_dmt',
+          sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
+          isPresaleActive: ev.isPresaleActive,
+          presalePrice: ev.presalePrice ?? 'Preventa: \$120 MXN • Taquilla: \$180 MXN',
+          presaleUrl: ev.presaleUrl,
           venue: venue,
           event: ev,
         ));
       }
 
-      // 2. Low Social Club (Tech-House)
+      // 2. Low Social Club (Tech-House + Preventa verificada)
       else if (venue.id == 'low_social_club') {
         final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
         entries.add(_LiveActEntry(
@@ -216,6 +254,10 @@ class LiveActsLineupSection extends ConsumerWidget {
           flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/low_social_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/lowclub.col/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@lowclub.col',
+          sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
+          isPresaleActive: ev.isPresaleActive,
+          presalePrice: ev.presalePrice ?? 'Preventa: \$100 MXN (Incluye Drink)',
+          presaleUrl: ev.presaleUrl,
           venue: venue,
           event: ev,
         ));
@@ -236,52 +278,110 @@ class LiveActsLineupSection extends ConsumerWidget {
           flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/guachirooftop/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@guachirooftop',
+          sourceFacebookUrl: venue.facebookUrl,
           venue: venue,
           event: ev,
         ));
       }
 
-      // 4. Bar La Puerta (Perreo & Urbano)
+      // 4. Bar La Puerta: Snacks & Drinks Oficial + La Puerta del Perreo (@lapuertadelperreo.dog)
       else if (venue.id == 'bar_la_puerta' || venue.id == 'la_puerta_bar') {
-        final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
+        final evSnacks = venue.upcomingEvents.firstWhere(
+          (e) => e.id == 'puerta_jueves_snacks_drinks',
+          orElse: () => venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue),
+        );
         entries.add(_LiveActEntry(
           id: 'act_bar_la_puerta',
-          actName: 'DJ Sets Perreo Old School & Urbano',
+          actName: 'DJ Sets Perreo Old School & Snacks',
           venueName: venue.name,
           zone: 'Centro Histórico Colima',
-          dateDisplay: ev.dateDisplay,
+          dateDisplay: evSnacks.dateDisplay,
           genreType: LiveMusicGenreType.perreo,
-          highlightText: 'Noche de snacks y drinks, caguamas bien frías y perreo clásico.',
+          highlightText: 'Noche de snacks y drinks a partir de las 7:00 PM, caguamas bien frías y perreo clásico.',
           promoNote: 'Jueves: Snacks y Drinks a partir de las 7:00 PM',
-          flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
-          sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/barlapuerta/',
-          sourceInstagramHandle: ev.sourceInstagramHandle ?? '@barlapuerta',
+          flyerImageUrl: evSnacks.flyerImageUrl ?? 'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
+          sourceInstagramUrl: evSnacks.sourceInstagramUrl ?? 'https://www.instagram.com/barlapuerta/',
+          sourceInstagramHandle: evSnacks.sourceInstagramHandle ?? '@barlapuerta',
+          sourceFacebookUrl: venue.facebookUrl,
           venue: venue,
-          event: ev,
+          event: evSnacks,
+        ));
+
+        // Segundo perfil verificado: @lapuertadelperreo.dog
+        final evPerreo = venue.upcomingEvents.firstWhere(
+          (e) => e.id == 'puerta_perreo_bellako',
+          orElse: () => evSnacks,
+        );
+        if (evPerreo.id == 'puerta_perreo_bellako') {
+          entries.add(_LiveActEntry(
+            id: 'act_puerta_del_perreo',
+            actName: 'La Puerta del Perreo • Bellakeo Underground',
+            venueName: '${venue.name} • Perreo Dog',
+            zone: 'Centro Histórico (27 de Septiembre)',
+            dateDisplay: evPerreo.dateDisplay,
+            genreType: LiveMusicGenreType.perreo,
+            highlightText: 'Sesión underground de reggaetón bellako, perreo sucio y ambiente festivo exclusivo.',
+            promoNote: evPerreo.promoNote ?? 'Shots de cortesía y caguamas especiales toda la noche',
+            flyerImageUrl: evPerreo.flyerImageUrl ?? 'assets/images/venues/flyers/la_puerta_del_perreo_flyer.jpg',
+            sourceInstagramUrl: evPerreo.sourceInstagramUrl ?? 'https://www.instagram.com/lapuertadelperreo.dog/',
+            sourceInstagramHandle: evPerreo.sourceInstagramHandle ?? '@lapuertadelperreo.dog',
+            sourceFacebookUrl: venue.facebookUrl,
+            venue: venue,
+            event: evPerreo,
+          ));
+        }
+      }
+
+      // 5. Cervecería de la Costa Carranza (Transmisión Fútbol en Pantalla Gigante)
+      else if (venue.id == 'costa_carranza') {
+        final evSports = venue.upcomingEvents.firstWhere(
+          (e) => e.isSportsMatch,
+          orElse: () => venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue),
+        );
+        entries.add(_LiveActEntry(
+          id: 'act_costa_carranza_futbol',
+          actName: '⚽ Clásico Nacional en Pantalla Gigante HD',
+          venueName: venue.name,
+          zone: 'Venustiano Carranza (Esmeralda Norte)',
+          dateDisplay: evSports.dateDisplay,
+          genreType: LiveMusicGenreType.sportsLive,
+          highlightText: 'Chivas vs América en pantalla gigante al aire libre, audio ambiente y cubetazos.',
+          promoNote: evSports.promoNote ?? 'Cubetazos 5x4 en Cerveza de la Costa durante el partido',
+          flyerImageUrl: evSports.flyerImageUrl ?? 'assets/images/venues/flyers/costa_carranza_futbol_flyer.jpg',
+          sourceInstagramUrl: evSports.sourceInstagramUrl ?? 'https://www.instagram.com/cerveceriadelacosta/',
+          sourceInstagramHandle: evSports.sourceInstagramHandle ?? '@cerveceriadelacosta',
+          sourceFacebookUrl: evSports.sourceFacebookUrl ?? venue.facebookUrl,
+          isSportsMatch: true,
+          matchTeams: evSports.matchTeams ?? 'CHIVAS vs AMÉRICA (Clásico Nacional)',
+          broadcastDetails: evSports.broadcastDetails ?? 'Pantalla Gigante HD al aire libre + Audio Ambiente',
+          isVideoStory: true,
+          venue: venue,
+          event: evSports,
         ));
       }
 
-      // 5. Dos Puntos (Indie & Vinyl Taproom)
+      // 6. Dos Puntos (Indie & Vinyl Taproom)
       else if (venue.id == 'dos_puntos') {
         final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
         entries.add(_LiveActEntry(
           id: 'act_dos_puntos',
           actName: 'DJ Set en Terraza & Mezclas Funk / Indie',
           venueName: venue.name,
-          zone: 'Tercer Anillo Periférico',
+          zone: 'Santos Degollado (Centro)',
           dateDisplay: ev.dateDisplay,
           genreType: LiveMusicGenreType.craftIndie,
-          highlightText: 'Jardín cervecero al aire libre, selección en vinilo y hamburguesas smash.',
+          highlightText: 'Jardín cervecero al aire libre, selección en vinilo y pizzas de autor.',
           promoNote: '2x1 en pints seleccionadas de 7:00 a 9:00 PM',
           flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/dos_puntos_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/dospuntoscerveceria/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@dospuntoscerveceria',
+          sourceFacebookUrl: venue.facebookUrl,
           venue: venue,
           event: ev,
         ));
       }
 
-      // 6. Almada Cantina Fina (Mariachi & Bohemia)
+      // 7. Almada Cantina Fina (Mariachi & Bohemia)
       else if (venue.id == 'almada_cantina') {
         entries.add(_LiveActEntry(
           id: 'act_almada',
@@ -295,6 +395,7 @@ class LiveActsLineupSection extends ConsumerWidget {
           flyerImageUrl: null,
           sourceInstagramUrl: 'https://www.instagram.com/almada_cantina.fina/',
           sourceInstagramHandle: venue.instagramHandle,
+          sourceFacebookUrl: venue.facebookUrl,
           venue: venue,
           event: null,
         ));
@@ -609,7 +710,7 @@ class _LiveActCard extends StatelessWidget {
                       ),
                     ),
 
-                    // Miniatura del Flyer oficial (con toque para abrir lightbox a pantalla completa)
+                    // Miniatura del Flyer oficial en proporción nativa vertical 9:16 sin recortes
                     if (item.flyerImageUrl != null) ...[
                       const SizedBox(width: 10),
                       GestureDetector(
@@ -622,6 +723,14 @@ class _LiveActCard extends StatelessWidget {
                                 flyerImageUrl: item.flyerImageUrl,
                                 sourceInstagramUrl: item.sourceInstagramUrl,
                                 sourceInstagramHandle: item.sourceInstagramHandle,
+                                sourceFacebookUrl: item.sourceFacebookUrl,
+                                isPresaleActive: item.isPresaleActive,
+                                presalePrice: item.presalePrice,
+                                presaleUrl: item.presaleUrl,
+                                isSportsMatch: item.isSportsMatch,
+                                matchTeams: item.matchTeams,
+                                broadcastDetails: item.broadcastDetails,
+                                isVideoStory: item.isVideoStory,
                               );
                           FlyerLightboxDialog.show(context, ev, item.venue);
                         },
@@ -629,14 +738,15 @@ class _LiveActCard extends StatelessWidget {
                           alignment: Alignment.bottomCenter,
                           children: [
                             Container(
-                              width: 82,
-                              height: 104,
+                              width: 80,
+                              height: 142,
                               decoration: BoxDecoration(
+                                color: Colors.black,
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: primary.withOpacity(0.8), width: 1.5),
+                                border: Border.all(color: primary.withOpacity(0.85), width: 1.5),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: primary.withOpacity(0.25),
+                                    color: primary.withOpacity(0.3),
                                     blurRadius: 8,
                                   ),
                                 ],
@@ -645,19 +755,20 @@ class _LiveActCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(9),
                                 child: AppVenueImage(
                                   imageUrl: item.flyerImageUrl!,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
                             Container(
-                              width: 82,
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              width: 80,
+                              padding: const EdgeInsets.symmetric(vertical: 2.5),
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.85),
                                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(9)),
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(Icons.zoom_in_rounded, size: 10, color: Colors.white),
                                   SizedBox(width: 2),
@@ -678,9 +789,132 @@ class _LiveActCard extends StatelessWidget {
                     ],
                   ],
                 ),
+
+                // Banner de Preventa Verificada si está activa
+                if (item.isPresaleActive) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: AppColors.neonViolet.withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: AppColors.neonViolet.withOpacity(0.6), width: 1.2),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.confirmation_number_rounded, size: 15, color: AppColors.neonViolet),
+                        const SizedBox(width: 7),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'PREVENTA DISPONIBLE',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.5,
+                                  color: AppColors.neonViolet,
+                                ),
+                              ),
+                              if (item.presalePrice != null)
+                                Text(
+                                  item.presalePrice!,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (item.presaleUrl != null && item.presaleUrl!.isNotEmpty)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.neonViolet,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              visualDensity: VisualDensity.compact,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                            ),
+                            onPressed: () => MonetizationConfig.launchUrlSafe(item.presaleUrl!),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.local_activity_rounded, size: 12),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Comprar',
+                                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // Banner de Transmisión Deportiva (Fútbol / Champions / Boxeo en Pantalla Gigante)
+                if (item.isSportsMatch) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10B981).withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: const Color(0xFF10B981).withOpacity(0.6), width: 1.2),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.sports_soccer_rounded, size: 16, color: Color(0xFF34D399)),
+                        const SizedBox(width: 7),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.matchTeams ?? 'PARTIDO EN VIVO',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF34D399),
+                                ),
+                              ),
+                              if (item.broadcastDetails != null)
+                                Text(
+                                  item.broadcastDetails!,
+                                  style: const TextStyle(
+                                    fontSize: 10.5,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF10B981),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: const Text(
+                            'PANTALLA GIGANTE',
+                            style: TextStyle(
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
 
-                // 3. Fila de Acciones: "Ver Lugar", "Instagram" y "Cómo llegar / Ride"
+                // 3. Fila de Acciones: "Ver Lugar", "Instagram", "Facebook" y "Cómo llegar / Ride"
                 Row(
                   children: [
                     // Botón Ver Establecimiento
@@ -736,6 +970,23 @@ class _LiveActCard extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+
+                    // Botón Facebook si existe
+                    if (item.sourceFacebookUrl != null || item.venue.facebookUrl != null) ...[
+                      InkWell(
+                        onTap: () => MonetizationConfig.launchUrlSafe(item.sourceFacebookUrl ?? item.venue.facebookUrl!),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1877F2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.facebook_rounded, size: 15, color: Colors.white),
                         ),
                       ),
                       const SizedBox(width: 8),
