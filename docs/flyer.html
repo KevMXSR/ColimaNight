@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColimaNight — Flyer Digital Interactivo</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+    
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    }
+    .font-syne {
+      font-family: 'Syne', system-ui, -apple-system, sans-serif;
+    }
+    .glass-card {
+      background: rgba(19, 19, 31, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .glass-card-elevated {
+      background: rgba(27, 27, 44, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+    }
+    .neon-border-cyan {
+      box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.35);
+    }
+    .neon-border-magenta {
+      box-shadow: 0 0 25px -5px rgba(255, 0, 127, 0.35);
+    }
+    .bar-anim-1 { animation: soundBar 1.2s ease-in-out infinite alternate; }
+    .bar-anim-2 { animation: soundBar 0.9s ease-in-out 0.2s infinite alternate; }
+    .bar-anim-3 { animation: soundBar 1.4s ease-in-out 0.4s infinite alternate; }
+    .bar-anim-4 { animation: soundBar 0.8s ease-in-out 0.1s infinite alternate; }
+    @keyframes soundBar {
+      0% { height: 6px; }
+      100% { height: 26px; }
+    }
+  </style>
+</head>
+<body class="bg-[#06070b] text-[#f8f9fd] antialiased p-3 sm:p-6 flex justify-center">
+
+  <div class="w-full max-w-2xl mx-auto space-y-6">
+
+    <!-- HERO BANNER PRINCIPAL (Flyer) -->
+    <div class="relative overflow-hidden rounded-3xl glass-card border border-white/15 p-6 sm:p-8 neon-border-cyan">
+      
+      <!-- Esferas de luz ambiental neón -->
+      <div class="absolute -top-16 -right-16 w-60 h-60 bg-[#00f0ff]/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-16 -left-16 w-60 h-60 bg-[#ff007f]/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Header del Flyer -->
+      <div class="relative z-10 flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#8a2be2] via-[#ff007f] to-[#00f0ff] p-0.5 shadow-lg shadow-[#00f0ff]/20">
+            <div class="w-full h-full bg-[#0a0a0f] rounded-[14px] flex items-center justify-center">
+              <svg class="w-5 h-5 text-[#00f0ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <span class="text-xs font-semibold tracking-[0.25em] text-[#a5a6ba] uppercase block">Cartelera Digital</span>
+            <span class="text-base font-bold font-syne text-white tracking-wider">COLIMA NIGHT</span>
+          </div>
+        </div>
+
+        <!-- Indicador de Audio / Visualizador en Vivo -->
+        <div class="flex items-center gap-2 bg-[#0a0a0f]/80 border border-white/10 px-3 py-1.5 rounded-full cursor-pointer hover:border-[#00f0ff]/40 transition-colors" onclick="toggleAudioBeat()">
+          <div class="flex items-end gap-1 h-6" id="equalizerContainer">
+            <span class="w-1 bg-[#00f0ff] rounded-full bar-anim-1 h-3"></span>
+            <span class="w-1 bg-[#ff007f] rounded-full bar-anim-2 h-5"></span>
+            <span class="w-1 bg-[#ffb800] rounded-full bar-anim-3 h-2"></span>
+            <span class="w-1 bg-[#00ff88] rounded-full bar-anim-4 h-6"></span>
+          </div>
+          <span class="text-xs font-medium text-white/90" id="audioBeatLabel">Vibe Activo</span>
+        </div>
+      </div>
+
+      <!-- Cuerpo del Flyer: Titular y Propuesta de Valor -->
+      <div class="relative z-10 my-6 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ff007f]/15 border border-[#ff007f]/30 text-xs text-[#ff007f] font-semibold">
+          <span class="w-2 h-2 rounded-full bg-[#ff007f] animate-ping"></span>
+          HOY EN VIVO &bull; COLIMA & VILLA DE ÁLVAREZ
+        </div>
+        
+        <h1 class="text-3xl sm:text-4xl font-extrabold font-syne tracking-tight leading-tight text-white">
+          DESCUBRE LA NOCHE <br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] via-[#ff007f] to-[#ffb800]">
+            EN TIEMPO REAL
+          </span>
+        </h1>
+
+        <p class="text-sm text-[#a5a6ba] max-w-lg leading-relaxed">
+          Consulta en vivo el aforo, música y promociones de los 22 spots más exclusivos sin pagar cover a ciegas ni arriesgar tu salida.
+        </p>
+      </div>
+
+      <!-- Acciones de Conversión Rápida -->
+      <div class="relative z-10 flex flex-wrap items-center gap-3 pt-2">
+        <button onclick="copyInvite()" class="flex-1 min-w-[200px] bg-gradient-to-r from-[#00f0ff] to-[#8a2be2] hover:brightness-110 text-[#0a0a0f] font-bold py-3 px-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#00f0ff]/25 transition-all text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+          <span id="inviteBtnText">Compartir Plan Con Amigos</span>
+        </button>
+
+        <a href="#venuesSection" class="bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold py-3 px-5 rounded-2xl flex items-center justify-center gap-2 transition-all text-sm">
+          <span>Ver Hotspots (22)</span>
+          <svg class="w-4 h-4 text-[#00f0ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN INTERACTIVA DE ESTABLECIMIENTOS & FILTROS -->
+    <div id="venuesSection" class="space-y-4">
+      
+      <!-- Selector de Pestañas / Corredores -->
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <h2 class="text-sm font-bold font-syne tracking-wider uppercase text-white/90">
+          Zonas & Corredores Destacados
+        </h2>
+        
+        <div class="flex items-center gap-1.5 p-1 bg-[#13131f] border border-white/10 rounded-2xl overflow-x-auto text-xs">
+          <button onclick="filterVenues('all')" id="tab-all" class="tab-btn px-3 py-1.5 rounded-xl font-medium transition-all bg-[#00f0ff] text-[#0a0a0f] font-bold shadow">
+            Todos (22)
+          </button>
+          <button onclick="filterVenues('sandoval')" id="tab-sandoval" class="tab-btn px-3 py-1.5 rounded-xl font-medium text-[#a5a6ba] hover:text-white transition-all">
+            Sandoval
+          </button>
+          <button onclick="filterVenues('centro')" id="tab-centro" class="tab-btn px-3 py-1.5 rounded-xl font-medium text-[#a5a6ba] hover:text-white transition-all">
+            Centro
+          </button>
+          <button onclick="filterVenues('cervecerias')" id="tab-cervecerias" class="tab-btn px-3 py-1.5 rounded-xl font-medium text-[#a5a6ba] hover:text-white transition-all">
+            Craft & Beer
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de Tarjetas Interactivas -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="venueCardsContainer">
+
+        <!-- Spot 1: El Guachi -->
+        <div class="venue-card sandoval glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#00f0ff]/40 group cursor-pointer" onclick="selectVenue('El Guachi', 'Calle Ignacio Sandoval 1943', 'Club & DJ Sets', '88%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#ff3366]/20 border border-[#ff3366]/40 text-[#ff3366] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff3366]"></span> Aforo 88%
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">Corredor Sandoval</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#00f0ff] transition-colors">El Guachi</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">Club nocturno sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería de autor.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#00ff88] font-medium">&bull; DJ Set Activo</span>
+            <span class="text-[#00f0ff] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Spot 2: Cervecería de la Costa -->
+        <div class="venue-card cervecerias glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#ffb800]/40 group cursor-pointer" onclick="selectVenue('Cervecería de la Costa', '8 Puntos Verificados (Tercer Anillo, Sandoval, Centro...)', 'Craft Beer & Cocina de Mar', '65%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#00ff88]/20 border border-[#00ff88]/40 text-[#00ff88] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00ff88]"></span> Aforo Fluido 65%
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">8 Sucursales</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#ffb800] transition-colors">Cervecería de la Costa</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">Pintas artesanales premiadas, mariscos frescos y terrazas relajadas para iniciar la noche.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#ffb800] font-medium">&bull; 2x1 Pintas hasta 10 PM</span>
+            <span class="text-[#ffb800] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Spot 3: Dos Puntos Cervecería -->
+        <div class="venue-card centro glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#ff007f]/40 group cursor-pointer" onclick="selectVenue('Dos Puntos', 'Santos Degollado 34, Centro Histórico', 'Cervecería Urbana & Terraza', '78%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#00f0ff]/20 border border-[#00f0ff]/40 text-[#00f0ff] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00f0ff]"></span> Aforo 78%
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">Centro Histórico</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#ff007f] transition-colors">Dos Puntos</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">Punto de encuentro clásico en el andador del Centro. Ambiente relajado, cerveza helada y charla.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#ff007f] font-medium">&bull; Música Indie & Rock</span>
+            <span class="text-[#ff007f] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Spot 4: Almada Cantina Fina -->
+        <div class="venue-card sandoval glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#8a2be2]/40 group cursor-pointer" onclick="selectVenue('Almada Cantina Fina', 'Ignacio Sandoval 1906, Las Pérgolas', 'Cantina Contemporánea & Mezcal', '82%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#8a2be2]/20 border border-[#8a2be2]/40 text-[#c084fc] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#c084fc]"></span> Aforo 82%
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">Corredor Sandoval</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#c084fc] transition-colors">Almada Cantina Fina</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">Gastronomía mexicana elevada, mixología con mezcales de origen y ambiente premium de fiesta.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#00ff88] font-medium">&bull; Botanas Tradicionales</span>
+            <span class="text-[#c084fc] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Spot 5: Estación Colimita -->
+        <div class="venue-card cervecerias centro glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#ffb800]/40 group cursor-pointer" onclick="selectVenue('Estación Colimita', 'Centro (Andador) y Constitución', 'Taproom Oficial Cervecería de Colima', '70%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#00ff88]/20 border border-[#00ff88]/40 text-[#00ff88] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00ff88]"></span> Aforo 70%
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">Centro & Constitución</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#ffb800] transition-colors">Estación Colimita</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">El hogar de Colimita Lager, Cayaco y Páramo en su temperatura perfecta de barril.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#ffb800] font-medium">&bull; Taproom Exclusivo</span>
+            <span class="text-[#ffb800] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Spot 6: Foro DMT Rock Bar -->
+        <div class="venue-card centro glass-card hover:glass-card-elevated p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:border-[#ff007f]/40 group cursor-pointer" onclick="selectVenue('Foro DMT', 'Santos Degollado 28, Centro', 'Rock en Vivo & Cerveza', '90%')">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#ff3366]/20 border border-[#ff3366]/40 text-[#ff3366] font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff3366]"></span> Aforo 90% (Casi lleno)
+            </span>
+            <span class="text-xs font-mono text-[#a5a6ba]">Centro Histórico</span>
+          </div>
+          <h3 class="text-lg font-bold font-syne text-white group-hover:text-[#ff007f] transition-colors">Foro DMT</h3>
+          <p class="text-xs text-[#a5a6ba] mt-1 line-clamp-2">Bandas en vivo, tributos y energía auténtica del rock en el corazón de Colima.</p>
+          <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-[#ff007f] font-medium">&bull; Banda en Vivo 11:30 PM</span>
+            <span class="text-[#ff007f] font-semibold flex items-center gap-1">Ver Detalles &rarr;</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- MODAL INFORMATIVO / TOAST REACTIVO -->
+    <div id="actionToast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-[#13131f] border border-[#00f0ff]/50 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#00ff88] animate-pulse"></span>
+      <span class="text-xs font-medium" id="toastMessage">Invitación copiada al portapapeles.</span>
+    </div>
+
+  </div>
+
+  <script>
+    function filterVenues(category) {
+      // Actualizar estilo de botones
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-3 py-1.5 rounded-xl font-medium text-[#a5a6ba] hover:text-white transition-all';
+      });
+      const activeBtn = document.getElementById('tab-' + category);
+      if (activeBtn) {
+        activeBtn.className = 'tab-btn px-3 py-1.5 rounded-xl font-bold bg-[#00f0ff] text-[#0a0a0f] shadow transition-all';
+      }
+
+      // Filtrar tarjetas
+      const cards = document.querySelectorAll('.venue-card');
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.classList.remove('hidden');
+        } else {
+          if (card.classList.contains(category)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function selectVenue(name, address, style, capacity) {
+      showToast(`📍 ${name} seleccionado (${capacity} aforo) - Abriendo en ColimaNight`);
+    }
+
+    function copyInvite() {
+      const inviteMsg = '¡Oigan! Revisemos la app de ColimaNight 🍸🌙 para ver qué lugares tienen buen aforo y 2x1 hoy: https://colimanight.app';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(inviteMsg);
+      }
+      showToast('🎉 Enlace de salida copiado para WhatsApp / Telegram');
+      const btn = document.getElementById('inviteBtnText');
+      btn.innerText = '¡Copiado para Enviar!';
+      setTimeout(() => {
+        btn.innerText = 'Compartir Plan Con Amigos';
+      }, 2500);
+    }
+
+    function toggleAudioBeat() {
+      const label = document.getElementById('audioBeatLabel');
+      const eq = document.getElementById('equalizerContainer');
+      if (label.innerText.includes('Activo')) {
+        label.innerText = 'Vibe Pausado';
+        label.classList.add('text-[#a5a6ba]');
+        eq.style.opacity = '0.3';
+        showToast('⏸️ Vibe sonoro pausado');
+      } else {
+        label.innerText = 'Vibe Activo';
+        label.classList.remove('text-[#a5a6ba]');
+        eq.style.opacity = '1';
+        showToast('🎵 Sintetizador y beats nocturnos activos');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('actionToast');
+      const text = document.getElementById('toastMessage');
+      text.innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
 import 'package:colima_night/features/transport/presentation/providers/transport_provider.dart';
 import 'package:colima_night/features/transport/presentation/widgets/neon_ride_button.dart';

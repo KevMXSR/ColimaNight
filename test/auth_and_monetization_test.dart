@@ -5,7 +5,6 @@ import 'package:colima_night/core/config/monetization_config.dart';
 import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
-import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
 
 void main() {
   setUp(() {

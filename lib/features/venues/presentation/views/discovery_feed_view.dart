@@ -10,6 +10,7 @@ import '../widgets/hot_right_now_card.dart';
 import '../widgets/venue_card.dart';
 import '../widgets/venue_compact_list_tile.dart';
 import '../widgets/top_ranking_podium_bar.dart';
+import '../widgets/nightlife_digital_flyer_card.dart';
 import '../widgets/faded_red_report_button.dart';
 import '../widgets/expansion_roadmap_modal.dart';
 import 'venue_detail_map_view.dart';
@@ -351,10 +352,16 @@ class DiscoveryFeedView extends ConsumerWidget {
             // Barra de Chips de Filtros Rápidos
             const SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(top: 12, bottom: 8),
+                padding: EdgeInsets.only(top: 12, bottom: 4),
                 child: FilterChipsBar(),
               ),
             ),
+
+            // Banner Interactivo y Colapsable de Cartelera Digital (ColimaNight Live Flyer)
+            if (searchQuery.isEmpty)
+              const SliverToBoxAdapter(
+                child: NightlifeDigitalFlyerCard(),
+              ),
 
             // Sección "HOT RIGHT NOW" (Visible si no hay búsqueda activa)
             if (searchQuery.isEmpty && hotVenue != null) ...[

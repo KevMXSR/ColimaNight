@@ -8,6 +8,11 @@ class VenueEvent {
   final String? coverPrice; // Ej: 'Aprox. $100 MXN' o 'Entrada Libre'
   final String? promoNote; // Ej: '2x1 en copeo antes de las 11 PM'
   final bool? forcedIsToday;
+  final String? flyerImageUrl; // Ej: 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg'
+  final String? sourceInstagramUrl; // Ej: 'https://www.instagram.com/guachirooftop/' o link directo al story/post
+  final String? sourceInstagramHandle; // Ej: '@guachirooftop', '@barlapuerta'
+  final bool isStoryAnnouncement; // Indica si proviene de anuncio de historias efímeras
+  final String? specialSchedule; // Ej: 'Apertura especial 7:00 PM para Snacks & Drinks'
 
   const VenueEvent({
     required this.id,
@@ -18,6 +23,11 @@ class VenueEvent {
     this.coverPrice,
     this.promoNote,
     this.forcedIsToday,
+    this.flyerImageUrl,
+    this.sourceInstagramUrl,
+    this.sourceInstagramHandle,
+    this.isStoryAnnouncement = false,
+    this.specialSchedule,
   });
 
   /// Evalúa dinámicamente si el evento está ocurriendo HOY según DateTime.now()
@@ -56,6 +66,8 @@ class VenueModel {
   final double latitude;
   final double longitude;
   final String? instagramHandle;
+  final String? secondaryInstagramHandle; // Handle secundario (ej: @guachirooftop para terraza)
+  final String? secondaryInstagramUrl; // Enlace directo a perfil secundario
   final String? tikTokHandle;
   final String? facebookUrl;
   final String vibeGenre;
@@ -103,6 +115,8 @@ class VenueModel {
     required this.latitude,
     required this.longitude,
     this.instagramHandle,
+    this.secondaryInstagramHandle,
+    this.secondaryInstagramUrl,
     this.tikTokHandle,
     this.facebookUrl,
     required this.vibeGenre,
@@ -216,6 +230,8 @@ class VenueModel {
     double? latitude,
     double? longitude,
     String? instagramHandle,
+    String? secondaryInstagramHandle,
+    String? secondaryInstagramUrl,
     String? tikTokHandle,
     String? facebookUrl,
     String? vibeGenre,
@@ -260,6 +276,8 @@ class VenueModel {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       instagramHandle: instagramHandle ?? this.instagramHandle,
+      secondaryInstagramHandle: secondaryInstagramHandle ?? this.secondaryInstagramHandle,
+      secondaryInstagramUrl: secondaryInstagramUrl ?? this.secondaryInstagramUrl,
       tikTokHandle: tikTokHandle ?? this.tikTokHandle,
       facebookUrl: facebookUrl ?? this.facebookUrl,
       vibeGenre: vibeGenre ?? this.vibeGenre,

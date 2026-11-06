@@ -235,11 +235,18 @@ class _SplashLoadingViewState extends ConsumerState<SplashLoadingView>
                               ),
                             ],
                           ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.nightlife_rounded,
-                              size: 48,
-                              color: Colors.white,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.asset(
+                              'assets/images/logo_colimanight_primary.png',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => const Center(
+                                child: Icon(
+                                  Icons.nightlife_rounded,
+                                  size: 48,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         );

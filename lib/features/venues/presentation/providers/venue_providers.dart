@@ -27,7 +27,7 @@ final List<VenueModel> _initialVenues = [
     category: 'Club & Antro',
     zone: 'Calle Ignacio Sandoval 1943, Paseo de La Cantera, La Cantera, 28018 Colima, Col.',
     description:
-        'Club nocturno sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería.',
+        'Club nocturno y terraza sobre Ignacio Sandoval con DJ sets, audio envolvente y coctelería.',
     coverImageUrl: 'assets/images/venues/el_guachi.jpg',
     galleryUrls: [
       'assets/images/venues/el_guachi.jpg',
@@ -39,16 +39,19 @@ final List<VenueModel> _initialVenues = [
     hasLiveMusic: true,
     liveMusicAct: 'DJ Sets en vivo & Reggaetón Hits',
     isVipPresent: false,
-    hasPromo: false,
+    hasPromo: true,
+    promoHeadline: 'Sunset Rooftop: 2x1 en Mixología (6:00 - 9:00 PM)',
     parkingAvailable: true,
     parkingDetails: 'Estacionamiento sobre Ignacio Sandoval',
     latitude: 19.263319260681573,
     longitude: -103.70427827536956,
     instagramHandle: '@guachirooftop',
+    secondaryInstagramHandle: '@elguachicolima',
+    secondaryInstagramUrl: 'https://www.instagram.com/elguachicolima/',
     tikTokHandle: '@elguachicolima',
     facebookUrl: 'https://facebook.com/elguachicolima',
     vibeGenre: 'Perreo / Tech-House / Pop Latino',
-    schedule: '9:30 PM - 5:30 AM',
+    schedule: 'Rooftop: 6:00 PM - 2:00 AM; Club: 9:30 PM - 5:30 AM',
     estimatedMinutes: 6,
     securityStatus: 'normal',
     activeIncidentReportsCount: 0,
@@ -60,6 +63,20 @@ final List<VenueModel> _initialVenues = [
     livePresenceCount: 0,
     upcomingEvents: [
       VenueEvent(
+        id: 'guachi_rooftop_sunset',
+        title: 'Sunset Session Rooftop & Mixología',
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 18, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 18, minute: 0),
+        artistOrDj: 'Deep House & Sunset Beats en Terraza',
+        coverPrice: 'Entrada Libre en Rooftop',
+        promoNote: '2x1 en coctelería de autor antes de las 9:00 PM',
+        flyerImageUrl: 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/guachirooftop/',
+        sourceInstagramHandle: '@guachirooftop',
+        isStoryAnnouncement: true,
+        specialSchedule: 'Terraza abierta desde las 6:00 PM',
+      ),
+      VenueEvent(
         id: 'guachi_friday_reggaeton',
         title: 'Viernes de Reggaetón & Tech-House',
         dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 22, minute: 30)),
@@ -67,6 +84,10 @@ final List<VenueModel> _initialVenues = [
         artistOrDj: 'DJ Residente & Sets Urbanos',
         coverPrice: 'Aprox. \$100 MXN',
         promoNote: 'Promociones en copeo antes de medianoche',
+        flyerImageUrl: 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/guachirooftop/',
+        sourceInstagramHandle: '@guachirooftop',
+        isStoryAnnouncement: true,
       ),
       VenueEvent(
         id: 'guachi_saturday_party',
@@ -76,6 +97,10 @@ final List<VenueModel> _initialVenues = [
         artistOrDj: 'DJ Invitado de Guadalajara',
         coverPrice: 'Aprox. \$100 MXN',
         promoNote: 'Mesas VIP y servicio de botellas',
+        flyerImageUrl: 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/elguachicolima/',
+        sourceInstagramHandle: '@elguachicolima',
+        isStoryAnnouncement: false,
       ),
     ],
   ),
@@ -545,7 +570,8 @@ final List<VenueModel> _initialVenues = [
     hasLiveMusic: true,
     liveMusicAct: 'DJ Set en Terraza & Mezclas en Vivo',
     isVipPresent: false,
-    hasPromo: false,
+    hasPromo: true,
+    promoHeadline: '2x1 en Pints Seleccionadas de 7:00 a 9:00 PM',
     parkingAvailable: true,
     parkingDetails: 'Estacionamiento sobre Calzada Galván y calles aledañas',
     latitude: 19.243560963847916,
@@ -571,7 +597,11 @@ final List<VenueModel> _initialVenues = [
         eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 0),
         artistOrDj: 'DJ Residente en Terraza',
         coverPrice: 'Hasta \$180 MXN',
-        promoNote: 'Cervezas artesanales de barril y cocina urbana',
+        promoNote: '2x1 en pints seleccionadas antes de las 9:00 PM',
+        flyerImageUrl: 'assets/images/venues/flyers/dos_puntos_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/dospuntoscerveceria/',
+        sourceInstagramHandle: '@dospuntoscerveceria',
+        isStoryAnnouncement: true,
       ),
     ],
   ),
@@ -609,16 +639,18 @@ final List<VenueModel> _initialVenues = [
     upcomingEvents: [],
   ),
 
-  // --- LA PUERTA DEL PERREO ---
-  const VenueModel(
+  // --- BAR LA PUERTA ---
+  VenueModel(
     id: 'la_puerta_bar',
-    name: 'La Puerta del Perreo',
-    category: 'Antro & Club Urbano',
+    name: 'Bar La Puerta',
+    category: 'Bar Urbano & Club',
     zone: 'C. 27 de Septiembre 135, Centro, 28000 Colima, Col.',
     description:
-        'Club nocturno en el Centro enfocado al reggaetón, perreo y ambiente festivo hasta tarde.',
+        'Bar icónico en el Centro de Colima con perreo, tragos, snacks y ambiente festivo.',
     coverImageUrl: 'assets/images/venues/la_puerta_bar.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/la_puerta_bar.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 340,
     capacityPercent: 0,
@@ -626,24 +658,53 @@ final List<VenueModel> _initialVenues = [
     hasLiveMusic: true,
     liveMusicAct: 'DJ Sets Perreo Old School & Urbano',
     isVipPresent: false,
-    hasPromo: false,
+    hasPromo: true,
+    promoHeadline: 'Jueves: Snacks y Drinks a partir de las 7:00 PM',
     parkingAvailable: false,
     parkingDetails: 'Estacionamiento sobre vía pública en zona Centro',
     latitude: 19.24465620515491,
     longitude: -103.72493732805331,
-    instagramHandle: '@lapuertadelperreo.dog',
-    tikTokHandle: '@lapuertaperreocol',
+    instagramHandle: '@barlapuerta',
+    tikTokHandle: '@barlapuertacolima',
     vibeGenre: 'Reggaetón / Urbano / Latin Beats',
-    schedule: '9:00 PM - 5:00 AM',
+    schedule: 'Jueves: 7:00 PM - 3:00 AM (Snacks & Drinks); Vie - Sáb: 8:00 PM - 4:00 AM',
     estimatedMinutes: 5,
     securityStatus: 'normal',
     activeIncidentReportsCount: 0,
     hasCover: false,
-    coverDescription: 'Sin Cover',
+    coverDescription: 'Sin Cover (Jueves)',
     isOpenNow: false,
-    closedReason: 'Cerrado hoy · Abre Jueves 21:00',
+    closedReason: 'Cerrado hoy · Abre Jueves 19:00',
     livePresenceCount: 0,
-    upcomingEvents: [],
+    upcomingEvents: [
+      VenueEvent(
+        id: 'puerta_jueves_snacks_drinks',
+        title: 'Jueves de Snacks & Drinks (A partir de las 7:00 PM)',
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 19, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 19, minute: 0),
+        artistOrDj: 'Música & Precopeo en Bar La Puerta',
+        coverPrice: 'Entrada Libre / Sin Cover',
+        promoNote: 'Snacks y Drinks a partir de las 7:00 PM',
+        flyerImageUrl: 'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/barlapuerta/',
+        sourceInstagramHandle: '@barlapuerta',
+        isStoryAnnouncement: true,
+        specialSchedule: 'Apertura especial los jueves a las 7:00 PM',
+      ),
+      VenueEvent(
+        id: 'puerta_viernes_perreo',
+        title: 'Viernes Perreo & Hits Urbanos',
+        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 0)),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 0),
+        artistOrDj: 'DJ Residente Perreo',
+        coverPrice: 'Sin Cover antes de las 11 PM',
+        promoNote: 'Promoción en shots y caguamas',
+        flyerImageUrl: 'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/barlapuerta/',
+        sourceInstagramHandle: '@barlapuerta',
+        isStoryAnnouncement: false,
+      ),
+    ],
   ),
 
   // --- LOW SOCIAL CLUB ---
@@ -665,7 +726,8 @@ final List<VenueModel> _initialVenues = [
     hasLiveMusic: true,
     liveMusicAct: 'DJ Residente & Sets Tech-House',
     isVipPresent: false,
-    hasPromo: false,
+    hasPromo: true,
+    promoHeadline: '2x1 en Gin & Coctelería antes de medianoche',
     parkingAvailable: true,
     parkingDetails: 'Estacionamiento sobre Av. Constitución',
     latitude: 19.241007671540903,
@@ -691,7 +753,11 @@ final List<VenueModel> _initialVenues = [
         eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 23, minute: 0),
         artistOrDj: 'DJ Residente & Visuales Inmersivos',
         coverPrice: 'Aprox. \$100 MXN',
-        promoNote: 'Acceso club y coctelería de autor',
+        promoNote: '2x1 en mixología y acceso antes de medianoche',
+        flyerImageUrl: 'assets/images/venues/flyers/low_social_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/lowclub.col/',
+        sourceInstagramHandle: '@lowclub.col',
+        isStoryAnnouncement: true,
       ),
     ],
   ),
@@ -1152,6 +1218,9 @@ final mockVenuesProvider = StateNotifierProvider<VenuesNotifier, List<VenueModel
 // Estado de Búsqueda
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
+// Estado de Categoría seleccionada
+final selectedCategoryProvider = StateProvider<String?>((ref) => null);
+
 // Filtro de Chips seleccionado
 final selectedFilterChipProvider =
     StateProvider<VenueFilterChip>((ref) => VenueFilterChip.all);
@@ -1218,10 +1287,15 @@ final weeklyEventsProvider = Provider<List<ConsolidatedEventItem>>((ref) {
 // Lista filtrada en tiempo real
 final filteredVenuesProvider = Provider<List<VenueModel>>((ref) {
   final query = ref.watch(searchQueryProvider).trim().toLowerCase();
+  final selectedCategory = ref.watch(selectedCategoryProvider);
   final activeChip = ref.watch(selectedFilterChipProvider);
   final allVenues = ref.watch(mockVenuesProvider);
 
   final list = allVenues.where((venue) {
+    final matchesCategory = selectedCategory == null ||
+        venue.category.toLowerCase().contains(selectedCategory.toLowerCase());
+    if (!matchesCategory) return false;
+
     final matchesQuery = query.isEmpty ||
         venue.name.toLowerCase().contains(query) ||
         venue.category.toLowerCase().contains(query) ||
@@ -1238,7 +1312,8 @@ final filteredVenuesProvider = Provider<List<VenueModel>>((ref) {
       case VenueFilterChip.liveMusic:
         return venue.hasLiveMusic;
       case VenueFilterChip.promos:
-        return venue.hasPromo;
+        return venue.hasPromo ||
+            venue.upcomingEvents.any((e) => e.promoNote != null && e.promoNote!.isNotEmpty);
       case VenueFilterChip.parking:
         return venue.parkingAvailable;
       case VenueFilterChip.highCapacity:

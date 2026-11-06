@@ -30,6 +30,21 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
 - **Bordes de refracción:** Degradado linear blanco sutil (`0.08` a `0.02`) con ancho de 1.2px.
 - **Aura Pulsante (`PulsingGlow`):** Animación infinita con curva `easeInOut` que interpola el radio de desenfoque de 8px a 24px y la escala a 1.025x en los lugares destacados.
 
+### 1.4 Jerarquía Oficial de Logotipos & Marca
+1. **Logotipo Oficial Primario — "Tropical Lounge & Coctelería de Autor":**
+   - **Ruta del Activo:** `assets/images/logo_colimanight_primary.png` (y alias `logo_colimanight_official.png`).
+   - **Composición:** Copa de cóctel y hojas de palma tropical en trazo neón continuo con degradado magenta (`#FF007F`), violeta (`#8A2BE2`) y ámbar (`#FFB800`) sobre fondo obsidiana espacial.
+   - **Casos de Uso:** Icono de la aplicación, pantalla de carga/splash, header principal en redes sociales, favicon web e identidad de marca general.
+2. **Logotipo Oficial Secundario — "Monograma Luxury 'CN' & Silueta Volcán de Colima":**
+   - **Ruta del Activo:** `assets/images/logo_colimanight_secondary.png`.
+   - **Composición:** Monograma geométrico entrelazado 'C' y 'N' en cyan neón (`#00F0FF`) y violeta (`#8A2BE2`), con la silueta luminiscente y equilibrada del Volcán de Colima en su centro negativo.
+   - **Casos de Uso:** Base oficial para publicidad secundaria, campañas segmentadas VIP, marcas de agua, flyers de eventos patrocinados, pases exclusivos y sellos de verificación física.
+
+### 1.5 Ecosistema de Creatividades & Marketing Digital
+- **Cartelera Digital / Flyer Interactivo (`docs/flyer.html` & `lib/.../nightlife_digital_flyer_card.dart`):** Banner deslizable y colapsable en el feed principal y micrositio web promocional para compartir por WhatsApp y redes sociales.
+- **Póster Minimalista Suizo (`colimanight_minimalist_poster.html`):** Formato editorial con coordenadas geográficas y código QR para exhibición en barras y accesos de los 22 establecimientos.
+- **Plantilla Instagram Stories 9:16 (`colimanight_instagram_story_ad_secondary.png`):** Banner vertical publicitario de alta resolución con el logotipo secundario, titulares VIP y llamado a la acción deslizable.
+
 ---
 
 ## 2. 📱 Catálogo Oficial de Establecimientos (22 Puntos Verificados)
