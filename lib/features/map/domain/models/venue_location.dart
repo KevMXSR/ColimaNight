@@ -496,6 +496,22 @@ class VenueLocation {
           instagramHandle: 'paraisodrinkscolima',
           whatsappNumber: '+523121234567',
         ),
+        // Cervecería Chapultepec (Corredor Venustiano Carranza Norte / Esmeralda)
+        const VenueLocation(
+          id: 'cerveceria_chapultepec',
+          name: 'Cervecería Chapultepec',
+          category: VenueCategory.barPub,
+          corridorId: CorridorId.venustianoCarranza,
+          address: 'Av. Venustiano Carranza #1726, locales 3 y 4, Residencial Esmeralda Nte., 28017 Colima, Col.',
+          coordinates: GeoPoint(19.273223, -103.715025),
+          currentStatus: VenueStatus.available,
+          currentOccupancyPercentage: 75,
+          hasCover: false,
+          musicGenre: 'Pop Rock, Música Casual & Hits',
+          activePromotion: 'Todo a un Mismo Precio en bebidas y alimentos',
+          instagramHandle: 'cerveceriachapultepeccolima',
+          whatsappNumber: '+523123235812',
+        ),
       ];
 
   /// Easter Egg Memorial de Barezzito

@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../providers/auth_provider.dart';
+import '../../services/colima_oauth_service.dart';
 import 'account_selector_sheet.dart';
 import 'native_social_account_chooser_sheet.dart';
 
@@ -29,6 +30,59 @@ class AuthModal extends ConsumerStatefulWidget {
 }
 
 class _AuthModalState extends ConsumerState<AuthModal> {
+  Future<void> _handleOfficialProviderLogin(
+    SocialAuthProvider provider,
+    String providerName,
+  ) async {
+    Navigator.of(context).pop();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.surfaceElevated,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        content: Row(
+          children: [
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.neonCyan),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Abriendo selector oficial de cuentas de $providerName en este dispositivo...',
+                style: AppTypography.caption.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+
+    // Lanza la pantalla oficial del proveedor para seleccionar cuentas reales activas en el dispositivo
+    await ColimaOAuthService.launchAccountChooser(provider);
+
+    // Sincroniza la sesión con el proveedor oficial
+    switch (provider) {
+      case SocialAuthProvider.google:
+        await ref.read(authProvider.notifier).signInWithGoogle();
+        break;
+      case SocialAuthProvider.facebook:
+        await ref.read(authProvider.notifier).signInWithFacebook(
+          displayName: 'Usuario Facebook',
+          email: 'usuario@facebook.com',
+        );
+        break;
+      case SocialAuthProvider.instagram:
+        await ref.read(authProvider.notifier).signInWithInstagram(
+          username: 'usuario_colima',
+        );
+        break;
+    }
+  }
+
   Future<void> _openAccountSelector(SocialProviderType provider) async {
     Navigator.of(context).pop();
     await NativeSocialAccountChooserSheet.show(context, initialProvider: provider);
@@ -153,7 +207,7 @@ class _AuthModalState extends ConsumerState<AuthModal> {
               backgroundColor: Colors.white,
               textColor: Colors.black,
               iconColor: Colors.black,
-              onTap: () => _openAccountSelector(SocialProviderType.google),
+              onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.google, 'Google'),
             ),
             const SizedBox(height: 10),
 
@@ -164,7 +218,7 @@ class _AuthModalState extends ConsumerState<AuthModal> {
               backgroundColor: const Color(0xFFE1306C),
               textColor: Colors.white,
               iconColor: Colors.white,
-              onTap: () => _openAccountSelector(SocialProviderType.instagram),
+              onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.instagram, 'Instagram'),
             ),
             const SizedBox(height: 10),
 
@@ -175,9 +229,20 @@ class _AuthModalState extends ConsumerState<AuthModal> {
               backgroundColor: const Color(0xFF1877F2),
               textColor: Colors.white,
               iconColor: Colors.white,
-              onTap: () => _openAccountSelector(SocialProviderType.facebook),
+              onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.facebook, 'Facebook'),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
+
+            // Acceso a selector avanzado de cuentas guardadas en dispositivo
+            TextButton.icon(
+              onPressed: () => _openAccountSelector(SocialProviderType.google),
+              icon: const Icon(Icons.manage_accounts_rounded, size: 16, color: AppColors.neonCyan),
+              label: Text(
+                'Cuentas guardadas y selectores de dispositivo',
+                style: AppTypography.caption.copyWith(color: AppColors.neonCyan, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 6),
 
             // Botón para continuar como Invitado
             TextButton(

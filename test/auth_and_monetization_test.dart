@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:colima_night/core/config/monetization_config.dart';
 import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
+import 'package:colima_night/features/auth/services/colima_oauth_service.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 
 void main() {
@@ -208,6 +209,27 @@ void main() {
       );
 
       expect(venueWithDefaultPresence.livePresence, isNonNegative);
+    });
+  });
+
+  group('ColimaOAuthService Official Device Chooser Tests', () {
+    test('buildProviderAccountChooserUri builds valid Google Account Chooser with prompt=select_account', () {
+      final googleUri = ColimaOAuthService.buildProviderAccountChooserUri(SocialAuthProvider.google);
+      expect(googleUri.host, contains('accounts.google.com'));
+      expect(googleUri.queryParameters['prompt'], equals('select_account'));
+      expect(googleUri.queryParameters['scope'], contains('email'));
+    });
+
+    test('buildProviderAccountChooserUri builds valid Facebook OAuth dialog URI', () {
+      final fbUri = ColimaOAuthService.buildProviderAccountChooserUri(SocialAuthProvider.facebook);
+      expect(fbUri.host, contains('facebook.com'));
+      expect(fbUri.queryParameters['client_id'], isNotEmpty);
+    });
+
+    test('buildProviderAccountChooserUri builds valid Instagram OAuth URI', () {
+      final igUri = ColimaOAuthService.buildProviderAccountChooserUri(SocialAuthProvider.instagram);
+      expect(igUri.host, contains('instagram.com'));
+      expect(igUri.queryParameters['scope'], contains('user_profile'));
     });
   });
 }

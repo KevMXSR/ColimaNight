@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../providers/auth_provider.dart';
+import '../../services/colima_oauth_service.dart';
 
 enum SocialProviderType { google, instagram, facebook }
 
@@ -39,10 +40,6 @@ class _NativeSocialAccountChooserSheetState
   late SocialProviderType _selectedProvider;
   List<Map<String, String>> _recentAccounts = [];
   bool _isLoadingAccounts = true;
-  bool _isCustomAccountExpanded = false;
-
-  final TextEditingController _customNameController = TextEditingController();
-  final TextEditingController _customEmailController = TextEditingController();
   bool _isSubmitting = false;
 
   @override
@@ -52,11 +49,36 @@ class _NativeSocialAccountChooserSheetState
     _fetchAccounts();
   }
 
-  @override
-  void dispose() {
-    _customNameController.dispose();
-    _customEmailController.dispose();
-    super.dispose();
+  Future<void> _launchOfficialProvider(
+    SocialAuthProvider provider,
+    String providerName,
+  ) async {
+    Navigator.of(context).pop(true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.surfaceElevated,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        content: Row(
+          children: [
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.neonCyan),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Abriendo selector oficial de cuentas de $providerName en este dispositivo...',
+                style: AppTypography.caption.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+    await ColimaOAuthService.launchAccountChooser(provider);
   }
 
   Future<void> _fetchAccounts() async {
@@ -214,7 +236,6 @@ class _NativeSocialAccountChooserSheetState
         onTap: () {
           setState(() {
             _selectedProvider = provider;
-            _isCustomAccountExpanded = false;
           });
         },
         child: AnimatedContainer(
@@ -330,27 +351,13 @@ class _NativeSocialAccountChooserSheetState
 
           const SizedBox(height: 12),
 
-          // Opción para usar otra cuenta
-          if (!_isCustomAccountExpanded) ...[
-            TextButton.icon(
-              onPressed: () => setState(() => _isCustomAccountExpanded = true),
-              icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: Color(0xFF4285F4)),
-              label: Text(
-                'Usar otra cuenta de Google',
-                style: AppTypography.bodyBold.copyWith(
-                  color: const Color(0xFF4285F4),
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ] else ...[
-            _buildCustomAccountInput(
-              providerName: 'Google',
-              color: const Color(0xFF4285F4),
-              defaultName: 'Kevin Sandoval',
-              emailSuffix: '@gmail.com',
-            ),
-          ],
+          _buildOfficialDeviceLauncherButton(
+            title: 'Abrir Selector Oficial de Google',
+            subtitle: 'Detecta tus cuentas de Gmail activas en este dispositivo',
+            icon: Icons.g_mobiledata_rounded,
+            color: const Color(0xFF4285F4),
+            onTap: () => _launchOfficialProvider(SocialAuthProvider.google, 'Google'),
+          ),
         ],
       ],
     );
@@ -430,22 +437,13 @@ class _NativeSocialAccountChooserSheetState
         ),
         const SizedBox(height: 12),
 
-        if (!_isCustomAccountExpanded) ...[
-          TextButton(
-            onPressed: () => setState(() => _isCustomAccountExpanded = true),
-            child: Text(
-              '¿Iniciar sesión con otra cuenta de Facebook?',
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
-            ),
-          ),
-        ] else ...[
-          _buildCustomAccountInput(
-            providerName: 'Facebook',
-            color: const Color(0xFF1877F2),
-            defaultName: 'Kevin Sandoval',
-            emailSuffix: '@facebook.com',
-          ),
-        ],
+        _buildOfficialDeviceLauncherButton(
+          title: 'Abrir Selector Oficial de Facebook',
+          subtitle: 'Detecta tu perfil de Facebook activo en este dispositivo',
+          icon: Icons.facebook,
+          color: const Color(0xFF1877F2),
+          onTap: () => _launchOfficialProvider(SocialAuthProvider.facebook, 'Facebook'),
+        ),
       ],
     );
   }
@@ -548,22 +546,13 @@ class _NativeSocialAccountChooserSheetState
         ),
         const SizedBox(height: 12),
 
-        if (!_isCustomAccountExpanded) ...[
-          TextButton(
-            onPressed: () => setState(() => _isCustomAccountExpanded = true),
-            child: Text(
-              '¿Vincular otro perfil de Instagram?',
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
-            ),
-          ),
-        ] else ...[
-          _buildCustomAccountInput(
-            providerName: 'Instagram',
-            color: const Color(0xFFE1306C),
-            defaultName: '@kevin_night',
-            emailSuffix: '@instagram.com',
-          ),
-        ],
+        _buildOfficialDeviceLauncherButton(
+          title: 'Abrir Selector Oficial de Instagram',
+          subtitle: 'Detecta tu perfil de Instagram activo en este dispositivo',
+          icon: Icons.camera_alt_rounded,
+          color: const Color(0xFFE1306C),
+          onTap: () => _launchOfficialProvider(SocialAuthProvider.instagram, 'Instagram'),
+        ),
       ],
     );
   }
@@ -688,80 +677,61 @@ class _NativeSocialAccountChooserSheetState
   }
 
   // ==========================================
-  // EXPANSOR OPCIONAL PARA OTRA CUENTA
+  // BOTÓN PARA DISPARAR SELECTOR OFICIAL DEL DISPOSITIVO
   // ==========================================
-  Widget _buildCustomAccountInput({
-    required String providerName,
+  Widget _buildOfficialDeviceLauncherButton({
+    required String title,
+    required String subtitle,
+    required IconData icon,
     required Color color,
-    required String defaultName,
-    required String emailSuffix,
+    required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(16),
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.glassBorder),
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.35), width: 1.2),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Ingresar otra cuenta de $providerName:',
-            style: AppTypography.caption.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _customNameController..text = _customNameController.text.isEmpty ? defaultName : _customNameController.text,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-            decoration: InputDecoration(
-              labelText: 'Nombre o Alias',
-              labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
-              filled: true,
-              fillColor: AppColors.surface,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: color, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTypography.bodyBold.copyWith(color: Colors.white, fontSize: 13.5),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: AppTypography.caption.copyWith(color: AppColors.textSecondary, fontSize: 11.5),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.open_in_new_rounded, color: color, size: 18),
+              ],
             ),
           ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _customEmailController,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-            decoration: InputDecoration(
-              labelText: 'Correo o Usuario',
-              hintText: 'ejemplo$emailSuffix',
-              hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-              labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
-              filled: true,
-              fillColor: AppColors.surface,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 42,
-            child: ElevatedButton(
-              onPressed: () {
-                final name = _customNameController.text.trim();
-                final email = _customEmailController.text.trim();
-                final finalEmail = email.contains('@') ? email : '$email$emailSuffix';
-                _selectAccount(
-                  displayName: name.isNotEmpty ? name : defaultName,
-                  email: finalEmail.isNotEmpty ? finalEmail : 'usuario$emailSuffix',
-                  providerKey: _selectedProvider.name,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Conectar esta Cuenta', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -341,3 +341,22 @@ Create-Flyer916 @{
     FacebookHandle = "Low Social Club"
     StylePattern = "lasers"
 }
+
+# 8. Cervecería Chapultepec - Todo a un Mismo Precio (@cerveceriachapultepeccolima)
+Create-Flyer916 @{
+    Path = "assets/images/venues/flyers/cerveceria_chapultepec_flyer.jpg"
+    BgTop = [System.Drawing.Color]::FromArgb(24, 18, 6)
+    BgBottom = [System.Drawing.Color]::FromArgb(54, 38, 12)
+    AccentColor = [System.Drawing.Color]::FromArgb(245, 158, 11)
+    SecondaryColor = [System.Drawing.Color]::FromArgb(239, 68, 68)
+    CategoryBadge = "Cerveceria Casual"
+    VenueTitle = "CERVECERIA CHAPULTEPEC"
+    EventHeadline = "TODO A UN MISMO PRECIO"
+    EventSubheadline = "Tarros de cerveza helada, cocteleria, tacos, hamburguesas, sliders y botanas completas a precio unico accesible todos los dias."
+    DateString = "LUNES A DOMINGO - 1:00 PM A 1:00 AM (VIE Y SAB HASTA 2:00 AM)"
+    LocationString = "Av. Venustiano Carranza #1726, Esmeralda Nte., Colima"
+    PromoTag = "TODO A UN MISMO PRECIO - ENTRADA LIBRE"
+    InstagramHandle = "@cerveceriachapultepeccolima"
+    FacebookHandle = "Cerveceria Chapultepec Colima"
+    StylePattern = "taproom"
+}

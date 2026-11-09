@@ -122,13 +122,22 @@ class VenueScheduleEvaluator {
     // Obtener las horas de apertura y cierre para hoy (o del evento)
     final isOperatingToday = scheduleRule.operatingDays.contains(weekday) || todayEvent != null;
 
-    final openHour = todayEvent != null
-        ? (todayEvent.eventDate?.hour ?? scheduleRule.openHour)
-        : scheduleRule.openHour;
-    final openMinute = todayEvent != null
-        ? (todayEvent.eventDate?.minute ?? scheduleRule.openMinute)
-        : scheduleRule.openMinute;
+    // Regla de Oro (Base Google Maps): Un evento nocturno (ej. set de DJ a las 9 PM o 10 PM)
+    // NUNCA debe retrasar la hora de apertura base del establecimiento (ej. si abre a las 7:00 PM o 1:00 PM).
+    // Solo permitimos que el evento modifique la hora de apertura si el evento inicia ANTES
+    // del horario regular (ej. tardeada, sunset party o apertura especial anticipada).
+    int openHour = scheduleRule.openHour;
+    int openMinute = scheduleRule.openMinute;
     final closeHour = scheduleRule.closeHour;
+
+    if (todayEvent?.eventDate != null) {
+      final evH = todayEvent!.eventDate!.hour;
+      final evM = todayEvent!.eventDate!.minute;
+      if (evH < openHour || (evH == openHour && evM < openMinute)) {
+        openHour = evH;
+        openMinute = evM;
+      }
+    }
 
     if (isOperatingToday) {
       final currentTotalMinutes = now.hour * 60 + now.minute;
@@ -336,6 +345,24 @@ class VenueScheduleEvaluator {
         openHour: 12,
         openMinute: 0,
         closeHour: 23,
+      );
+    }
+
+    // 13. Cervecería Chapultepec (Diario 1:00 PM - 1:00 AM / 2:00 AM)
+    if (id == 'cerveceria_chapultepec') {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.monday,
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+          DateTime.sunday
+        ],
+        openHour: 13,
+        openMinute: 0,
+        closeHour: 2,
       );
     }
 

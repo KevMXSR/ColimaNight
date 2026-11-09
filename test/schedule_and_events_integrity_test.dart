@@ -91,6 +91,34 @@ void main() {
       expect(status.detailedStatus, contains('Jueves'));
       expect(status.detailedStatus, contains('10:00 PM'));
     });
+
+    test('Bar La Puerta base schedule from Google Maps opens at 19:00 and is not delayed by 21:00 event', () {
+      final thursdayEvening = DateTime(2026, 11, 5, 19, 30); // Jueves 19:30 hrs
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final laPuerta = venues.firstWhere((v) => v.id == 'la_puerta_bar');
+
+      final status = VenueScheduleEvaluator.evaluate(laPuerta, referenceTime: thursdayEvening);
+      expect(status.badgeType, equals(VenueBadgeType.open));
+      expect(status.badgeLabel, equals('Abierto'));
+      expect(status.isOpenNow, isTrue);
+    });
+
+    test('Cervecería Chapultepec base schedule is open daily from 13:00', () {
+      final sundayAfternoon = DateTime(2026, 11, 8, 14, 0); // Domingo 14:00 hrs
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final chapultepec = venues.firstWhere((v) => v.id == 'cerveceria_chapultepec');
+
+      final status = VenueScheduleEvaluator.evaluate(chapultepec, referenceTime: sundayAfternoon);
+      expect(status.badgeType, equals(VenueBadgeType.open));
+      expect(status.badgeLabel, equals('Abierto'));
+      expect(status.isOpenNow, isTrue);
+    });
   });
 
   group('Secondary Profiles & Video Stories Verification Tests', () {

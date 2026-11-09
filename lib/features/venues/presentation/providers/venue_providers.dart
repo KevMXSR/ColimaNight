@@ -31,6 +31,9 @@ final List<VenueModel> _initialVenues = [
     coverImageUrl: 'assets/images/venues/el_guachi.jpg',
     galleryUrls: [
       'assets/images/venues/el_guachi.jpg',
+      'assets/images/venues/el_guachi_2.jpg',
+      'assets/images/venues/el_guachi_3.jpg',
+      'assets/images/venues/el_guachi_4.jpg',
     ],
     rating: 4.9,
     reviewsCount: 412,
@@ -114,7 +117,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Cervezas artesanales de barril, comida casual y amplia terraza al aire libre sobre Tercer Anillo.',
     coverImageUrl: 'assets/images/venues/costa_tercer_anillo.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/guachi_rooftop_sunset.jpg',
+      'assets/images/venues/guachi_rooftop_sunset_2.jpg',
+      'assets/images/venues/guachi_rooftop_sunset_3.jpg',
+      'assets/images/venues/guachi_rooftop_sunset_4.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 460,
     capacityPercent: 2,
@@ -148,7 +156,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Terraza emblemática sobre San Fernando para degustar cervezas de la casa y platillos estilo pub.',
     coverImageUrl: 'assets/images/venues/costa_san_fernando.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_san_fernando.jpg',
+      'assets/images/venues/costa_san_fernando_2.jpg',
+      'assets/images/venues/costa_san_fernando_3.jpg',
+      'assets/images/venues/costa_san_fernando_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 380,
     capacityPercent: 1,
@@ -182,7 +195,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Punto de encuentro sobre el corredor gastronómico de Sandoval con cervezas frescas y gran ambiente.',
     coverImageUrl: 'assets/images/venues/costa_sandoval.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_sandoval.jpg',
+      'assets/images/venues/costa_sandoval_2.jpg',
+      'assets/images/venues/costa_sandoval_3.jpg',
+      'assets/images/venues/costa_sandoval_4.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 420,
     capacityPercent: 3,
@@ -216,7 +234,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Taproom en el corazón de Villa de Álvarez con amplia selección cervecera y cocina artesanal.',
     coverImageUrl: 'assets/images/venues/costa_pablo_silva.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_pablo_silva.jpg',
+      'assets/images/venues/costa_pablo_silva_2.jpg',
+      'assets/images/venues/costa_pablo_silva_3.jpg',
+      'assets/images/venues/costa_pablo_silva_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 340,
     capacityPercent: 1,
@@ -250,7 +273,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Sucursal icónica en zona Carranza, ideal para tardes de tarro y precopeo al aire libre.',
     coverImageUrl: 'assets/images/venues/costa_carranza.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_carranza.jpg',
+      'assets/images/venues/costa_carranza_2.jpg',
+      'assets/images/venues/costa_carranza_3.jpg',
+      'assets/images/venues/costa_carranza_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 390,
     capacityPercent: 2,
@@ -304,7 +332,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Segunda estación sobre Av. Carranza con ambiente distendido y toda la línea de barril.',
     coverImageUrl: 'assets/images/venues/costa_carranza_2.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_carranza_futbol_clasico.jpg',
+      'assets/images/venues/costa_carranza_futbol_clasico_2.jpg',
+      'assets/images/venues/costa_carranza_futbol_clasico_3.jpg',
+      'assets/images/venues/costa_carranza_futbol_clasico_4.jpg',
+    ],
     rating: 4.6,
     reviewsCount: 280,
     capacityPercent: 1,
@@ -338,7 +371,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Ubicación relajada sobre Av. La Paz para convivir en mesas comunales con cerveza bien fría.',
     coverImageUrl: 'assets/images/venues/costa_la_paz.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_la_paz.jpg',
+      'assets/images/venues/costa_la_paz_2.jpg',
+      'assets/images/venues/costa_la_paz_3.jpg',
+      'assets/images/venues/costa_la_paz_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 310,
     capacityPercent: 2,
@@ -372,7 +410,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Espacio amplio con terraza exterior en el sector conurbado de La Paz para disfrutar en grupo.',
     coverImageUrl: 'assets/images/venues/costa_la_paz_2.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_la_paz_2.jpg',
+      'assets/images/venues/costa_la_paz_2_2.jpg',
+      'assets/images/venues/costa_la_paz_2_3.jpg',
+      'assets/images/venues/costa_la_paz_2_4.jpg',
+    ],
     rating: 4.6,
     reviewsCount: 260,
     capacityPercent: 1,
@@ -406,7 +449,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Cervecería casual en Villa de Álvarez con servicio rápido, hamburguesas y tarros de temporada.',
     coverImageUrl: 'assets/images/venues/costa_griselda_alvarez.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_griselda_alvarez.jpg',
+      'assets/images/venues/costa_griselda_alvarez_2.jpg',
+      'assets/images/venues/costa_griselda_alvarez_3.jpg',
+      'assets/images/venues/costa_griselda_alvarez_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 300,
     capacityPercent: 2,
@@ -440,7 +488,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Terraza familiar y de convivencia nocturna en Santa Fe con pizzas al horno y cerveza de línea.',
     coverImageUrl: 'assets/images/venues/costa_santa_fe.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/costa_santa_fe.jpg',
+      'assets/images/venues/costa_santa_fe_2.jpg',
+      'assets/images/venues/costa_santa_fe_3.jpg',
+      'assets/images/venues/costa_santa_fe_4.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 350,
     capacityPercent: 3,
@@ -475,7 +528,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Taproom emblemático de Cervecería de Colima con patio fresco, cerveza de barril y gastronomía.',
     coverImageUrl: 'assets/images/venues/colimita_centro.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/colimita_centro.jpg',
+      'assets/images/venues/colimita_centro_2.jpg',
+      'assets/images/venues/colimita_centro_3.jpg',
+      'assets/images/venues/colimita_centro_4.jpg',
+    ],
     rating: 4.9,
     reviewsCount: 520,
     capacityPercent: 3,
@@ -509,7 +567,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Taproom urbano sobre el camellón de Constitución para degustar Colimita, Páramo y Cayaco.',
     coverImageUrl: 'assets/images/venues/colimita_constitucion.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/colimita_constitucion.jpg',
+      'assets/images/venues/colimita_constitucion_2.jpg',
+      'assets/images/venues/colimita_constitucion_3.jpg',
+      'assets/images/venues/colimita_constitucion_4.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 440,
     capacityPercent: 2,
@@ -544,7 +607,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Bar de rock clásico y alternativo en el Centro con tarros de cerveza y ambiente auténtico.',
     coverImageUrl: 'assets/images/venues/dmt_rock_bar.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/dmt_rock_bar.jpg',
+      'assets/images/venues/dmt_rock_bar_2.jpg',
+      'assets/images/venues/dmt_rock_bar_3.jpg',
+      'assets/images/venues/dmt_rock_bar_4.jpg',
+    ],
     rating: 4.6,
     reviewsCount: 230,
     capacityPercent: 0,
@@ -581,6 +649,9 @@ final List<VenueModel> _initialVenues = [
     coverImageUrl: 'assets/images/venues/dos_puntos.jpg',
     galleryUrls: [
       'assets/images/venues/dos_puntos.jpg',
+      'assets/images/venues/dos_puntos_2.jpg',
+      'assets/images/venues/dos_puntos_3.jpg',
+      'assets/images/venues/dos_puntos_4.jpg',
     ],
     rating: 4.8,
     reviewsCount: 390,
@@ -634,7 +705,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Cantina con botanas colimenses, ambiente folclórico y tradición cervecera en el Centro.',
     coverImageUrl: 'assets/images/venues/el_taurino.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/dospuntos_saturday_night.jpg',
+      'assets/images/venues/dospuntos_saturday_night_2.jpg',
+      'assets/images/venues/dospuntos_saturday_night_3.jpg',
+      'assets/images/venues/dospuntos_saturday_night_4.jpg',
+    ],
     rating: 4.5,
     reviewsCount: 280,
     capacityPercent: 2,
@@ -669,6 +745,9 @@ final List<VenueModel> _initialVenues = [
     coverImageUrl: 'assets/images/venues/la_puerta_bar.jpg',
     galleryUrls: [
       'assets/images/venues/la_puerta_bar.jpg',
+      'assets/images/venues/la_puerta_bar_2.jpg',
+      'assets/images/venues/la_puerta_bar_3.jpg',
+      'assets/images/venues/la_puerta_bar_4.jpg',
     ],
     rating: 4.7,
     reviewsCount: 340,
@@ -753,7 +832,10 @@ final List<VenueModel> _initialVenues = [
         'Club vanguardista sobre Hidalgo con música electrónica, coctelería y gran iluminación.',
     coverImageUrl: 'assets/images/venues/low_social_club.jpg',
     galleryUrls: [
-      'assets/images/venues/low_social_club.jpg',
+      'assets/images/venues/puerta_jueves_snacks_drinks.jpg',
+      'assets/images/venues/puerta_jueves_snacks_drinks_2.jpg',
+      'assets/images/venues/puerta_jueves_snacks_drinks_3.jpg',
+      'assets/images/venues/puerta_jueves_snacks_drinks_4.jpg',
     ],
     rating: 4.8,
     reviewsCount: 390,
@@ -812,7 +894,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Espacio íntimo con amplia curaduría de destilados de agave, mezcales oaxaqueños y coctelería.',
     coverImageUrl: 'assets/images/venues/mezcaleria_casa_colima.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/low_club_friday.jpg',
+      'assets/images/venues/low_club_friday_2.jpg',
+      'assets/images/venues/low_club_friday_3.jpg',
+      'assets/images/venues/low_club_friday_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 220,
     capacityPercent: 1,
@@ -847,7 +934,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Barra de barrio tradicional para cerveza rápida, tequila y botana caliente en el Centro.',
     coverImageUrl: 'assets/images/venues/los_toros_barra_taurina.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/los_toros_barra_taurina.jpg',
+      'assets/images/venues/los_toros_barra_taurina_2.jpg',
+      'assets/images/venues/los_toros_barra_taurina_3.jpg',
+      'assets/images/venues/los_toros_barra_taurina_4.jpg',
+    ],
     rating: 4.5,
     reviewsCount: 190,
     capacityPercent: 2,
@@ -880,7 +972,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Concepto contemporáneo de cantina fina con platillos de autor, mixología y ambiente festivo.',
     coverImageUrl: 'assets/images/venues/almada_cantina.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/almada_cantina.jpg',
+      'assets/images/venues/almada_cantina_2.jpg',
+      'assets/images/venues/almada_cantina_3.jpg',
+      'assets/images/venues/almada_cantina_4.jpg',
+    ],
     rating: 4.8,
     reviewsCount: 360,
     capacityPercent: 0,
@@ -917,7 +1014,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Terraza de mariscos y coctelería sobre Av. Sandoval con ambiente versátil día y noche.',
     coverImageUrl: 'assets/images/venues/el_gustito.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/el_gustito.jpg',
+      'assets/images/venues/el_gustito_2.jpg',
+      'assets/images/venues/el_gustito_3.jpg',
+      'assets/images/venues/el_gustito_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 320,
     capacityPercent: 2,
@@ -952,7 +1054,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Cantina moderna con botanas mexicanas, cerveza de barril y música para cantar con amigos.',
     coverImageUrl: 'assets/images/venues/la_regional.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/la_regional.jpg',
+      'assets/images/venues/la_regional_2.jpg',
+      'assets/images/venues/la_regional_3.jpg',
+      'assets/images/venues/la_regional_4.jpg',
+    ],
     rating: 4.6,
     reviewsCount: 290,
     capacityPercent: 3,
@@ -987,7 +1094,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Punto de encuentro en Colima con tragos accesibles, botana caliente y rock en español.',
     coverImageUrl: 'assets/images/venues/la_chintola.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/la_chintola.jpg',
+      'assets/images/venues/la_chintola_2.jpg',
+      'assets/images/venues/la_chintola_3.jpg',
+      'assets/images/venues/la_chintola_4.jpg',
+    ],
     rating: 4.5,
     reviewsCount: 210,
     capacityPercent: 1,
@@ -1020,7 +1132,12 @@ final List<VenueModel> _initialVenues = [
     description:
         'Terraza de mezcal y destilados mexicanos con mixología de autor y platillos para compartir.',
     coverImageUrl: 'assets/images/venues/santo_mezcal.jpg',
-    galleryUrls: [],
+    galleryUrls: [
+      'assets/images/venues/santo_mezcal.jpg',
+      'assets/images/venues/santo_mezcal_2.jpg',
+      'assets/images/venues/santo_mezcal_3.jpg',
+      'assets/images/venues/santo_mezcal_4.jpg',
+    ],
     rating: 4.7,
     reviewsCount: 270,
     capacityPercent: 0,
@@ -1059,6 +1176,8 @@ final List<VenueModel> _initialVenues = [
     galleryUrls: [
       'assets/images/venues/foro_dmt.jpg',
       'assets/images/venues/foro_dmt_2.jpg',
+      'assets/images/venues/foro_dmt_3.jpg',
+      'assets/images/venues/foro_dmt_4.jpg',
     ],
     rating: 4.8,
     reviewsCount: 310,
@@ -1117,7 +1236,10 @@ final List<VenueModel> _initialVenues = [
         'Terraza de coctelería y precopeo con drinks de autor sobre Av. de los Diamantes.',
     coverImageUrl: 'assets/images/venues/paraiso_drinks.jpg',
     galleryUrls: [
-      'assets/images/venues/paraiso_drinks.jpg',
+      'assets/images/venues/foro_dmt_rock_friday.jpg',
+      'assets/images/venues/foro_dmt_rock_friday_2.jpg',
+      'assets/images/venues/foro_dmt_rock_friday_3.jpg',
+      'assets/images/venues/foro_dmt_rock_friday_4.jpg',
     ],
     rating: 4.7,
     reviewsCount: 290,
@@ -1143,6 +1265,62 @@ final List<VenueModel> _initialVenues = [
     whatsappReservation: '523121234567',
     livePresenceCount: 2,
     upcomingEvents: [],
+  ),
+  // --- CERVECERÍA CHAPULTEPEC ---
+  VenueModel(
+    id: 'cerveceria_chapultepec',
+    name: 'Cervecería Chapultepec',
+    category: 'Cervecería & Bar Casual',
+    zone: 'Av. Venustiano Carranza #1726, locales 3 y 4, Residencial Esmeralda Nte., 28017 Colima, Col.',
+    description:
+        'Cervecería casual en Av. Carranza con concepto "Todo a un Mismo Precio" en tarros helados, cócteles, hamburguesas, tacos y botanas.',
+    coverImageUrl: 'assets/images/venues/cerveceria_chapultepec.jpg',
+    galleryUrls: [
+      'assets/images/venues/cerveceria_chapultepec.jpg',
+      'assets/images/venues/cerveceria_chapultepec_2.jpg',
+      'assets/images/venues/cerveceria_chapultepec_3.jpg',
+      'assets/images/venues/cerveceria_chapultepec_4.jpg',
+    ],
+    rating: 4.6,
+    reviewsCount: 390,
+    capacityPercent: 0,
+    isHotRightNow: false,
+    hasLiveMusic: false,
+    isVipPresent: false,
+    hasPromo: true,
+    promoHeadline: 'Todo a un Mismo Precio en Bebidas y Alimentos',
+    parkingAvailable: true,
+    parkingDetails: 'Estacionamiento de plaza comercial disponible',
+    latitude: 19.273223,
+    longitude: -103.715025,
+    instagramHandle: '@cerveceriachapultepeccolima',
+    tikTokHandle: '@cerveceriachapultepec',
+    facebookUrl: 'https://www.facebook.com/cerveceriachapultepeccolima/',
+    vibeGenre: 'Craft & Commercial Beer / Casual Dining / Pop Rock',
+    schedule: 'Lunes a Domingo: 1:00 PM - 1:00 AM (Vie - Sáb hasta 2:00 AM)',
+    estimatedMinutes: 7,
+    securityStatus: 'normal',
+    activeIncidentReportsCount: 0,
+    hasCover: false,
+    coverDescription: 'Sin Cover (Entrada Libre)',
+    livePresenceCount: 0,
+    upcomingEvents: [
+      VenueEvent(
+        id: 'chapultepec_todo_mismo_precio',
+        title: 'Todo a un Mismo Precio (Todos los Días)',
+        dateDisplay: EventDateHelper.formatEventDate(DateTime.now()),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.now().weekday, hour: 13, minute: 0),
+        artistOrDj: 'Música Pop, Rock & Hits en Vivo',
+        coverPrice: 'Entrada Libre',
+        promoNote: 'Tarros, cócteles, hamburguesas y tacos a precio único accesible',
+        flyerImageUrl: 'assets/images/venues/flyers/cerveceria_chapultepec_flyer.jpg',
+        sourceInstagramUrl: 'https://www.instagram.com/cerveceriachapultepeccolima/',
+        sourceInstagramHandle: '@cerveceriachapultepeccolima',
+        sourceFacebookUrl: 'https://www.facebook.com/cerveceriachapultepeccolima/',
+        isStoryAnnouncement: true,
+        specialSchedule: 'Abierto desde la 1:00 PM todos los días',
+      ),
+    ],
   ),
 ];
 
