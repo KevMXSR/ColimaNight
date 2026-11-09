@@ -118,6 +118,54 @@ void main() {
       expect(status.badgeLabel, equals('Abierto'));
       expect(status.isOpenNow, isTrue);
     });
+
+    test('Cervecería de la Costa (10 branches) Google Maps base schedule: Monday 14:00 is OPEN', () {
+      final mondayAfternoon = DateTime(2026, 11, 2, 14, 0); // Lunes 14:00 hrs
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final costaVenues = venues.where((v) => v.id.startsWith('costa_')).toList();
+
+      expect(costaVenues.length, equals(10));
+      for (final costa in costaVenues) {
+        // String schedule must be aligned
+        expect(costa.schedule, equals('Lunes a Domingo: 11:00 AM - 11:00 PM'));
+
+        final status = VenueScheduleEvaluator.evaluate(costa, referenceTime: mondayAfternoon);
+        expect(status.badgeType, equals(VenueBadgeType.open), reason: '${costa.name} should be open on Monday 14:00');
+        expect(status.isOpenNow, isTrue);
+        expect(status.detailedStatus, contains('Cierra 11:00 PM'));
+      }
+    });
+
+    test('Cervecería de la Costa: Tuesday 10:00 AM shows "Abre hoy a las 11:00 AM"', () {
+      final tuesdayMorning = DateTime(2026, 11, 3, 10, 0); // Martes 10:00 AM
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final costaSanFernando = venues.firstWhere((v) => v.id == 'costa_san_fernando');
+
+      final status = VenueScheduleEvaluator.evaluate(costaSanFernando, referenceTime: tuesdayMorning);
+      expect(status.badgeType, equals(VenueBadgeType.openingToday));
+      expect(status.isOpenNow, isFalse);
+      expect(status.detailedStatus, startsWith('Abre hoy a las 11:00 AM'));
+    });
+
+    test('Costa Carranza: Saturday sports match at 19:00 does NOT delay opening; is open at 12:00 PM', () {
+      final saturdayNoon = DateTime(2026, 11, 7, 12, 0); // Sábado 12:00 PM
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final costaCarranza = venues.firstWhere((v) => v.id == 'costa_carranza');
+
+      final status = VenueScheduleEvaluator.evaluate(costaCarranza, referenceTime: saturdayNoon);
+      expect(status.badgeType, equals(VenueBadgeType.open));
+      expect(status.isOpenNow, isTrue);
+      expect(status.detailedStatus, contains('Cierra 11:00 PM'));
+    });
   });
 
   group('Secondary Profiles & Video Stories Verification Tests', () {

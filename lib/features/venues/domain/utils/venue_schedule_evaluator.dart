@@ -220,7 +220,77 @@ class VenueScheduleEvaluator {
   static _ScheduleRule _getRuleForVenue(String venueId) {
     final id = venueId.toLowerCase();
 
-    // 1. Bar La Puerta (Jueves: 7 PM - 3 AM; Vie-Sáb: 8 PM - 4 AM)
+    // 1. Cervecerías de la Costa (10 sucursales en Colima): Base Google Maps es Lunes a Domingo de 11:00 AM a 11:00 PM (23:00 hrs)
+    if (id.startsWith('costa_') || id.startsWith('costa-')) {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.monday,
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+          DateTime.sunday,
+        ],
+        openHour: 11,
+        openMinute: 0,
+        closeHour: 23,
+      );
+    }
+
+    // 2. Cervecería Chapultepec (Diario 1:00 PM - 1:00 AM / 2:00 AM en Vie-Sáb)
+    if (id == 'cerveceria_chapultepec') {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.monday,
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+          DateTime.sunday,
+        ],
+        openHour: 13,
+        openMinute: 0,
+        closeHour: 2,
+      );
+    }
+
+    // 3. Cervecería Estación Colimita - Centro (Andador Madero): Martes a Domingo 1:00 PM a 12:00 AM (Lunes cerrado)
+    if (id == 'colimita_centro') {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+          DateTime.sunday,
+        ],
+        openHour: 13,
+        openMinute: 0,
+        closeHour: 0,
+      );
+    }
+
+    // 4. Cervecería Estación Colimita - Constitución: Lunes a Sábado 5:00 PM a 1:00 AM (Domingo cerrado)
+    if (id == 'colimita_constitucion') {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.monday,
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+        ],
+        openHour: 17,
+        openMinute: 0,
+        closeHour: 1,
+      );
+    }
+
+    // 5. Bar La Puerta (Jueves: 7 PM - 3/4 AM con snacks & drinks; Vie-Sáb: 8 PM - 4 AM)
     if (id == 'la_puerta_bar' || id == 'bar_la_puerta') {
       return const _ScheduleRule(
         operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
@@ -230,7 +300,7 @@ class VenueScheduleEvaluator {
       );
     }
 
-    // 2. El Guachi / Rooftop (Jueves a Domingo: Rooftop 6 PM - 2 AM; Club: Vie-Sáb hasta 5:30 AM)
+    // 6. El Guachi / Rooftop (Jueves a Domingo: Rooftop 6 PM - 2 AM; Club: Vie-Sáb hasta 5:30 AM)
     if (id == 'el_guachi') {
       return const _ScheduleRule(
         operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
@@ -240,17 +310,17 @@ class VenueScheduleEvaluator {
       );
     }
 
-    // 3. Dos Puntos Cervecería (Miércoles a Sábado 6 PM - 1 AM)
+    // 7. Dos Puntos Cervecería (Miércoles a Sábado 6 PM - 2 AM)
     if (id == 'dos_puntos') {
       return const _ScheduleRule(
         operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday],
         openHour: 18,
         openMinute: 0,
-        closeHour: 1,
+        closeHour: 2,
       );
     }
 
-    // 4. Low Social Club (Jueves a Sábado 10 PM - 5 AM)
+    // 8. Low Social Club (Jueves a Sábado 10 PM - 5 AM)
     if (id == 'low_social_club') {
       return const _ScheduleRule(
         operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
@@ -260,8 +330,8 @@ class VenueScheduleEvaluator {
       );
     }
 
-    // 5. Foro DMT (Jueves a Sábado 8 PM - 3 AM)
-    if (id == 'foro_dmt') {
+    // 9. Foro DMT & DMT Rock Bar (Jueves a Sábado 8 PM - 3 AM)
+    if (id == 'foro_dmt' || id == 'dmt_rock_bar') {
       return const _ScheduleRule(
         operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
         openHour: 20,
@@ -270,67 +340,75 @@ class VenueScheduleEvaluator {
       );
     }
 
-    // 6. Almada Cantina Fina (Martes a Domingo 1 PM - 2 AM)
+    // 10. Almada Cantina Fina (Martes a Domingo 4:30 PM - 2:00 AM; Dom hasta 12:00 AM; Lunes cerrado)
     if (id == 'almada_cantina') {
       return const _ScheduleRule(
         operatingDays: [DateTime.tuesday, DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
-        openHour: 13,
-        openMinute: 0,
-        closeHour: 2,
-      );
-    }
-
-    // 7. Cervecerías de la Costa (Miércoles a Domingo 1 PM a medianoche / 1:30 AM)
-    if (id.startsWith('costa_') || id.startsWith('costa-')) {
-      return const _ScheduleRule(
-        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
-        openHour: 13,
-        openMinute: 0,
-        closeHour: 2,
-      );
-    }
-
-    // 8. Santo Mezcal & Mezcalería Casa Colima (Jueves a Sábado 7 PM - 2 AM)
-    if (id == 'santo_mezcal' || id == 'mezcaleria_casa_colima') {
-      return const _ScheduleRule(
-        operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
-        openHour: 19,
-        openMinute: 0,
-        closeHour: 2,
-      );
-    }
-
-    // 9. La Regional & Los Toros Barra Taurina (Jueves a Sábado 4 PM - 2 AM)
-    if (id == 'la_regional' || id == 'los_toros_barra_taurina') {
-      return const _ScheduleRule(
-        operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
         openHour: 16,
-        openMinute: 0,
-        closeHour: 2,
-      );
-    }
-
-    // 10. Paraíso Drinks (Miércoles a Domingo 7:30 PM - 2:30 AM)
-    if (id == 'paraiso_drinks') {
-      return const _ScheduleRule(
-        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
-        openHour: 19,
         openMinute: 30,
-        closeHour: 3,
+        closeHour: 2,
       );
     }
 
-    // 11. El Gustito & El Taurino (Miércoles a Domingo)
-    if (id == 'el_gustito' || id == 'el_taurino') {
+    // 11. Santo Mezcal & Mezcalería Casa Colima (Miércoles/Jueves a Sábado 7 PM - 2 AM)
+    if (id == 'mezcaleria_casa_colima') {
       return const _ScheduleRule(
-        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
-        openHour: 16,
+        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday],
+        openHour: 19,
+        openMinute: 0,
+        closeHour: 2,
+      );
+    }
+    if (id == 'santo_mezcal') {
+      return const _ScheduleRule(
+        operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
+        openHour: 19,
+        openMinute: 0,
+        closeHour: 2,
+      );
+    }
+
+    // 12. La Regional Cantina (Miércoles a Sábado 5 PM - 2 AM)
+    if (id == 'la_regional') {
+      return const _ScheduleRule(
+        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday],
+        openHour: 17,
+        openMinute: 0,
+        closeHour: 2,
+      );
+    }
+
+    // 13. Los Toros Barra Taurina (Jueves a Sábado 3 PM - 1 AM)
+    if (id == 'los_toros_barra_taurina') {
+      return const _ScheduleRule(
+        operatingDays: [DateTime.thursday, DateTime.friday, DateTime.saturday],
+        openHour: 15,
         openMinute: 0,
         closeHour: 1,
       );
     }
 
-    // 12. La Chintola (Diario 12 PM - 11 PM)
+    // 14. El Taurino Bar (Martes a Domingo 2 PM - 12 AM; Lunes cerrado)
+    if (id == 'el_taurino') {
+      return const _ScheduleRule(
+        operatingDays: [DateTime.tuesday, DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
+        openHour: 14,
+        openMinute: 0,
+        closeHour: 0,
+      );
+    }
+
+    // 15. El Gustito (Martes a Domingo 1 PM - 12 AM; Lunes cerrado)
+    if (id == 'el_gustito') {
+      return const _ScheduleRule(
+        operatingDays: [DateTime.tuesday, DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
+        openHour: 13,
+        openMinute: 0,
+        closeHour: 0,
+      );
+    }
+
+    // 16. La Chintola (Lunes a Domingo 12 PM - 11 PM)
     if (id == 'la_chintola') {
       return const _ScheduleRule(
         operatingDays: [
@@ -348,21 +426,13 @@ class VenueScheduleEvaluator {
       );
     }
 
-    // 13. Cervecería Chapultepec (Diario 1:00 PM - 1:00 AM / 2:00 AM)
-    if (id == 'cerveceria_chapultepec') {
+    // 17. Paraíso Drinks Colima (Miércoles a Domingo 7:30 PM - 2:30 AM)
+    if (id == 'paraiso_drinks') {
       return const _ScheduleRule(
-        operatingDays: [
-          DateTime.monday,
-          DateTime.tuesday,
-          DateTime.wednesday,
-          DateTime.thursday,
-          DateTime.friday,
-          DateTime.saturday,
-          DateTime.sunday
-        ],
-        openHour: 13,
-        openMinute: 0,
-        closeHour: 2,
+        operatingDays: [DateTime.wednesday, DateTime.thursday, DateTime.friday, DateTime.saturday, DateTime.sunday],
+        openHour: 19,
+        openMinute: 30,
+        closeHour: 3,
       );
     }
 
