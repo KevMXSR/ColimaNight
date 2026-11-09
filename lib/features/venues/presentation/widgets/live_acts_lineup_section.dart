@@ -7,7 +7,6 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_venue_image.dart';
 import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
-import 'flyer_lightbox_dialog.dart';
 import 'venue_detail_bottom_sheet.dart';
 
 /// Género musical adaptativo para la cartelera en vivo
@@ -162,7 +161,6 @@ class _LiveActEntry {
   final LiveMusicGenreType genreType;
   final String highlightText;
   final String? promoNote;
-  final String? flyerImageUrl;
   final String? sourceInstagramUrl;
   final String? sourceInstagramHandle;
   final String? sourceFacebookUrl;
@@ -185,7 +183,6 @@ class _LiveActEntry {
     required this.genreType,
     required this.highlightText,
     this.promoNote,
-    this.flyerImageUrl,
     this.sourceInstagramUrl,
     this.sourceInstagramHandle,
     this.sourceFacebookUrl,
@@ -227,7 +224,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.rock,
           highlightText: 'Tributos en vivo, rock en español, grunge y cerveza artesanal fría.',
           promoNote: 'Entrada libre antes de las 10 PM • Cubetazo especial',
-          flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/foro_dmt_rock_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/foro_dmt/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@foro_dmt',
           sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
@@ -251,7 +247,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.techHouse,
           highlightText: 'Música electrónica underground 128 BPM, visuales envolventes y sonido club.',
           promoNote: '2x1 en mixología y acceso antes de medianoche',
-          flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/low_social_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/lowclub.col/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@lowclub.col',
           sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
@@ -275,7 +270,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.techHouse,
           highlightText: 'Sesión de atardecer con vista panorámica, coctelería y DJs invitados.',
           promoNote: '2x1 en coctelería de autor antes de las 9:00 PM',
-          flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/guachirooftop/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@guachirooftop',
           sourceFacebookUrl: venue.facebookUrl,
@@ -299,7 +293,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.perreo,
           highlightText: 'Noche de snacks y drinks a partir de las 7:00 PM, caguamas bien frías y perreo clásico.',
           promoNote: 'Jueves: Snacks y Drinks a partir de las 7:00 PM',
-          flyerImageUrl: evSnacks.flyerImageUrl ?? 'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
           sourceInstagramUrl: evSnacks.sourceInstagramUrl ?? 'https://www.instagram.com/barlapuerta/',
           sourceInstagramHandle: evSnacks.sourceInstagramHandle ?? '@barlapuerta',
           sourceFacebookUrl: venue.facebookUrl,
@@ -322,7 +315,6 @@ class LiveActsLineupSection extends ConsumerWidget {
             genreType: LiveMusicGenreType.perreo,
             highlightText: 'Sesión underground de reggaetón bellako, perreo sucio y ambiente festivo exclusivo.',
             promoNote: evPerreo.promoNote ?? 'Shots de cortesía y caguamas especiales toda la noche',
-            flyerImageUrl: evPerreo.flyerImageUrl ?? 'assets/images/venues/flyers/la_puerta_del_perreo_flyer.jpg',
             sourceInstagramUrl: evPerreo.sourceInstagramUrl ?? 'https://www.instagram.com/lapuertadelperreo.dog/',
             sourceInstagramHandle: evPerreo.sourceInstagramHandle ?? '@lapuertadelperreo.dog',
             sourceFacebookUrl: venue.facebookUrl,
@@ -332,7 +324,7 @@ class LiveActsLineupSection extends ConsumerWidget {
         }
       }
 
-      // 5. Cervecería de la Costa Carranza (Transmisión Fútbol en Pantalla Gigante)
+      // 5. Cervecería de la Costa Carranza (Transmisión Fútbol en Pantalla)
       else if (venue.id == 'costa_carranza') {
         final evSports = venue.upcomingEvents.firstWhere(
           (e) => e.isSportsMatch,
@@ -340,20 +332,19 @@ class LiveActsLineupSection extends ConsumerWidget {
         );
         entries.add(_LiveActEntry(
           id: 'act_costa_carranza_futbol',
-          actName: '⚽ Clásico Nacional en Pantalla Gigante HD',
+          actName: '⚽ Transmisión en Pantalla • Clásico Nacional',
           venueName: venue.name,
           zone: 'Venustiano Carranza (Esmeralda Norte)',
           dateDisplay: evSports.dateDisplay,
           genreType: LiveMusicGenreType.sportsLive,
-          highlightText: 'Chivas vs América en pantalla gigante al aire libre, audio ambiente y cubetazos.',
+          highlightText: 'Chivas vs América en pantalla al aire libre, audio ambiente y cubetazos.',
           promoNote: evSports.promoNote ?? 'Cubetazos 5x4 en Cerveza de la Costa durante el partido',
-          flyerImageUrl: evSports.flyerImageUrl ?? 'assets/images/venues/flyers/costa_carranza_futbol_flyer.jpg',
           sourceInstagramUrl: evSports.sourceInstagramUrl ?? 'https://www.instagram.com/cerveceriadelacosta/',
           sourceInstagramHandle: evSports.sourceInstagramHandle ?? '@cerveceriadelacosta',
           sourceFacebookUrl: evSports.sourceFacebookUrl ?? venue.facebookUrl,
           isSportsMatch: true,
           matchTeams: evSports.matchTeams ?? 'CHIVAS vs AMÉRICA (Clásico Nacional)',
-          broadcastDetails: evSports.broadcastDetails ?? 'Pantalla Gigante HD al aire libre + Audio Ambiente',
+          broadcastDetails: evSports.broadcastDetails ?? 'Transmisión en Pantalla al aire libre + Audio Ambiente',
           isVideoStory: true,
           venue: venue,
           event: evSports,
@@ -372,7 +363,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.craftIndie,
           highlightText: 'Jardín cervecero al aire libre, selección en vinilo y pizzas de autor.',
           promoNote: '2x1 en pints seleccionadas de 7:00 a 9:00 PM',
-          flyerImageUrl: ev.flyerImageUrl ?? 'assets/images/venues/flyers/dos_puntos_flyer.jpg',
           sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/dospuntoscerveceria/',
           sourceInstagramHandle: ev.sourceInstagramHandle ?? '@dospuntoscerveceria',
           sourceFacebookUrl: venue.facebookUrl,
@@ -392,7 +382,6 @@ class LiveActsLineupSection extends ConsumerWidget {
           genreType: LiveMusicGenreType.mariachiAcoustic,
           highlightText: 'Ambiente de cantina contemporánea, platillos de autor y mariachi en vivo.',
           promoNote: 'Copeo tradicional y servicio de botellas',
-          flyerImageUrl: null,
           sourceInstagramUrl: 'https://www.instagram.com/almada_cantina.fina/',
           sourceInstagramHandle: venue.instagramHandle,
           sourceFacebookUrl: venue.facebookUrl,
@@ -411,7 +400,6 @@ class LiveActsLineupSection extends ConsumerWidget {
       title: venue.liveMusicAct ?? 'Música en Vivo',
       dateDisplay: 'Fin de Semana • Noche',
       artistOrDj: venue.liveMusicAct,
-      flyerImageUrl: venue.coverImageUrl,
       sourceInstagramUrl: venue.instagramHandle != null
           ? 'https://www.instagram.com/${venue.instagramHandle!.replaceAll('@', '')}/'
           : null,
@@ -634,153 +622,68 @@ class _LiveActCard extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 // 2. Bloque Central: Nombre del Artista / Banda con tipografía adaptativa
-                Row(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(
+                      item.actName,
+                      style: genre.titleStyle,
+                    ),
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () => VenueDetailBottomSheet.show(context, item.venue),
+                      child: Row(
                         children: [
-                          Text(
-                            item.actName,
-                            style: genre.titleStyle,
-                          ),
-                          const SizedBox(height: 4),
-                          GestureDetector(
-                            onTap: () => VenueDetailBottomSheet.show(context, item.venue),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.place_rounded, size: 13, color: AppColors.textSecondary),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${item.venueName} • ${item.zone}',
-                                    style: AppTypography.caption.copyWith(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 11.5,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            item.highlightText,
-                            style: AppTypography.caption.copyWith(
-                              color: const Color(0xFFCBD5E1),
-                              fontSize: 12,
-                              height: 1.3,
-                            ),
-                          ),
-                          if (item.promoNote != null) ...[
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: AppColors.neonAmber.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: AppColors.neonAmber.withOpacity(0.4)),
+                          const Icon(Icons.place_rounded, size: 13, color: AppColors.textSecondary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '${item.venueName} • ${item.zone}',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.textSecondary,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.local_offer_rounded, size: 11, color: AppColors.neonAmber),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: Text(
-                                      item.promoNote!,
-                                      style: const TextStyle(
-                                        fontSize: 10.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.neonAmber,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ],
+                          ),
                         ],
                       ),
                     ),
-
-                    // Miniatura del Flyer oficial en proporción nativa vertical 9:16 sin recortes
-                    if (item.flyerImageUrl != null) ...[
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          final ev = item.event ??
-                              VenueEvent(
-                                id: '${item.id}_event',
-                                title: item.actName,
-                                dateDisplay: item.dateDisplay,
-                                flyerImageUrl: item.flyerImageUrl,
-                                sourceInstagramUrl: item.sourceInstagramUrl,
-                                sourceInstagramHandle: item.sourceInstagramHandle,
-                                sourceFacebookUrl: item.sourceFacebookUrl,
-                                isPresaleActive: item.isPresaleActive,
-                                presalePrice: item.presalePrice,
-                                presaleUrl: item.presaleUrl,
-                                isSportsMatch: item.isSportsMatch,
-                                matchTeams: item.matchTeams,
-                                broadcastDetails: item.broadcastDetails,
-                                isVideoStory: item.isVideoStory,
-                              );
-                          FlyerLightboxDialog.show(context, ev, item.venue);
-                        },
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
+                    const SizedBox(height: 6),
+                    Text(
+                      item.highlightText,
+                      style: AppTypography.caption.copyWith(
+                        color: const Color(0xFFCBD5E1),
+                        fontSize: 12.5,
+                        height: 1.35,
+                      ),
+                    ),
+                    if (item.venue.hasPromo && item.promoNote != null && item.promoNote!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.neonAmber.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppColors.neonAmber.withOpacity(0.5)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              width: 80,
-                              height: 142,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: primary.withOpacity(0.85), width: 1.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: primary.withOpacity(0.3),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(9),
-                                child: AppVenueImage(
-                                  imageUrl: item.flyerImageUrl!,
-                                  fit: BoxFit.contain,
+                            const Icon(Icons.local_offer_rounded, size: 12, color: AppColors.neonAmber),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                item.promoNote!,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.neonAmber,
                                 ),
-                              ),
-                            ),
-                            Container(
-                              width: 80,
-                              padding: const EdgeInsets.symmetric(vertical: 2.5),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.85),
-                                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(9)),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.zoom_in_rounded, size: 10, color: Colors.white),
-                                  SizedBox(width: 2),
-                                  Text(
-                                    'FLYER',
-                                    style: TextStyle(
-                                      fontSize: 8.5,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -900,7 +803,7 @@ class _LiveActCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: const Text(
-                            'PANTALLA GIGANTE',
+                            'TRANSMISIÓN EN PANTALLA',
                             style: TextStyle(
                               fontSize: 8.5,
                               fontWeight: FontWeight.w900,

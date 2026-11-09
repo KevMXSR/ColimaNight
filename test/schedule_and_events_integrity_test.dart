@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 import 'package:colima_night/features/venues/domain/utils/venue_schedule_evaluator.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
-import 'package:colima_night/features/venues/presentation/widgets/flyer_lightbox_dialog.dart';
 import 'package:colima_night/features/venues/presentation/widgets/live_acts_lineup_section.dart';
 
 void main() {
@@ -122,7 +121,7 @@ void main() {
   });
 
   group('Secondary Profiles & Video Stories Verification Tests', () {
-    test('Bar La Puerta contains @lapuertadelperreo.dog and dedicated flyer', () {
+    test('Bar La Puerta contains @lapuertadelperreo.dog secondary profile integration', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -138,7 +137,6 @@ void main() {
       expect(perreoEvent.title, contains('La Puerta del Perreo'));
       expect(perreoEvent.sourceInstagramHandle, equals('@lapuertadelperreo.dog'));
       expect(perreoEvent.sourceInstagramUrl, equals('https://www.instagram.com/lapuertadelperreo.dog/'));
-      expect(perreoEvent.flyerImageUrl, equals('assets/images/venues/flyers/la_puerta_del_perreo_flyer.jpg'));
     });
 
     test('Costa Carranza 1 contains sports match screening and video story flags', () {
@@ -155,8 +153,7 @@ void main() {
       expect(matchEvent.isSportsMatch, isTrue);
       expect(matchEvent.isVideoStory, isTrue);
       expect(matchEvent.matchTeams, contains('CHIVAS vs AMÉRICA'));
-      expect(matchEvent.broadcastDetails, contains('Pantalla Gigante HD'));
-      expect(matchEvent.flyerImageUrl, equals('assets/images/venues/flyers/costa_carranza_futbol_flyer.jpg'));
+      expect(matchEvent.broadcastDetails, contains('Transmisión en Pantalla'));
       expect(matchEvent.sourceFacebookUrl, isNotNull);
     });
 
@@ -182,88 +179,6 @@ void main() {
   });
 
   group('Presale Ticket Link Security & UI Presentation Tests', () {
-    testWidgets('FlyerLightboxDialog renders presale button ONLY when presaleUrl is present', (tester) async {
-      const venue = VenueModel(
-        id: 'foro_dmt',
-        name: 'Foro DMT',
-        category: 'Rock Bar',
-        zone: 'Centro',
-        description: 'Bar cultural',
-        coverImageUrl: 'assets/images/venues/foro_dmt.jpg',
-        galleryUrls: [],
-        rating: 4.8,
-        reviewsCount: 300,
-        capacityPercent: 0,
-        vibeGenre: 'Rock',
-        schedule: '8:00 PM - 3:00 AM',
-        latitude: 19.2433,
-        longitude: -103.7290,
-        upcomingEvents: [],
-      );
-
-      // Evento CON link de preventa verificado
-      const eventWithLink = VenueEvent(
-        id: 'event_with_link',
-        title: 'Rock Fest con Preventa',
-        dateDisplay: 'Viernes 21:00 hrs',
-        isPresaleActive: true,
-        presalePrice: 'Preventa: \$120 MXN',
-        presaleUrl: 'https://www.instagram.com/foro_dmt/',
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (ctx) => ElevatedButton(
-                onPressed: () => FlyerLightboxDialog.show(ctx, eventWithLink, venue),
-                child: const Text('Open Dialog'),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Open Dialog'));
-      await tester.pumpAndSettle();
-
-      // Debe mostrar el botón de compra
-      expect(find.textContaining('COMPRAR PREVENTA'), findsOneWidget);
-
-      // Cerrar diálogo
-      await tester.tap(find.byIcon(Icons.close_rounded));
-      await tester.pumpAndSettle();
-
-      // Evento SIN link de preventa (solo taquilla)
-      const eventWithoutLink = VenueEvent(
-        id: 'event_without_link',
-        title: 'Rock Fest Taquilla',
-        dateDisplay: 'Viernes 21:00 hrs',
-        isPresaleActive: true,
-        presalePrice: 'Preventa: \$100 MXN en barra',
-        presaleUrl: null,
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (ctx) => ElevatedButton(
-                onPressed: () => FlyerLightboxDialog.show(ctx, eventWithoutLink, venue),
-                child: const Text('Open Dialog 2'),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Open Dialog 2'));
-      await tester.pumpAndSettle();
-
-      // NO debe haber botón 'COMPRAR PREVENTA' porque presaleUrl es nulo
-      expect(find.textContaining('COMPRAR PREVENTA'), findsNothing);
-    });
-
     testWidgets('LiveActsLineupSection renders sports match and presale cards cleanly', (tester) async {
       await tester.pumpWidget(
         const ProviderScope(
@@ -281,8 +196,8 @@ void main() {
 
       // Transmisión deportiva
       expect(find.text('TRANSMISIÓN DEPORTIVA HD'), findsOneWidget);
-      expect(find.text('⚽ Clásico Nacional en Pantalla Gigante HD'), findsOneWidget);
-      expect(find.text('PANTALLA GIGANTE'), findsOneWidget);
+      expect(find.text('⚽ Transmisión en Pantalla • Clásico Nacional'), findsOneWidget);
+      expect(find.text('TRANSMISIÓN EN PANTALLA'), findsOneWidget);
 
       // Preventa activa
       expect(find.text('PREVENTA DISPONIBLE'), findsWidgets);

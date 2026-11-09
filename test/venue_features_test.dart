@@ -36,7 +36,7 @@ void main() {
       expect(dmt.coverImageUrl, 'assets/images/venues/dmt_rock_bar.jpg');
 
       final laPuerta = venues.firstWhere((v) => v.id == 'la_puerta_bar');
-      expect(laPuerta.coverImageUrl, 'assets/images/venues/la_puerta_bar.jpg');
+      expect(laPuerta.coverImageUrl, 'assets/images/venues/bar_la_puerta.jpg');
     });
 
     test('All venues have verified local ambient photos and zero Unsplash / external URLs in gallery', () {

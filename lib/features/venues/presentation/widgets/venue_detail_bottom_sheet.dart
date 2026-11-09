@@ -8,7 +8,6 @@ import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/neon_badge.dart';
 import '../../domain/models/venue_model.dart';
 import 'faded_red_report_button.dart';
-import 'flyer_lightbox_dialog.dart';
 import '../../../transport/presentation/widgets/neon_ride_button.dart';
 
 class VenueDetailBottomSheet extends ConsumerWidget {
@@ -360,204 +359,242 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                       ],
                     ),
                     Text(
-                      'Toca el flyer para ver en Instagram',
+                      'Anuncios oficiales en redes',
                       style: AppTypography.caption.copyWith(color: AppColors.textMuted, fontSize: 10),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 ...venue.upcomingEvents.map((event) {
-                  final hasFlyer = event.flyerImageUrl != null && event.flyerImageUrl!.isNotEmpty;
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: hasFlyer
-                          ? () => FlyerLightboxDialog.show(context, event, venue)
-                          : null,
-                      child: GlassContainer(
-                        borderRadius: 16,
-                        padding: const EdgeInsets.all(12),
-                        borderColor: event.isToday
-                            ? AppColors.neonViolet.withOpacity(0.7)
-                            : (hasFlyer ? const Color(0xFFE1306C).withOpacity(0.4) : AppColors.glassBorder),
-                        fillColor: AppColors.surfaceElevated.withOpacity(0.65),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (hasFlyer) ...[
-                              GestureDetector(
-                                onTap: () => FlyerLightboxDialog.show(context, event, venue),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: AppVenueImage(
-                                        imageUrl: event.flyerImageUrl!,
-                                        width: 68,
-                                        height: 88,
-                                        fit: BoxFit.cover,
-                                      ),
+                    child: GlassContainer(
+                      borderRadius: 16,
+                      padding: const EdgeInsets.all(12),
+                      borderColor: event.isToday
+                          ? AppColors.neonViolet.withOpacity(0.7)
+                          : AppColors.glassBorder,
+                      fillColor: AppColors.surfaceElevated.withOpacity(0.65),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (event.isToday) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.neonViolet,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    'HOY',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
                                     ),
-                                    Positioned(
-                                      bottom: 2,
-                                      right: 2,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(3),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.7),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.fullscreen_rounded,
-                                          color: Colors.white,
-                                          size: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                            ],
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                                const SizedBox(width: 6),
+                              ],
+                              if (event.isStoryAnnouncement) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCB045)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      if (event.isToday) ...[
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.neonViolet,
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: const Text(
-                                            'HOY',
-                                            style: TextStyle(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.w900,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                      ],
-                                      if (event.isStoryAnnouncement) ...[
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCB045)],
-                                            ),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: const Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(Icons.camera_alt_rounded, color: Colors.white, size: 9),
-                                              SizedBox(width: 3),
-                                              Text(
-                                                'HISTORIA IG',
-                                                style: TextStyle(
-                                                  fontSize: 8.5,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                      ],
-                                      Expanded(
-                                        child: Text(
-                                          event.dateDisplay,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: AppTypography.caption.copyWith(
-                                            color: AppColors.neonCyan,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                      Icon(Icons.camera_alt_rounded, color: Colors.white, size: 9),
+                                      SizedBox(width: 3),
+                                      Text(
+                                        'HISTORIA IG',
+                                        style: TextStyle(
+                                          fontSize: 8.5,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
                                         ),
                                       ),
-                                      if (event.coverPrice != null)
-                                        Text(
-                                          event.coverPrice!,
-                                          style: AppTypography.caption.copyWith(
-                                            color: AppColors.neonAmber,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
                                     ],
                                   ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    event.title,
-                                    style: AppTypography.bodyBold.copyWith(fontSize: 14),
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              if (event.isSportsMatch) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF10B981),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
-                                  if (event.artistOrDj != null) ...[
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      '🎵 ${event.artistOrDj}',
-                                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                                  child: const Text(
+                                    'TRANSMISIÓN EN PANTALLA',
+                                    style: TextStyle(
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.black,
                                     ),
-                                  ],
-                                  if (event.specialSchedule != null) ...[
-                                    const SizedBox(height: 3),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.access_time_rounded, size: 12, color: AppColors.neonCyan),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            event.specialSchedule!,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: AppTypography.caption.copyWith(
-                                              color: AppColors.neonCyan,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              Expanded(
+                                child: Text(
+                                  event.dateDisplay,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppColors.neonCyan,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              if (event.coverPrice != null)
+                                Text(
+                                  event.coverPrice!,
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppColors.neonAmber,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            event.title,
+                            style: AppTypography.bodyBold.copyWith(fontSize: 14),
+                          ),
+                          if (event.artistOrDj != null) ...[
+                            const SizedBox(height: 3),
+                            Text(
+                              '🎵 ${event.artistOrDj}',
+                              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                            ),
+                          ],
+                          if (event.specialSchedule != null) ...[
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.access_time_rounded, size: 12, color: AppColors.neonCyan),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    event.specialSchedule!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTypography.caption.copyWith(
+                                      color: AppColors.neonCyan,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                  ],
-                                  if (event.promoNote != null) ...[
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '⚡ ${event.promoNote}',
-                                      style: AppTypography.caption.copyWith(
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                          if (venue.hasPromo && event.promoNote != null && event.promoNote!.isNotEmpty) ...[
+                            const SizedBox(height: 5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonAmber.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: AppColors.neonAmber.withOpacity(0.4)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.local_offer_rounded, size: 11, color: AppColors.neonAmber),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      event.promoNote!,
+                                      style: const TextStyle(
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.bold,
                                         color: AppColors.neonAmber,
-                                        fontWeight: FontWeight.w600,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ],
-                                  if (hasFlyer) ...[
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.image_outlined, size: 12, color: Color(0xFFE1306C)),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Ver flyer e Instagram oficial',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: const Color(0xFFE1306C).withOpacity(0.95),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 2),
-                                        const Icon(Icons.chevron_right_rounded, size: 14, color: Color(0xFFE1306C)),
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ],
                               ),
                             ),
                           ],
-                        ),
+                          if (event.isPresaleActive) ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.neonViolet.withOpacity(0.18),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: AppColors.neonViolet.withOpacity(0.5)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.confirmation_number_rounded, size: 14, color: AppColors.neonViolet),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      event.presalePrice ?? 'Preventa Disponible',
+                                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Colors.white),
+                                    ),
+                                  ),
+                                  if (event.presaleUrl != null)
+                                    InkWell(
+                                      onTap: () => _launchUrl(event.presaleUrl!),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.neonViolet,
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: const Text('Comprar', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          if (event.sourceInstagramUrl != null) ...[
+                            const SizedBox(height: 8),
+                            InkWell(
+                              onTap: () => _launchUrl(event.sourceInstagramUrl!),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4.5),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCB045)],
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.camera_alt_rounded, size: 12, color: Colors.white),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      'Ver Anuncio Oficial ${event.sourceInstagramHandle ?? '@Instagram'}',
+                                      style: const TextStyle(
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    const Icon(Icons.open_in_new_rounded, size: 11, color: Colors.white),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   );
@@ -675,139 +712,49 @@ class VenueDetailBottomSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
 
-              // Galería Visual / Vibe del Lugar (Archivos oficiales locales y Flyers de Cartelera)
-              Builder(
-                builder: (context) {
-                  final eventsWithFlyer = venue.upcomingEvents
-                      .where((e) => e.flyerImageUrl != null && e.flyerImageUrl!.isNotEmpty)
-                      .toList();
-
-                  if (venue.ambientPhotos.isEmpty && eventsWithFlyer.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            eventsWithFlyer.isNotEmpty ? 'FOTOS DEL AMBIENTE & FLYERS' : 'FOTOS DEL AMBIENTE',
-                            style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+              // Galería Visual / Vibe del Lugar (Fotografías auténticas del lugar)
+              if (venue.ambientPhotos.isNotEmpty) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'FOTOS REALES DE AMBIENTE',
+                      style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+                    ),
+                    Text(
+                      'Fotografías auténticas del lugar',
+                      style: AppTypography.caption.copyWith(color: AppColors.textMuted, fontSize: 11),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 120,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: venue.ambientPhotos.length,
+                    itemBuilder: (context, index) {
+                      final photoUrl = venue.ambientPhotos[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: GestureDetector(
+                          onTap: () => _openImageLightbox(context, photoUrl, venue.name),
+                          child: Hero(
+                            tag: 'ambient_photo_${venue.id}_$index',
+                            child: AppVenueImage(
+                              imageUrl: photoUrl,
+                              width: 150,
+                              fit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          Text(
-                            eventsWithFlyer.isNotEmpty ? 'Flyers oficiales + Archivos verificados' : 'Archivos oficiales verificados',
-                            style: AppTypography.caption.copyWith(color: AppColors.textMuted, fontSize: 11),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 120,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            // Flyers oficiales vinculados a historias o posts de Instagram
-                            ...eventsWithFlyer.map((event) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: GestureDetector(
-                                  onTap: () => FlyerLightboxDialog.show(context, event, venue),
-                                  child: Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(14),
-                                        child: Container(
-                                          width: 140,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: const Color(0xFFE1306C).withOpacity(0.6),
-                                              width: 1.5,
-                                            ),
-                                            borderRadius: BorderRadius.circular(14),
-                                          ),
-                                          child: AppVenueImage(
-                                            imageUrl: event.flyerImageUrl!,
-                                            width: 140,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 6,
-                                        left: 6,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFFCB045)],
-                                            ),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 9),
-                                              const SizedBox(width: 3),
-                                              Text(
-                                                event.isStoryAnnouncement ? 'HISTORIA' : 'FLYER',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 8.5,
-                                                  fontWeight: FontWeight.w900,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 6,
-                                        right: 6,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.7),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(Icons.open_in_new_rounded, color: Colors.white, size: 12),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-
-                            // Fotos de ambiente verificadas
-                            ...venue.ambientPhotos.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final photoUrl = entry.value;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: GestureDetector(
-                                  onTap: () => _openImageLightbox(context, photoUrl, venue.name),
-                                  child: Hero(
-                                    tag: 'ambient_photo_${venue.id}_$index',
-                                    child: AppVenueImage(
-                                      imageUrl: photoUrl,
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                          ],
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  );
-                },
-              ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
 
               // Descripción y Horario
               Text(

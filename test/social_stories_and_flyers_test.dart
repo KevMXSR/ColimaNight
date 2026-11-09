@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
-import 'package:colima_night/features/venues/presentation/widgets/flyer_lightbox_dialog.dart';
 import 'package:colima_night/features/venues/presentation/widgets/live_acts_lineup_section.dart';
 
 void main() {
@@ -81,10 +80,9 @@ void main() {
       expect(thursdayEvent.sourceInstagramUrl, 'https://www.instagram.com/barlapuerta/');
       expect(thursdayEvent.sourceInstagramHandle, '@barlapuerta');
       expect(thursdayEvent.isStoryAnnouncement, isTrue);
-      expect(thursdayEvent.flyerImageUrl, isNotNull);
     });
 
-    test('El Guachi is linked to @guachirooftop with Rooftop Sunset Session and flyer', () {
+    test('El Guachi is linked to @guachirooftop with Rooftop Sunset Session', () {
       final container = ProviderContainer();
       final venues = container.read(mockVenuesProvider);
 
@@ -97,7 +95,6 @@ void main() {
       expect(sunsetEvent.title, contains('Sunset Session'));
       expect(sunsetEvent.sourceInstagramUrl, 'https://www.instagram.com/guachirooftop/');
       expect(sunsetEvent.isStoryAnnouncement, isTrue);
-      expect(sunsetEvent.flyerImageUrl, isNotNull);
     });
   });
 
@@ -126,71 +123,19 @@ void main() {
     });
   });
 
-  group('FlyerLightboxDialog Widget Tests', () {
-    testWidgets('FlyerLightboxDialog renders title, Instagram button, and handle', (tester) async {
-      const event = VenueEvent(
-        id: 'test_event',
-        title: 'Sunset Session Guachi Rooftop',
-        dateDisplay: 'Jueves 6:00 PM',
-        specialSchedule: 'Apertura 6:00 PM',
-        promoNote: '2x1 en mixología antes de 9:00 PM',
-        flyerImageUrl: 'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
-        sourceInstagramUrl: 'https://www.instagram.com/guachirooftop/',
-        sourceInstagramHandle: '@guachirooftop',
-        isStoryAnnouncement: true,
-      );
-
-      const venue = VenueModel(
-        id: 'el_guachi',
-        name: 'El Guachi',
-        category: 'Club & Antro',
-        zone: 'Calle Ignacio Sandoval',
-        description: 'Club nocturno',
-        coverImageUrl: 'assets/images/venues/el_guachi.jpg',
-        galleryUrls: [],
-        rating: 4.9,
-        reviewsCount: 400,
-        capacityPercent: 0,
-        latitude: 19.26,
-        longitude: -103.70,
-        vibeGenre: 'Perreo / House',
-        schedule: '9:30 PM - 5:30 AM',
-        instagramHandle: '@guachirooftop',
-      );
-
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: FlyerLightboxDialog(
-              event: event,
-              venue: venue,
-            ),
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.text('Sunset Session Guachi Rooftop'), findsOneWidget);
-      expect(find.text('HISTORIA OFICIAL'), findsOneWidget);
-      expect(find.text('VER EN INSTAGRAM DEL ESTABLECIMIENTO'), findsOneWidget);
-      expect(find.textContaining('@guachirooftop'), findsWidgets);
-      expect(find.textContaining('2x1 en mixología'), findsOneWidget);
-    });
-  });
-
   group('Cryptographic Image Uniqueness & Non-Collision Tests', () {
-    test('All venue flyers have unique MD5 hashes and no duplicate binaries exist', () {
-      final flyerFiles = [
-        'assets/images/venues/flyers/bar_la_puerta_flyer.jpg',
-        'assets/images/venues/flyers/dos_puntos_flyer.jpg',
-        'assets/images/venues/flyers/guachi_rooftop_flyer.jpg',
-        'assets/images/venues/flyers/low_social_flyer.jpg',
-        'assets/images/venues/flyers/foro_dmt_rock_flyer.jpg',
+    test('All venue authentic photos have unique MD5 hashes and no duplicate binaries exist', () {
+      final venuePhotos = [
+        'assets/images/venues/bar_la_puerta.jpg',
+        'assets/images/venues/dos_puntos.jpg',
+        'assets/images/venues/el_guachi.jpg',
+        'assets/images/venues/low_social_club.jpg',
+        'assets/images/venues/foro_dmt.jpg',
+        'assets/images/venues/cerveceria_chapultepec.jpg',
       ];
 
       final Map<String, String> hashes = {};
-      for (final path in flyerFiles) {
+      for (final path in venuePhotos) {
         final file = File(path);
         expect(file.existsSync(), isTrue, reason: 'File must exist on disk: $path');
         final bytes = file.readAsBytesSync();
@@ -201,13 +146,11 @@ void main() {
         hashes[md5Hash] = path;
       }
 
-      // Explicit check: Bar La Puerta flyer must NOT equal Dos Puntos flyer or Dos Puntos cover
-      final puertaFlyer = md5.convert(File('assets/images/venues/flyers/bar_la_puerta_flyer.jpg').readAsBytesSync()).toString();
-      final dosPuntosFlyer = md5.convert(File('assets/images/venues/flyers/dos_puntos_flyer.jpg').readAsBytesSync()).toString();
-      final dosPuntosCover = md5.convert(File('assets/images/venues/dos_puntos.jpg').readAsBytesSync()).toString();
+      // Explicit check: Bar La Puerta authentic photo must NOT equal Dos Puntos photo
+      final puertaPhoto = md5.convert(File('assets/images/venues/bar_la_puerta.jpg').readAsBytesSync()).toString();
+      final dosPuntosPhoto = md5.convert(File('assets/images/venues/dos_puntos.jpg').readAsBytesSync()).toString();
 
-      expect(puertaFlyer != dosPuntosFlyer, isTrue);
-      expect(puertaFlyer != dosPuntosCover, isTrue);
+      expect(puertaPhoto != dosPuntosPhoto, isTrue);
     });
   });
 
@@ -242,7 +185,8 @@ void main() {
       expect(find.text('Bandas Locales & Noche de Rock en Vivo'), findsOneWidget);
       expect(find.text('DJ Sets Perreo Old School & Snacks'), findsOneWidget);
       expect(find.text('La Puerta del Perreo • Bellakeo Underground'), findsOneWidget);
-      expect(find.text('⚽ Clásico Nacional en Pantalla Gigante HD'), findsOneWidget);
+      expect(find.text('⚽ Transmisión en Pantalla • Clásico Nacional'), findsOneWidget);
+      expect(find.text('TRANSMISIÓN EN PANTALLA'), findsOneWidget);
       expect(find.text('DJ Set en Terraza & Mezclas Funk / Indie'), findsOneWidget);
       expect(find.text('Mariachi & Banda Acústica en Vivo'), findsOneWidget);
 

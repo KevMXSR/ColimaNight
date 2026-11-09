@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/widgets/app_venue_image.dart';
 import '../../../../core/widgets/dynamic_brand_background.dart';
 import '../providers/venue_providers.dart';
-import 'flyer_lightbox_dialog.dart';
 import 'venue_detail_bottom_sheet.dart';
 
 class WeeklyEventsSheet extends ConsumerWidget {
@@ -262,52 +261,13 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                   ),
                                   const SizedBox(height: 10),
 
-                                  // Contenido Principal (Flyer + Detalles)
-                                  Row(
+                                  // Contenido Principal (Detalles del evento)
+                                  Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      if (event.flyerImageUrl != null && event.flyerImageUrl!.isNotEmpty) ...[
-                                        GestureDetector(
-                                          onTap: () => FlyerLightboxDialog.show(context, event, venue),
-                                          child: Stack(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
-                                                child: AppVenueImage(
-                                                  imageUrl: event.flyerImageUrl!,
-                                                  width: 60,
-                                                  height: 75,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              Positioned(
-                                                bottom: 2,
-                                                right: 2,
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(2.5),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black.withOpacity(0.7),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.fullscreen_rounded,
-                                                    color: Colors.white,
-                                                    size: 13,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                      ],
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              event.title,
-                                              style: AppTypography.bodyLarge.copyWith(
+                                      Text(
+                                        event.title,
+                                        style: AppTypography.bodyLarge.copyWith(
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 14,
                                                 color: Colors.white,
@@ -364,9 +324,6 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                             ],
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
                                   const SizedBox(height: 10),
 
                                   // Lugar Sede y Botones de Acción
@@ -402,9 +359,14 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            if (event.flyerImageUrl != null && event.flyerImageUrl!.isNotEmpty) ...[
+                                            if (event.sourceInstagramUrl != null) ...[
                                               GestureDetector(
-                                                onTap: () => FlyerLightboxDialog.show(context, event, venue),
+                                                onTap: () async {
+                                                  final uri = Uri.parse(event.sourceInstagramUrl!);
+                                                  if (await canLaunchUrl(uri)) {
+                                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                                  }
+                                                },
                                                 child: Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                                                   margin: const EdgeInsets.only(right: 8),
@@ -419,7 +381,7 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                                       Icon(Icons.camera_alt_rounded, size: 11, color: Color(0xFFE1306C)),
                                                       SizedBox(width: 4),
                                                       Text(
-                                                        'Flyer IG',
+                                                        'Instagram',
                                                         style: TextStyle(
                                                           fontSize: 9.5,
                                                           fontWeight: FontWeight.bold,
