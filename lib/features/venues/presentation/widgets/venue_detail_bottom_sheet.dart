@@ -712,17 +712,17 @@ class VenueDetailBottomSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
 
-              // Galería Visual / Vibe del Lugar (Fotografías auténticas del lugar)
+              // Galería Visual / Ambiente del Lugar
               if (venue.ambientPhotos.isNotEmpty) ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'FOTOS REALES DE AMBIENTE',
+                      'AMBIENTE',
                       style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
                     ),
                     Text(
-                      'Fotografías auténticas del lugar',
+                      'Fotografías del lugar',
                       style: AppTypography.caption.copyWith(color: AppColors.textMuted, fontSize: 11),
                     ),
                   ],
@@ -738,7 +738,13 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                       return Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: GestureDetector(
-                          onTap: () => _openImageLightbox(context, photoUrl, venue.name),
+                          onTap: () => _openAmbientGalleryLightbox(
+                            context,
+                            photos: venue.ambientPhotos,
+                            initialIndex: index,
+                            venueName: venue.name,
+                            instagramHandle: venue.instagramHandle,
+                          ),
                           child: Hero(
                             tag: 'ambient_photo_${venue.id}_$index',
                             child: AppVenueImage(
@@ -805,9 +811,11 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                           style: AppTypography.bodyBold,
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          venue.schedule,
-                          style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                        Expanded(
+                          child: Text(
+                            venue.schedule,
+                            style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
@@ -843,80 +851,302 @@ class VenueDetailBottomSheet extends ConsumerWidget {
     );
   }
 
-  void _openImageLightbox(BuildContext context, String imageUrl, String venueName) {
+  void _openAmbientGalleryLightbox(
+    BuildContext context, {
+    required List<String> photos,
+    required int initialIndex,
+    required String venueName,
+    String? instagramHandle,
+  }) {
     showDialog(
       context: context,
-      builder: (ctx) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Stack(
-          alignment: Alignment.topRight,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                color: Colors.black87,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+      barrierColor: Colors.black.withOpacity(0.94),
+      builder: (ctx) => _AmbientGalleryLightboxDialog(
+        photos: photos,
+        initialIndex: initialIndex,
+        venueName: venueName,
+        instagramHandle: instagramHandle,
+        onOpenInstagram: instagramHandle != null
+            ? () {
+                Navigator.of(ctx).pop();
+                _launchUrl('https://instagram.com/${instagramHandle.replaceAll('@', '')}');
+              }
+            : null,
+      ),
+    );
+  }
+}
+
+class _AmbientGalleryLightboxDialog extends StatefulWidget {
+  final List<String> photos;
+  final int initialIndex;
+  final String venueName;
+  final String? instagramHandle;
+  final VoidCallback? onOpenInstagram;
+
+  const _AmbientGalleryLightboxDialog({
+    required this.photos,
+    required this.initialIndex,
+    required this.venueName,
+    this.instagramHandle,
+    this.onOpenInstagram,
+  });
+
+  @override
+  State<_AmbientGalleryLightboxDialog> createState() => _AmbientGalleryLightboxDialogState();
+}
+
+class _AmbientGalleryLightboxDialogState extends State<_AmbientGalleryLightboxDialog> {
+  late final PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
+      child: Container(
+        width: screenSize.width,
+        height: screenSize.height,
+        color: Colors.black.withOpacity(0.96),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Barra Superior
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
                   children: [
-                    InteractiveViewer(
-                      maxScale: 3.5,
-                      child: AppVenueImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.contain,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.neonViolet.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: AppColors.neonViolet.withOpacity(0.4)),
+                      ),
+                      child: const Text(
+                        'AMBIENTE',
+                        style: TextStyle(
+                          color: AppColors.neonCyan,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                        ),
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      color: AppColors.surfaceElevated,
+                    const SizedBox(width: 10),
+                    Expanded(
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Foto oficial del ambiente • $venueName',
-                            textAlign: TextAlign.center,
-                            style: AppTypography.caption.copyWith(color: Colors.white70),
-                          ),
-                          if (venue.instagramHandle != null) ...[
-                            const SizedBox(height: 8),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(ctx).pop();
-                                _launchUrl('https://instagram.com/${venue.instagramHandle!.replaceAll('@', '')}');
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.camera_alt_rounded, color: Color(0xFFE1306C), size: 14),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    'Ver perfil oficial (${venue.instagramHandle})',
-                                    style: const TextStyle(
-                                      color: Color(0xFFE1306C),
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Icon(Icons.open_in_new_rounded, color: Color(0xFFE1306C), size: 12),
-                                ],
-                              ),
+                            widget.venueName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
                             ),
-                          ],
+                          ),
+                          Text(
+                            'Foto ${_currentIndex + 1} de ${widget.photos.length}',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.65),
+                              fontSize: 11,
+                            ),
+                          ),
                         ],
+                      ),
+                    ),
+                    Material(
+                      color: Colors.transparent,
+                      child: IconButton(
+                        icon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.close_rounded, color: Colors.white, size: 22),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        tooltip: 'Cerrar',
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            IconButton(
-              padding: const EdgeInsets.all(12),
-              icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(ctx).pop(),
-            ),
-          ],
+
+              // Área Principal de la Imagen (Adaptable a la pantalla con PageView e InteractiveViewer)
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    PageView.builder(
+                      controller: _pageController,
+                      itemCount: widget.photos.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        final photo = widget.photos[index];
+                        return Center(
+                          child: InteractiveViewer(
+                            minScale: 1.0,
+                            maxScale: 4.0,
+                            child: SizedBox(
+                              width: screenSize.width,
+                              height: screenSize.height,
+                              child: Center(
+                                child: AppVenueImage(
+                                  imageUrl: photo,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Botón Anterior (para web / desktop / touch)
+                    if (widget.photos.length > 1 && _currentIndex > 0)
+                      Positioned(
+                        left: 12,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(24),
+                            onTap: () {
+                              _pageController.previousPage(
+                                duration: const Duration(milliseconds: 280),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.55),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white24),
+                              ),
+                              child: const Icon(Icons.chevron_left_rounded, color: Colors.white, size: 28),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    // Botón Siguiente (para web / desktop / touch)
+                    if (widget.photos.length > 1 && _currentIndex < widget.photos.length - 1)
+                      Positioned(
+                        right: 12,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(24),
+                            onTap: () {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 280),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.55),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white24),
+                              ),
+                              child: const Icon(Icons.chevron_right_rounded, color: Colors.white, size: 28),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              // Barra Inferior con Indicadores y Redes Oficiales
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                color: AppColors.surfaceElevated.withOpacity(0.9),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Indicador de Puntos (Dots)
+                    if (widget.photos.length > 1) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          widget.photos.length,
+                          (i) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: _currentIndex == i ? 18 : 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: _currentIndex == i ? AppColors.neonCyan : Colors.white24,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+
+                    Text(
+                      'Desliza para ver todas las fotos • Pellizca para hacer zoom',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.caption.copyWith(color: Colors.white54, fontSize: 11),
+                    ),
+
+                    if (widget.instagramHandle != null && widget.onOpenInstagram != null) ...[
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: widget.onOpenInstagram,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.camera_alt_rounded, color: Color(0xFFE1306C), size: 14),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Ver perfil oficial (${widget.instagramHandle})',
+                              style: const TextStyle(
+                                color: Color(0xFFE1306C),
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.open_in_new_rounded, color: Color(0xFFE1306C), size: 12),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

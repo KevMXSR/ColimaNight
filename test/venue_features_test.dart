@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
+import 'package:colima_night/features/venues/presentation/widgets/venue_detail_bottom_sheet.dart';
 import 'package:colima_night/features/map/domain/models/venue_location.dart';
 import 'package:colima_night/core/constants/colima_geo_constants.dart';
 
@@ -411,6 +413,47 @@ void main() {
       for (int i = 0; i < top5.length - 1; i++) {
         expect(top5[i].capacityPercent >= top5[i + 1].capacityPercent, isTrue);
       }
+    });
+
+    testWidgets('VenueDetailBottomSheet renders Ambiente section and opens fullscreen responsive lightbox', (tester) async {
+      final container = ProviderContainer();
+      final venues = container.read(mockVenuesProvider);
+      final venueWithPhotos = venues.firstWhere((v) => v.ambientPhotos.isNotEmpty);
+
+      final scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: VenueDetailBottomSheet(
+                venue: venueWithPhotos,
+                scrollController: scrollController,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Scroll down to the Ambiente section
+      scrollController.jumpTo(1200);
+      await tester.pumpAndSettle();
+
+      // Ensure 'AMBIENTE' section header is present
+      expect(find.text('AMBIENTE'), findsOneWidget);
+      expect(find.text('Fotografías del lugar'), findsOneWidget);
+
+      // Tap on the first ambient photo thumbnail to open fullscreen lightbox
+      final heroThumb = find.byType(Hero).first;
+      await tester.tap(heroThumb);
+      await tester.pumpAndSettle();
+
+      // Check fullscreen lightbox header and photo position counter
+      expect(find.text('Foto 1 de ${venueWithPhotos.ambientPhotos.length}'), findsOneWidget);
+      expect(find.byIcon(Icons.close_rounded), findsWidgets);
     });
   });
 }
