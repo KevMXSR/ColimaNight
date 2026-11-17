@@ -512,6 +512,21 @@ class VenueLocation {
           instagramHandle: 'cerveceriachapultepeccolima',
           whatsappNumber: '+523123235812',
         ),
+        const VenueLocation(
+          id: 'torna',
+          name: 'Torna',
+          category: VenueCategory.barPub,
+          corridorId: CorridorId.venustianoCarranza,
+          address: 'Av. Venustiano Carranza #2101, Local 5, Rincón del Colibrí, 28017 Colima, Col.',
+          coordinates: GeoPoint(19.2807909, -103.7125546),
+          currentStatus: VenueStatus.available,
+          currentOccupancyPercentage: 70,
+          hasCover: false,
+          musicGenre: 'Vinyl Sessions, Nu-Disco, House & Hi-Fi Beats',
+          activePromotion: 'Focaccias de masa madre, coctelería clásica y vinilos',
+          instagramHandle: 'torna.col',
+          googlePlaceId: '0x84255b627a032d5f:0xd8947045b43b1170',
+        ),
       ];
 
   /// Easter Egg Memorial de Barezzito

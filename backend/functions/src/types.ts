@@ -7,7 +7,17 @@ export type IncidentCategory =
   | 'sobrecupo_critico'
   | 'altercado'
   | 'operativo_policial'
-  | 'acoso';
+  | 'acoso'
+  | 'slow_service'
+  | 'servicio_lento'
+  | 'banos_sucios'
+  | 'clima_calor'
+  | 'musica_excesiva'
+  | 'cargo_indebido'
+  | 'other'
+  | 'otro_servicio';
+
+export type ReportClassification = 'security_critical' | 'service_feedback_private';
 
 export type SecurityLevel = 'normal' | 'alert_verified';
 
@@ -74,6 +84,7 @@ export interface IncidentReportDocument {
   id?: string;
   venueId: string;
   incidentType: IncidentCategory;
+  classification?: ReportClassification;
   hashedDeviceId: string; // HMAC-SHA256 con salt de 24h
   saltDate: string; // YYYY-MM-DD
   clientLocation: firestore.GeoPoint;

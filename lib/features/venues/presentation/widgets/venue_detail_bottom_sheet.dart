@@ -277,11 +277,15 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                 barName: venue.name,
               ),
 
-              // Botón Directo de Reservaciones WhatsApp (Solo en locales que admiten reservación)
+              // Botón Directo de Reservaciones (WhatsApp o Enlace Online)
               if (venue.hasTableReservation) ...[
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
+                    if (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty)) {
+                      _launchUrl(venue.reservationUrl!);
+                      return;
+                    }
                     final phone = venue.whatsappReservation ?? venue.reservationPhone ?? '523121234567';
                     final msg = Uri.encodeComponent(
                         'Hola, me gustaría consultar disponibilidad de mesa para hoy en ${venue.name} que vi en ColimaNight.');
@@ -291,19 +295,37 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF25D366).withOpacity(0.18),
+                      color: (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                          ? AppColors.neonCyan.withOpacity(0.18)
+                          : const Color(0xFF25D366).withOpacity(0.18),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFF25D366).withOpacity(0.6)),
+                      border: Border.all(
+                        color: (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                            ? AppColors.neonCyan.withOpacity(0.6)
+                            : const Color(0xFF25D366).withOpacity(0.6),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.chat_bubble_rounded, color: Color(0xFF25D366), size: 18),
+                        Icon(
+                          (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                              ? Icons.table_bar_rounded
+                              : Icons.chat_bubble_rounded,
+                          color: (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                              ? AppColors.neonCyan
+                              : const Color(0xFF25D366),
+                          size: 18,
+                        ),
                         const SizedBox(width: 8),
                         Text(
-                          'RESERVAR MESA POR WHATSAPP',
+                          (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                              ? 'RESERVAR MESA (COVERMANAGER)'
+                              : 'RESERVAR MESA POR WHATSAPP',
                           style: AppTypography.bodyBold.copyWith(
-                            color: const Color(0xFF25D366),
+                            color: (venue.reservationUrl != null && (venue.whatsappReservation == null || venue.whatsappReservation!.isEmpty))
+                                ? AppColors.neonCyan
+                                : const Color(0xFF25D366),
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.5,
                           ),
@@ -706,6 +728,17 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                         handle: venue.tikTokHandle!,
                         color: AppColors.neonCyan,
                         onTap: () => _launchUrl('https://tiktok.com/@${venue.tikTokHandle!.replaceAll('@', '')}'),
+                      ),
+                    ),
+                  if (venue.websiteUrl != null)
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 50) / 2,
+                      child: _SocialButton(
+                        icon: Icons.language_rounded,
+                        label: 'Sitio Web Oficial',
+                        handle: venue.websiteUrl!.replaceFirst('https://', '').replaceFirst('http://', '').replaceAll('/', ''),
+                        color: const Color(0xFFF2761E),
+                        onTap: () => _launchUrl(venue.websiteUrl!),
                       ),
                     ),
                 ],

@@ -256,6 +256,24 @@ class VenueScheduleEvaluator {
       );
     }
 
+    // 2b. Torna Focaccia & Listening Bar: Lunes a Domingo 7:00 PM - 12:00 AM (Jue - Sáb hasta 1:00 AM)
+    if (id == 'torna' || id == 'torna_bar') {
+      return const _ScheduleRule(
+        operatingDays: [
+          DateTime.monday,
+          DateTime.tuesday,
+          DateTime.wednesday,
+          DateTime.thursday,
+          DateTime.friday,
+          DateTime.saturday,
+          DateTime.sunday,
+        ],
+        openHour: 19,
+        openMinute: 0,
+        closeHour: 1,
+      );
+    }
+
     // 3. Cervecería Estación Colimita - Centro (Andador Madero): Martes a Domingo 1:00 PM a 12:00 AM (Lunes cerrado)
     if (id == 'colimita_centro') {
       return const _ScheduleRule(

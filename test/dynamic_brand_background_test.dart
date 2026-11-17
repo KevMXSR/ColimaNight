@@ -76,5 +76,56 @@ void main() {
 
       expect(tapped, isTrue);
     });
+
+    testWidgets('renders primary logo with colossal responsive sizing and 0.24 default opacity', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: DynamicBrandBackground(
+              type: BrandBackgroundType.primaryLogo,
+              child: SizedBox(),
+            ),
+          ),
+        ),
+      );
+
+      final bgWidget = tester.widget<DynamicBrandBackground>(find.byType(DynamicBrandBackground));
+      expect(bgWidget.opacity, 0.24);
+
+      // Verify Image is inside an OverflowBox and a colossal dimensioned SizedBox
+      expect(find.byType(OverflowBox), findsOneWidget);
+      final sizedBoxFinder = find.ancestor(
+        of: find.byType(Image),
+        matching: find.byType(SizedBox),
+      );
+      expect(sizedBoxFinder, findsWidgets);
+
+      final SizedBox logoBox = tester.widget(sizedBoxFinder.first);
+      // On 800x600 test surface (desktop/tablet), dimension should be >= 1000 dp
+      expect(logoBox.width, greaterThanOrEqualTo(1000.0));
+      expect(logoBox.height, greaterThanOrEqualTo(1000.0));
+    });
+
+    testWidgets('respects customLogoSize when provided', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: DynamicBrandBackground(
+              type: BrandBackgroundType.primaryLogo,
+              customLogoSize: 620.0,
+              child: SizedBox(),
+            ),
+          ),
+        ),
+      );
+
+      final sizedBoxFinder = find.ancestor(
+        of: find.byType(Image),
+        matching: find.byType(SizedBox),
+      );
+      final SizedBox logoBox = tester.widget(sizedBoxFinder.first);
+      expect(logoBox.width, 620.0);
+      expect(logoBox.height, 620.0);
+    });
   });
 }

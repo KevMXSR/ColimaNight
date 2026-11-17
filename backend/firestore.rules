@@ -56,10 +56,16 @@ service cloud.firestore {
     // =========================================================================
     // 2. COLECCIÓN 'incident_reports' (Auditoría Confidencial e Interna)
     // =========================================================================
-    // Blindaje reputacional absoluto: ningún cliente puede leer ni escribir directamente.
-    // La ingesta pasa por Cloud Function con verificación Haversine de 80m.
+    // Blindaje reputacional absoluto: ningún cliente de la app pública puede leer ni escribir.
+    // Lectura privada y exclusiva para el Administrador del sistema y la Gerencia del establecimiento.
+    // La ingesta pasa exclusivamente por Cloud Function con verificación Haversine de 80m.
     match /incident_reports/{reportId} {
-      allow read: if isAdmin();
+      allow read: if isAdmin() || (
+        isAuthenticated() &&
+        request.auth.token.role == 'venue_staff' &&
+        request.auth.token.assignedVenueId == resource.data.venueId &&
+        resource.data.classification == 'service_feedback_private'
+      );
       allow write: if false;
     }
 

@@ -20,14 +20,16 @@ class DynamicBrandBackground extends StatefulWidget {
   final double opacity;
   final bool enableBreathing;
   final Duration breathingDuration;
+  final double? customLogoSize;
 
   const DynamicBrandBackground({
     super.key,
     required this.child,
     this.type = BrandBackgroundType.primaryLogo,
-    this.opacity = 0.16,
+    this.opacity = 0.24,
     this.enableBreathing = true,
     this.breathingDuration = const Duration(milliseconds: 5500),
+    this.customLogoSize,
   });
 
   @override
@@ -147,23 +149,51 @@ class _DynamicBrandBackgroundState extends State<DynamicBrandBackground>
                       ),
                     ),
 
-                    // Activo de Marca Oficial con Respiración Escalar y Opacidad Calibrada
+                    // Activo de Marca Oficial con Dimensionamiento Colosal (Opción 1)
                     Center(
                       child: Transform.scale(
                         scale: scale,
                         child: Opacity(
-                          opacity: (widget.opacity * glowMultiplier).clamp(0.05, 0.40),
+                          opacity: (widget.opacity * glowMultiplier).clamp(0.05, 0.50),
                           child: widget.type == BrandBackgroundType.primaryLogo
-                              ? Padding(
-                                  padding: const EdgeInsets.only(bottom: 120),
-                                  child: Image.asset(
-                                    _assetPath,
-                                    width: 380,
-                                    height: 380,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const SizedBox.shrink(),
-                                  ),
+                              ? LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final maxHeight = constraints.maxHeight;
+                                    final maxWidth = constraints.maxWidth;
+                                    final isTabletOrDesktop = maxWidth > 600;
+
+                                    // Cálculo de dimensionamiento responsivo Colosal (Opción 1)
+                                    // Abarca entre 820 y 960 dp en móviles (~96% del alto de pantalla)
+                                    // y de 1200 a 1600 dp en desktop/web (hasta ~85% del ancho de ventana)
+                                    final double dimension;
+                                    if (widget.customLogoSize != null) {
+                                      dimension = widget.customLogoSize!;
+                                    } else if (maxHeight.isFinite && maxHeight > 0) {
+                                      dimension = isTabletOrDesktop
+                                          ? (maxWidth * 0.85).clamp(1100.0, 1600.0)
+                                          : (maxHeight * 0.96).clamp(820.0, 960.0);
+                                    } else {
+                                      dimension = isTabletOrDesktop ? 1300.0 : 880.0;
+                                    }
+
+                                    return OverflowBox(
+                                      minWidth: 0.0,
+                                      maxWidth: double.infinity,
+                                      minHeight: 0.0,
+                                      maxHeight: double.infinity,
+                                      alignment: Alignment.center,
+                                      child: SizedBox(
+                                        width: dimension,
+                                        height: dimension,
+                                        child: Image.asset(
+                                          _assetPath,
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (context, error, stackTrace) =>
+                                              const SizedBox.shrink(),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 )
                               : Image.asset(
                                   _assetPath,

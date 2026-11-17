@@ -89,6 +89,8 @@ class VenueModel {
   final String? tikTokHandle;
   final String? facebookUrl;
   final String? facebookHandle;
+  final String? websiteUrl; // Sitio web oficial (ej: https://torna.bar/)
+  final String? reservationUrl; // Enlace oficial para reservaciones (ej: CoverManager o web)
   final String vibeGenre;
   final String schedule;
   final int estimatedMinutes; // Minutos estimados de llegada
@@ -139,6 +141,8 @@ class VenueModel {
     this.tikTokHandle,
     this.facebookUrl,
     this.facebookHandle,
+    this.websiteUrl,
+    this.reservationUrl,
     required this.vibeGenre,
     required this.schedule,
     this.estimatedMinutes = 8,
@@ -190,7 +194,8 @@ class VenueModel {
       return false;
     }
     return (whatsappReservation != null && whatsappReservation!.isNotEmpty) ||
-        (reservationPhone != null && reservationPhone!.isNotEmpty);
+        (reservationPhone != null && reservationPhone!.isNotEmpty) ||
+        (reservationUrl != null && reservationUrl!.isNotEmpty);
   }
 
   /// Etiqueta visible del cover
@@ -221,8 +226,8 @@ class VenueModel {
       return '⚠️ Altercado verificado';
     }
     if (securityStatus == 'under_review') return '👀 Reporte en revisión';
-    if (lastIncidentType == 'slow_service') return '⏳ Servicio lento hoy';
-    if (lastReportNote != null && lastReportNote!.isNotEmpty) return '📝 $lastReportNote';
+    // Nota: Las notas y reportes de calidad de servicio son 100% privados para administración
+    // y NUNCA se exhiben públicamente en el mapa ni en las tarjetas de la app.
     if (capacityPercent >= 85) return '🔥 Lleno total';
     if (hasLiveMusic) return '🎸 En vivo';
     if (hasPromo) return '⚡ 2x1 Activo';
@@ -258,6 +263,8 @@ class VenueModel {
     String? tikTokHandle,
     String? facebookUrl,
     String? facebookHandle,
+    String? websiteUrl,
+    String? reservationUrl,
     String? vibeGenre,
     String? schedule,
     int? estimatedMinutes,
@@ -305,6 +312,8 @@ class VenueModel {
       tikTokHandle: tikTokHandle ?? this.tikTokHandle,
       facebookUrl: facebookUrl ?? this.facebookUrl,
       facebookHandle: facebookHandle ?? this.facebookHandle,
+      websiteUrl: websiteUrl ?? this.websiteUrl,
+      reservationUrl: reservationUrl ?? this.reservationUrl,
       vibeGenre: vibeGenre ?? this.vibeGenre,
       schedule: schedule ?? this.schedule,
       estimatedMinutes: estimatedMinutes ?? this.estimatedMinutes,

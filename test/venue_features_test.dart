@@ -159,18 +159,20 @@ void main() {
       expect(low.longitude, -103.72559862649845);
     });
 
-    test('Venues count is exactly 28 verified establishments, excludes Taverna and Barezzito', () {
+    test('Venues count is exactly 29 verified establishments, excludes Taverna and Barezzito', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
-      expect(venues.length, equals(28));
+      expect(venues.length, equals(29));
       expect(venues.any((v) => v.id == 'cerveceria_chapultepec'), isTrue);
+      expect(venues.any((v) => v.id == 'torna'), isTrue);
       expect(venues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
       expect(venues.any((v) => v.id == 'barezzito_easter_egg'), isFalse);
       expect(venues.any((v) => v.name.toLowerCase().contains('barezzito')), isFalse);
-      expect(VenueLocation.verifiedColimaVenues.length, equals(28));
+      expect(VenueLocation.verifiedColimaVenues.length, equals(29));
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.id == 'cerveceria_chapultepec'), isTrue);
+      expect(VenueLocation.verifiedColimaVenues.any((v) => v.id == 'torna'), isTrue);
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
     });
     test('Barezzito Easter Egg is correctly positioned on map at Av. Constitucion 1450', () {

@@ -47,12 +47,18 @@ service cloud.firestore {
     }
 
     // ==========================================================
-    // 3. COLECCIÓN 'incident_reports' (Reportes individuales)
+    // 3. COLECCIÓN 'incident_reports' (Reportes individuales y Feedback)
     // ==========================================================
     // Colección sensible con coordenadas GPS y hashes de dispositivos.
-    // Blindada al público para evitar filtraciones y difamación.
+    // Blindada al público para evitar difamación.
+    // Solo accesible por el Administrador y la Gerencia del establecimiento correspondiente.
     match /incident_reports/{reportId} {
-      allow read: if isAdmin();
+      allow read: if isAdmin() || (
+        request.auth != null &&
+        request.auth.token.role == 'venue_staff' &&
+        request.auth.token.assignedVenueId == resource.data.venueId &&
+        resource.data.classification == 'service_feedback_private'
+      );
       allow write: if false;
     }
 

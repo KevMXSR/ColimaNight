@@ -513,7 +513,7 @@ class _IncidentReportModalState extends ConsumerState<IncidentReportModal> {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          'Filtro de moderación activo: Se neutralizan nombres propios y difamaciones personales. Para riñas, se requieren al menos 5 reportes independientes confirmados en 10 min dentro del establecimiento.',
+                          'Filtro de privacidad y moderación activo: Los reportes de servicio se canalizan de forma 100% confidencial a la gerencia para análisis operativo (sin exhibirse en la app). Alertas de seguridad requieren al menos 5 reportes verificados in situ.',
                           style: AppTypography.caption.copyWith(
                             color: AppColors.textMuted,
                             fontSize: 10,

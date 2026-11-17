@@ -26,6 +26,25 @@ export class ConsensusService {
     userLocation: firestore.GeoPoint,
     sanitizedComment?: string
   ): Promise<{ status: 'internal_audit' | 'active_alert'; quorumReached: boolean; distinctCount: number }> {
+    const isServiceFeedback =
+      incidentType === 'slow_service' ||
+      incidentType === 'servicio_lento' ||
+      incidentType === 'banos_sucios' ||
+      incidentType === 'clima_calor' ||
+      incidentType === 'musica_excesiva' ||
+      incidentType === 'cargo_indebido' ||
+      incidentType === 'other' ||
+      incidentType === 'otro_servicio';
+
+    if (isServiceFeedback) {
+      console.log(`[ConsensusService] Reporte de servicio privado para ${venueId} (${incidentType}). Aislado de alertas públicas y reservado para análisis de gerencia.`);
+      return {
+        status: 'internal_audit',
+        quorumReached: false,
+        distinctCount: 1,
+      };
+    }
+
     const venueRef = this.db.collection('venues').doc(venueId);
     const activeIncidentRef = this.db.collection('active_incidents').doc(venueId);
 

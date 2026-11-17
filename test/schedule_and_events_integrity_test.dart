@@ -166,6 +166,50 @@ void main() {
       expect(status.isOpenNow, isTrue);
       expect(status.detailedStatus, contains('Cierra 11:00 PM'));
     });
+
+    test('Torna Focaccia Bar base schedule opens daily at 19:00 hrs', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final torna = venues.firstWhere((v) => v.id == 'torna');
+
+      // 1. Tarde antes de abrir (16:30 hrs)
+      final afternoon = DateTime(2026, 11, 16, 16, 30);
+      final afternoonStatus = VenueScheduleEvaluator.evaluate(torna, referenceTime: afternoon);
+      expect(afternoonStatus.badgeType, equals(VenueBadgeType.openingToday));
+      expect(afternoonStatus.isOpenNow, isFalse);
+      expect(afternoonStatus.detailedStatus, startsWith('Abre hoy a las 7:00 PM'));
+
+      // 2. Noche en servicio (21:00 hrs)
+      final night = DateTime(2026, 11, 16, 21, 0);
+      final nightStatus = VenueScheduleEvaluator.evaluate(torna, referenceTime: night);
+      expect(nightStatus.badgeType, equals(VenueBadgeType.open));
+      expect(nightStatus.isOpenNow, isTrue);
+      expect(nightStatus.detailedStatus, contains('Cierra 1:00 AM'));
+    });
+
+    test('Torna profile & official links verification (Web, Instagram, CoverManager)', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      expect(venues.length, equals(29)); // Total venues 29
+
+      final torna = venues.firstWhere((v) => v.id == 'torna');
+      expect(torna.name, equals('Torna'));
+      expect(torna.category, equals('Focaccia & Listening Bar'));
+      expect(torna.zone, contains('Venustiano Carranza 2101'));
+      expect(torna.latitude, closeTo(19.28079, 0.001));
+      expect(torna.longitude, closeTo(-103.71255, 0.001));
+      expect(torna.instagramHandle, equals('@torna.col'));
+      expect(torna.websiteUrl, equals('https://torna.bar/'));
+      expect(torna.reservationUrl, contains('covermanager.com'));
+      expect(torna.hasTableReservation, isTrue);
+      expect(torna.hasLiveMusic, isTrue);
+      expect(torna.liveMusicAct, contains('Vinilo'));
+      expect(torna.ambientPhotos.length, equals(4));
+    });
   });
 
   group('Secondary Profiles & Video Stories Verification Tests', () {

@@ -46,7 +46,8 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
 - **Plantilla Instagram Stories 9:16 (`colimanight_instagram_story_ad_secondary.png`):** Banner vertical publicitario de alta resolución con el logotipo secundario, titulares VIP y llamado a la acción deslizable.
 
 ### 1.6 Fondos Dinámicos de la Aplicación (`DynamicBrandBackground`)
-- **Pantalla Principal (`DiscoveryFeedView`):** Utiliza el **Logotipo Oficial Primario** (`BrandBackgroundType.primaryLogo`) en un fondo fijo con respiración sutil neón (`1.0` a `1.03x`), resplandores magenta y cyan, y viñeta gradual de absorción que garantiza un contraste del 100% en las tarjetas y textos.
+- **Pantalla Principal (`DiscoveryFeedView`):** Utiliza el **Logotipo Oficial Primario** (`BrandBackgroundType.primaryLogo`) en un fondo fijo con respiración sutil neón (`1.0` a `1.03x`), resplandores magenta y cyan, y viñeta gradual de absorción (`#D906070B` a `#F506070B`) que garantiza un contraste del 100% en las tarjetas y textos.
+  - **Dimensionamiento Colosal de Pantalla Completa (Opción 1):** Dimensionado responsivo que abarca prácticamente la totalidad de la altura de la pantalla en móviles (**820 a 960 dp**, ~96% del alto del teléfono) y de **1200 a 1600 dp** en desktop/web (hasta ~85% del ancho de ventana) dentro de un `OverflowBox` perfectamente centrado (`Alignment.center`), con opacidad base calibrada en `0.24` para una presencia visual envolvente, prominente y nítida de la copa de autor, la luna y palmeras neón sin comprometer el texto o la usabilidad de las tarjetas.
 - **Pantallas Secundarias & Modales (`WeeklyEventsSheet`):** Utilizan el **Mapa Neón Cartográfico de Colima** (`BrandBackgroundType.neonMapSecondary` / `colima_neon_map_bg.png`) con respiración suave y desenfoque oscuro.
 - **Optimización de Rendimiento:** Aislado mediante `RepaintBoundary` para asegurar 60/120 FPS sin consumo extra de batería.
 

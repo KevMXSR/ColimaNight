@@ -1243,6 +1243,7 @@ final List<VenueModel> _initialVenues = [
     latitude: 19.273223,
     longitude: -103.715025,
     instagramHandle: '@cerveceriachapultepeccolima',
+    websiteUrl: 'https://cerveceriachapultepec.com/',
     tikTokHandle: '@cerveceriachapultepec',
     facebookUrl: 'https://www.facebook.com/cerveceriachapultepeccolima/',
     vibeGenre: 'Craft & Commercial Beer / Casual Dining / Pop Rock',
@@ -1267,6 +1268,59 @@ final List<VenueModel> _initialVenues = [
         sourceFacebookUrl: 'https://www.facebook.com/cerveceriachapultepeccolima/',
         isStoryAnnouncement: true,
         specialSchedule: 'Abierto desde la 1:00 PM todos los días',
+      ),
+    ],
+  ),
+  // --- TORNA (FOCACCIA & VINYL LISTENING BAR) ---
+  VenueModel(
+    id: 'torna',
+    name: 'Torna',
+    category: 'Focaccia & Listening Bar',
+    zone: 'Av. Venustiano Carranza 2101, Local 5, Rincón del Colibrí, 28017 Colima, Col.',
+    description:
+        'Listening bar y focaccias artesanales en zona Carranza. Coctelería clásica, destilados, tapas italianas y selección de más de 80 vinilos analógicos sonando en la barra.',
+    coverImageUrl: 'assets/images/venues/torna.jpg',
+    galleryUrls: [
+      'assets/images/venues/torna.jpg',
+      'assets/images/venues/torna_2.jpg',
+      'assets/images/venues/torna_3.jpg',
+      'assets/images/venues/torna_4.jpg',
+    ],
+    rating: 4.8,
+    reviewsCount: 320,
+    capacityPercent: 0,
+    isHotRightNow: false,
+    hasLiveMusic: true,
+    liveMusicAct: 'Sesiones de Vinilo en Barra & Hi-Fi Beats',
+    isVipPresent: false,
+    hasPromo: false,
+    parkingAvailable: true,
+    parkingDetails: 'Estacionamiento de plaza comercial sobre Av. Carranza',
+    latitude: 19.2807909,
+    longitude: -103.7125546,
+    instagramHandle: '@torna.col',
+    websiteUrl: 'https://torna.bar/',
+    reservationUrl: 'https://www.covermanager.com/reservation/module_restaurant/Restaurante-Torna-Mexico/spanish',
+    vibeGenre: 'Vinyl Sessions / Nu-Disco / Indie & House',
+    schedule: 'Lunes a Domingo: 7:00 PM - 12:00 AM (Jue - Sáb hasta 1:00 AM)',
+    estimatedMinutes: 6,
+    securityStatus: 'normal',
+    activeIncidentReportsCount: 0,
+    hasCover: false,
+    coverDescription: 'Sin Cover (Entrada Libre)',
+    livePresenceCount: 0,
+    upcomingEvents: [
+      VenueEvent(
+        id: 'torna_vinyl_session',
+        title: 'Sesión de Vinilo & Focaccia en Barra',
+        dateDisplay: EventDateHelper.formatEventDate(DateTime.now()),
+        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.now().weekday, hour: 19, minute: 0),
+        artistOrDj: 'Selección de Vinilos Analógicos en Vivo',
+        coverPrice: 'Entrada Libre',
+        promoNote: 'Focaccias de masa madre, cócteles clásicos y tapas',
+        sourceInstagramUrl: 'https://www.instagram.com/torna.col/',
+        sourceInstagramHandle: '@torna.col',
+        isStoryAnnouncement: true,
       ),
     ],
   ),
@@ -1321,7 +1375,7 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
   }) {
     String sanitized = rawText.trim();
     final forbiddenPatterns = [
-      RegExp(r'\\b(el dueño|la dueña|el cadenero|el mesero|el cantinero|juan|carlos|pedro|luis|maria|roba|droga|clona|ratero)\\b', caseSensitive: false),
+      RegExp(r'\b(el dueño|la dueña|el cadenero|el mesero|el cantinero|juan|carlos|pedro|luis|maria|roba|droga|clona|ratero)\b', caseSensitive: false),
     ];
     bool wasSanitized = false;
     for (final pattern in forbiddenPatterns) {
@@ -1332,6 +1386,15 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
       }
     }
 
+    final isServiceFeedback = incidentType == 'slow_service' || incidentType == 'other';
+
+    if (isServiceFeedback) {
+      // Los reportes de servicio y confort son 100% PRIVADOS para la gerencia y análisis operativo.
+      // NO alteran el semáforo público, NO incrementan activeIncidentReportsCount y NO se muestran en la app.
+      return 'Nota de servicio guardada de forma privada para análisis de gerencia y optimización operativa.';
+    }
+
+    // Reportes de Seguridad Crítica (pelea, arma) con cuórum estricto
     state = state.map((v) {
       if (v.id == venueId) {
         final newCount = v.activeIncidentReportsCount + 1;
@@ -1354,20 +1417,16 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
           activeIncidentReportsCount: newCount,
           securityStatus: newStatus,
           lastIncidentType: incidentType,
-          lastReportNote: sanitized.isNotEmpty ? sanitized : null,
+          lastReportNote: null, // Nunca almacenar notas de texto libre en el modelo público del local
         );
       }
       return v;
     }).toList();
 
     if (incidentType == 'weapon') {
-      return wasSanitized ? '\$sanitized (Reporte de seguridad prioritario)' : 'Reporte de seguridad registrado.';
-    } else if (incidentType == 'brawl') {
-      return wasSanitized ? sanitized : 'Reporte de altercado registrado anónimamente.';
-    } else if (incidentType == 'slow_service') {
-      return 'Nota de servicio registrada para la comunidad.';
+      return wasSanitized ? '$sanitized (Reporte de seguridad prioritario)' : 'Reporte de seguridad registrado bajo protocolo confidencial.';
     } else {
-      return wasSanitized ? sanitized : 'Nota registrada: "\$sanitized"';
+      return wasSanitized ? sanitized : 'Reporte de altercado registrado anónimamente.';
     }
   }
 

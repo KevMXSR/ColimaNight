@@ -153,7 +153,19 @@ export const submitIncidentReport = functions.https.onCall(
     // 4. Moderación de texto y blindaje anti-difamación
     const modResult = sanitizeAndModerate(comment);
 
-    // 5. Registro individual con TTL de 45 minutos
+    // 5. Clasificación y registro individual (Seguridad Crítica vs Feedback de Servicio Privado)
+    const isServiceFeedback =
+      incidentType === 'slow_service' ||
+      incidentType === 'servicio_lento' ||
+      incidentType === 'banos_sucios' ||
+      incidentType === 'clima_calor' ||
+      incidentType === 'musica_excesiva' ||
+      incidentType === 'cargo_indebido' ||
+      incidentType === 'other' ||
+      incidentType === 'otro_servicio';
+
+    const classification = isServiceFeedback ? 'service_feedback_private' : 'security_critical';
+
     const now = admin.firestore.Timestamp.now();
     const expiresAt = new admin.firestore.Timestamp(
       now.seconds + (CONFIG.INCIDENT_TTL_MINUTES * 60),
@@ -163,6 +175,7 @@ export const submitIncidentReport = functions.https.onCall(
     await db.collection('incident_reports').add({
       venueId,
       incidentType: incidentType as IncidentCategory,
+      classification,
       hashedDeviceId,
       saltDate,
       clientLocation: new admin.firestore.GeoPoint(latitude, longitude),
@@ -170,12 +183,24 @@ export const submitIncidentReport = functions.https.onCall(
       rawComment: comment ? comment.substring(0, 120) : '',
       sanitizedComment: modResult.sanitizedText,
       moderationResult: modResult,
-      status: 'internal_audit',
+      status: isServiceFeedback ? 'service_feedback_internal' : 'internal_audit',
       createdAt: now,
       expiresAt,
     });
 
-    // 6. Evaluación de cuórum con blindaje reputacional
+    // Los reportes de servicio y confort son 100% PRIVADOS para la gerencia y análisis operacional.
+    // NUNCA alteran el semáforo público ni pasan por cuórum de altercados.
+    if (isServiceFeedback) {
+      return {
+        success: true,
+        status: 'internal_audit',
+        quorumReached: false,
+        distinctReportsCount: 1,
+        message: 'Reporte de servicio registrado de forma privada y confidencial para análisis de gerencia y optimización operativa.',
+      };
+    }
+
+    // 6. Evaluación de cuórum con blindaje reputacional (Solo para seguridad crítica)
     const consensus = await consensusService.evaluateReport(
       venueId,
       incidentType as IncidentCategory,
