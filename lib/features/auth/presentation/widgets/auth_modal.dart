@@ -5,8 +5,6 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../providers/auth_provider.dart';
 import '../../services/colima_oauth_service.dart';
-import 'account_selector_sheet.dart';
-import 'native_social_account_chooser_sheet.dart';
 
 class AuthModal extends ConsumerStatefulWidget {
   final VoidCallback? onOpenSupporterModal;
@@ -51,7 +49,7 @@ class _AuthModalState extends ConsumerState<AuthModal> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Abriendo selector oficial de cuentas de $providerName en este dispositivo...',
+                'Abriendo vinculación oficial con $providerName en tu navegador...',
                 style: AppTypography.caption.copyWith(color: Colors.white),
               ),
             ),
@@ -61,31 +59,8 @@ class _AuthModalState extends ConsumerState<AuthModal> {
       ),
     );
 
-    // Lanza la pantalla oficial del proveedor para seleccionar cuentas reales activas en el dispositivo
+    // Lanza la pantalla de autorización oficial en el navegador del dispositivo (LaunchMode.externalApplication)
     await ColimaOAuthService.launchAccountChooser(provider);
-
-    // Sincroniza la sesión con el proveedor oficial
-    switch (provider) {
-      case SocialAuthProvider.google:
-        await ref.read(authProvider.notifier).signInWithGoogle();
-        break;
-      case SocialAuthProvider.facebook:
-        await ref.read(authProvider.notifier).signInWithFacebook(
-          displayName: 'Usuario Facebook',
-          email: 'usuario@facebook.com',
-        );
-        break;
-      case SocialAuthProvider.instagram:
-        await ref.read(authProvider.notifier).signInWithInstagram(
-          username: 'usuario_colima',
-        );
-        break;
-    }
-  }
-
-  Future<void> _openAccountSelector(SocialProviderType provider) async {
-    Navigator.of(context).pop();
-    await NativeSocialAccountChooserSheet.show(context, initialProvider: provider);
   }
 
   Color _getProviderColor(String provider) {
@@ -177,28 +152,97 @@ class _AuthModalState extends ConsumerState<AuthModal> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Conéctate con tu red social favorita para personalizar tu noche, activar insignias y apoyar la comunidad nocturna de Colima.',
+              'Explora libremente la vida nocturna de Colima o vincula tu cuenta oficial para interactuar con la comunidad.',
               textAlign: TextAlign.center,
               style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
             ),
             const SizedBox(height: 18),
 
-            // Beneficios de la cuenta
-            GlassContainer(
-              blur: 8,
-              borderRadius: 18,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Column(
-                children: [
-                  _benefitRow(Icons.favorite_rounded, AppColors.neonMagenta, 'Guarda tus antros y eventos favoritos'),
-                  const SizedBox(height: 10),
-                  _benefitRow(Icons.wifi_tethering_rounded, AppColors.neonCyan, 'Telemetría de presencia comunitaria (80m)'),
-                  const SizedBox(height: 10),
-                  _benefitRow(Icons.workspace_premium_rounded, AppColors.neonAmber, 'Insignias de Supporter en tu perfil'),
-                ],
+            // Opción Principal y Destacada: Continuar como Invitado
+            GestureDetector(
+              onTap: () {
+                ref.read(authProvider.notifier).continueAsGuest();
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.neonCyan.withOpacity(0.4), width: 1.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonCyan.withOpacity(0.15),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.neonCyan.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.explore_rounded, color: AppColors.neonCyan, size: 22),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Continuar como Invitado (Modo Libre)',
+                            style: AppTypography.bodyBold.copyWith(
+                              color: Colors.white,
+                              fontSize: 14.5,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Sin registro, sin contraseña y 100% anónimo',
+                            style: AppTypography.caption.copyWith(
+                              color: AppColors.textSecondary,
+                              fontSize: 11.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.neonCyan, size: 14),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
+
+            // Divisor Estilizado
+            Row(
+              children: [
+                Expanded(child: Divider(color: AppColors.glassBorder, thickness: 1)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'O VINCULA TU CUENTA OFICIAL',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textMuted,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(color: AppColors.glassBorder, thickness: 1)),
+              ],
+            ),
+            const SizedBox(height: 16),
 
             // Opción 1: Continuar con Google
             _socialLoginButton(
@@ -211,18 +255,7 @@ class _AuthModalState extends ConsumerState<AuthModal> {
             ),
             const SizedBox(height: 10),
 
-            // Opción 2: Continuar con Instagram
-            _socialLoginButton(
-              title: 'Continuar con Instagram',
-              icon: Icons.camera_alt_rounded,
-              backgroundColor: const Color(0xFFE1306C),
-              textColor: Colors.white,
-              iconColor: Colors.white,
-              onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.instagram, 'Instagram'),
-            ),
-            const SizedBox(height: 10),
-
-            // Opción 3: Continuar con Facebook
+            // Opción 2: Continuar con Facebook
             _socialLoginButton(
               title: 'Continuar con Facebook',
               icon: Icons.facebook,
@@ -231,32 +264,32 @@ class _AuthModalState extends ConsumerState<AuthModal> {
               iconColor: Colors.white,
               onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.facebook, 'Facebook'),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
 
-            // Acceso a selector avanzado de cuentas guardadas en dispositivo
-            TextButton.icon(
-              onPressed: () => _openAccountSelector(SocialProviderType.google),
-              icon: const Icon(Icons.manage_accounts_rounded, size: 16, color: AppColors.neonCyan),
-              label: Text(
-                'Cuentas guardadas y selectores de dispositivo',
-                style: AppTypography.caption.copyWith(color: AppColors.neonCyan, fontSize: 12),
-              ),
+            // Opción 3: Continuar con Instagram
+            _socialLoginButton(
+              title: 'Continuar con Instagram',
+              icon: Icons.camera_alt_rounded,
+              backgroundColor: const Color(0xFFE1306C),
+              textColor: Colors.white,
+              iconColor: Colors.white,
+              onTap: () => _handleOfficialProviderLogin(SocialAuthProvider.instagram, 'Instagram'),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 16),
 
-            // Botón para continuar como Invitado
-            TextButton(
-              onPressed: () {
-                ref.read(authProvider.notifier).continueAsGuest();
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Permanecer en Modo Invitado (Sin registro)',
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.textSecondary,
-                  fontSize: 13,
-                  decoration: TextDecoration.underline,
-                ),
+            // Beneficios de la vinculación real
+            GlassContainer(
+              blur: 8,
+              borderRadius: 16,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Column(
+                children: [
+                  _benefitRow(Icons.favorite_rounded, AppColors.neonMagenta, 'Guarda tus antros y eventos favoritos'),
+                  const SizedBox(height: 8),
+                  _benefitRow(Icons.wifi_tethering_rounded, AppColors.neonCyan, 'Telemetría comunitaria en tiempo real'),
+                  const SizedBox(height: 8),
+                  _benefitRow(Icons.workspace_premium_rounded, AppColors.neonAmber, 'Insignias de Supporter en tu perfil'),
+                ],
               ),
             ),
           ] else ...[
@@ -337,11 +370,13 @@ class _AuthModalState extends ConsumerState<AuthModal> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              user.email,
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
-            ),
+            if (user.email.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                user.email,
+                style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+              ),
+            ],
             const SizedBox(height: 18),
 
             // Tarjeta de Estatus Supporter
@@ -417,56 +452,31 @@ class _AuthModalState extends ConsumerState<AuthModal> {
               const SizedBox(height: 16),
             ],
 
-            // Botones de Acción de Cuenta
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _openAccountSelector(SocialProviderType.google),
-                    icon: const Icon(Icons.manage_accounts_rounded, size: 17, color: AppColors.neonCyan),
-                    label: Text(
-                      'Cambiar Cuenta',
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.neonCyan,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.neonCyan.withOpacity(0.4)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
+            // Botón de Cerrar Sesión / Volver a Invitado
+            OutlinedButton.icon(
+              onPressed: () {
+                ref.read(authProvider.notifier).signOut();
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Sesión cerrada. Ahora navegas como Invitado.'),
+                    duration: Duration(seconds: 2),
                   ),
+                );
+              },
+              icon: const Icon(Icons.logout_rounded, size: 17, color: AppColors.neonRedAlert),
+              label: Text(
+                'Cerrar Sesión (Volver a Modo Invitado)',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.neonRedAlert,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      ref.read(authProvider.notifier).signOut();
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Sesión cerrada. Ahora navegas como Invitado.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.logout_rounded, size: 17, color: AppColors.neonRedAlert),
-                    label: Text(
-                      'Cerrar Sesión',
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.neonRedAlert,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.neonRedAlert.withOpacity(0.4)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                ),
-              ],
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.neonRedAlert.withOpacity(0.4)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
+              ),
             ),
           ],
         ],

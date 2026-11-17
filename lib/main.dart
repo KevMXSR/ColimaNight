@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/services/firestore_cost_optimizer.dart';
 import 'core/theme/app_theme.dart';
 import 'features/splash/presentation/views/splash_loading_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa el optimizador de costos de Firestore (Spark 0-cost guard)
+  FirestoreCostOptimizer.instance.initialize();
 
   // Bloqueo de orientación vertical y barra de estado inmersiva para nightlife
   SystemChrome.setPreferredOrientations([

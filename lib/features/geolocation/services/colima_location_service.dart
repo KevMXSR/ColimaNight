@@ -74,10 +74,10 @@ class ProofOfProximityToken {
 
 /// Servicio integral de geolocalización, cálculo de ETA en Colima y validación antifraude
 class ColimaLocationService {
-  final String _securitySecretSalt;
+  final String _clientSessionEntropy;
 
-  ColimaLocationService({String? securitySecretSalt})
-      : _securitySecretSalt = securitySecretSalt ?? 'ColimaNight_Salt_VDA_2026_SecureKey';
+  ColimaLocationService({String? clientSessionEntropy})
+      : _clientSessionEntropy = clientSessionEntropy ?? 'cn_client_entropy_${DateTime.now().year}';
 
   // --------------------------------------------------------------------------
   // Gestión de Permisos y Ubicación del Dispositivo
@@ -244,7 +244,7 @@ class ColimaLocationService {
     // Se redondea el timestamp a ventanas de 3 minutos para permitir verificación en servidor backend
     final int timestampRounded = (now.millisecondsSinceEpoch ~/ 180000) * 180000;
     final String rawPayload =
-        '$userId:${venue.id}:$timestampRounded:${distanceMeters.toStringAsFixed(2)}:$_securitySecretSalt';
+        '$userId:${venue.id}:$timestampRounded:${distanceMeters.toStringAsFixed(2)}:$_clientSessionEntropy';
     final String verificationHash = sha256.convert(utf8.encode(rawPayload)).toString();
 
     return ProofOfProximityToken.success(

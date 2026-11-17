@@ -133,7 +133,7 @@ export interface SocialEventDocument {
   promo?: string;
   mediaUrl: string;
   postUrl: string;
-  source: 'instagram_graph_api' | 'official_feed';
+  source: 'instagram_graph_api' | 'official_feed' | 'staff_verified' | 'manual_approval';
   createdAt: firestore.Timestamp;
   expiresAt: firestore.Timestamp;
 }
@@ -152,4 +152,14 @@ export interface DonationRecordDocument {
   transactionReference: string;
   badgeEarned: string;
   createdAt: firestore.Timestamp;
+}
+
+export interface GlobalSystemStatusDocument {
+  maintenanceMode: boolean;
+  maintenanceMessage?: string;
+  readOnlyMode: boolean;
+  alertsKillSwitch: boolean; // Silencia temporalmente alertas rojas ante sospecha de sabotaje/pánico
+  strictRateLimiting: boolean;
+  updatedAt: firestore.Timestamp;
+  updatedBy: string;
 }

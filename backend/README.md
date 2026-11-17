@@ -147,3 +147,26 @@ El UI de emulación estará disponible en `http://localhost:4000`.
 | `triggerSocialIngestManual` | HTTPS onCall | Disparo manual de ingesta de Instagram | Requiere rol `admin` |
 | `getDonationTiers` | HTTPS onCall | Retorna los niveles de apoyo comunitario | Público |
 | `recordCommunityDonation` | HTTPS onCall | Registra donativos tipo Patreon e insignias | Autenticado / Donador |
+
+---
+
+## 6. Arquitectura de Costo Cero para Firestore (Spark) y Expansión Blaze
+
+Para asegurar que la infraestructura se mantenga en el plan gratuito Spark (hasta 50,000 lecturas diarias) y soporte una viralización en Colima y Villa de Álvarez sin costos imprevistos:
+
+1. **Regla 1 — Almacenamiento Ligero (Storage/CDN vs. Firestore):**
+   - Las fotografías de ambiente y flyers se almacenan exclusivamente en Firebase Storage (formato WebP o JPG optimizado) o CDNs externos.
+   - Los documentos de Firestore nunca almacenan binarios ni cadenas base64; únicamente guardan strings de URLs (< 2 KB por documento).
+
+2. **Regla 2 — Eliminación de Lecturas Fantasma (Ciclo de Vida del Frontend):**
+   - El cliente móvil y web implementa `FirestoreCostOptimizer` con `WidgetsBindingObserver`.
+   - Las suscripciones reactivas en tiempo real (`snapshots()`) solo permanecen activas mientras el usuario está visualizando la pantalla principal en primer plano (`resumed`).
+   - Al pasar la app a segundo plano (`paused`, `inactive`, `hidden`), todos los streams se cancelan inmediatamente, evitando el 100% de las lecturas fantasma.
+
+3. **Regla 3 — Push Notifications con FCM:**
+   - Las promociones relámpago (2x1, cortesías) y alertas de seguridad se transmiten a través de Firebase Cloud Messaging (FCM), el cual es gratuito e ilimitado.
+   - Se elimina por completo el sondeo repetitivo (polling) a la base de datos.
+
+4. **Economía de Expansión Regional (Plan Blaze):**
+   - Al expandir el servicio a municipios conurbados o vecinos (Comala, Coquimatlán, Manzanillo), las consultas se segmentan geográficamente por corredor (`corridorId`).
+   - Una vez superadas las 1,500,000 lecturas mensuales gratuitas (50k/día), Firebase factura únicamente **$0.06 USD (aprox. $1.20 MXN)** por cada 100,000 lecturas adicionales.

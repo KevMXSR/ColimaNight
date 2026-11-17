@@ -111,5 +111,15 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated() && request.auth.uid == userId;
     }
+
+    // =========================================================================
+    // 8. COLECCIÓN 'system_status' (Kill-Switch y Modo Emergencia Autónomo)
+    // =========================================================================
+    match /system_status/{statusId} {
+      // Lectura pública de banderas operativas (mantenimiento, kill-switch, versión)
+      allow read: if true;
+      // Escritura restringida estrictamente al Administrador del sistema
+      allow write: if isAdmin();
+    }
   }
 }

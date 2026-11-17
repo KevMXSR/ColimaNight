@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:colima_night/features/venues/domain/models/venue_model.dart';
+import 'package:colima_night/features/venues/domain/utils/event_date_helper.dart';
 import 'package:colima_night/features/venues/presentation/providers/venue_providers.dart';
 import 'package:colima_night/features/venues/presentation/widgets/venue_detail_bottom_sheet.dart';
 import 'package:colima_night/features/map/domain/models/venue_location.dart';
@@ -200,7 +202,7 @@ void main() {
       expect(foroDmt.hasCover, isTrue);
       expect(foroDmt.coverTag, contains('evento en vivo'));
       expect(foroDmt.whatsappReservation, isNotNull);
-      expect(foroDmt.upcomingEvents.length, equals(1));
+      expect(foroDmt.upcomingEvents, isEmpty);
 
       final paraisoDrinks = venues.firstWhere((v) => v.id == 'paraiso_drinks');
       expect(paraisoDrinks.name, equals('Paraíso Drinks Colima'));
@@ -288,12 +290,7 @@ void main() {
       for (final v in costaVenues) {
         expect(v.hasCover, isFalse, reason: '${v.name} NO debe cobrar cover');
         expect(v.coverTag, equals('Sin Cover'));
-        if (v.id == 'costa_carranza') {
-          expect(v.upcomingEvents.length, equals(1));
-          expect(v.upcomingEvents.first.isSportsMatch, isTrue);
-        } else {
-          expect(v.upcomingEvents, isEmpty, reason: '${v.name} sin eventos ficticios');
-        }
+        expect(v.upcomingEvents, isEmpty, reason: '${v.name} sin eventos ficticios');
       }
 
       final colimitaVenues = venues.where((v) => v.id.startsWith('colimita_')).toList();
@@ -375,34 +372,44 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
+      // El catálogo base no contiene eventos ficticios hardcodeados
       final weeklyEvents = container.read(weeklyEventsProvider);
-      expect(weeklyEvents, isNotEmpty);
-      expect(weeklyEvents.length, greaterThanOrEqualTo(4));
+      expect(weeklyEvents, isEmpty);
 
-      // Verificar que todos los eventos tienen fecha válida en noviembre o posterior (no en octubre)
-      for (final item in weeklyEvents) {
-        expect(item.event.eventDate, isNotNull);
-        expect(item.event.dateDisplay.contains('Oct'), isFalse,
-            reason: '${item.event.title} no debe tener fechas del mes pasado (Octubre)');
-        expect(item.event.dateDisplay.contains('Nov'), isTrue,
-            reason: '${item.event.title} debe estar programado para Noviembre');
+      final now = DateTime.now();
+      final testEventToday = VenueEvent(
+        id: 'test_event_today',
+        title: 'Evento Hoy',
+        dateDisplay: EventDateHelper.formatEventDate(now),
+        eventDate: now,
+      );
+      final testEventTomorrow = VenueEvent(
+        id: 'test_event_tomorrow',
+        title: 'Evento Mañana',
+        dateDisplay: EventDateHelper.formatEventDate(now.add(const Duration(days: 1))),
+        eventDate: now.add(const Duration(days: 1)),
+      );
 
-        // Los eventos de fin de semana no deben marcar isToday en un día diferente
-        final now = DateTime.now();
-        final isActuallyToday = item.event.eventDate!.year == now.year &&
-            item.event.eventDate!.month == now.month &&
-            item.event.eventDate!.day == now.day;
-        expect(item.event.isToday, isActuallyToday,
-            reason: '${item.event.title} isToday debe coincidir estrictamente con el día en curso');
-      }
+      final dummyVenue = container.read(mockVenuesProvider).first.copyWith(
+        upcomingEvents: [testEventTomorrow, testEventToday],
+      );
 
-      // Verificar orden cronológico
-      for (int i = 0; i < weeklyEvents.length - 1; i++) {
-        final a = weeklyEvents[i].event.eventDate!;
-        final b = weeklyEvents[i + 1].event.eventDate!;
-        expect(a.isBefore(b) || a.isAtSameMomentAs(b), isTrue,
-            reason: 'Los eventos deben estar ordenados cronológicamente');
-      }
+      final testContainer = ProviderContainer(
+        overrides: [
+          mockVenuesProvider.overrideWith((ref) {
+            final notifier = VenuesNotifier();
+            notifier.state = [dummyVenue];
+            return notifier;
+          }),
+        ],
+      );
+      addTearDown(testContainer.dispose);
+
+      final aggregated = testContainer.read(weeklyEventsProvider);
+      expect(aggregated.length, equals(2));
+      expect(aggregated.first.event.id, equals('test_event_today'));
+      expect(aggregated.first.event.isToday, isTrue);
+      expect(aggregated.last.event.id, equals('test_event_tomorrow'));
     });
 
     test('Top ranked venues provider selects top 5 by occupancy/capacity', () {

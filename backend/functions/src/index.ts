@@ -19,11 +19,54 @@ const presenceService = new PresenceService(db);
 const consensusService = new ConsensusService(db);
 const socialIngestService = new SocialIngestService(db);
 
+/**
+ * Consulta el interruptor maestro de contingencia autónoma
+ */
+async function checkGlobalSystemStatus(): Promise<{
+  maintenanceMode: boolean;
+  maintenanceMessage?: string;
+  readOnlyMode: boolean;
+  alertsKillSwitch: boolean;
+}> {
+  try {
+    const doc = await db.collection('system_status').doc('global_switch').get();
+    if (doc.exists) {
+      const data = doc.data() as any;
+      return {
+        maintenanceMode: !!data.maintenanceMode,
+        maintenanceMessage: data.maintenanceMessage,
+        readOnlyMode: !!data.readOnlyMode,
+        alertsKillSwitch: !!data.alertsKillSwitch,
+      };
+    }
+  } catch (err) {
+    console.warn('[GlobalSwitch] No se pudo leer system_status/global_switch. Operando en modo normal.');
+  }
+  return { maintenanceMode: false, readOnlyMode: false, alertsKillSwitch: false };
+}
+
 // ============================================================================
 // 1. TELEMETRÍA DE AFORO EN VIVO: PRESENCE HEARTBEAT (Geocerca 80m, TTL 45 min)
 // ============================================================================
-export const submitPresenceHeartbeat = functions.https.onCall(
+export const submitPresenceHeartbeat = functions
+  .runWith({ maxInstances: CONFIG.MAX_FUNCTION_INSTANCES })
+  .https.onCall(
   async (data, context) => {
+    // 0. Autoprotección de Servidor y Modo Mantenimiento
+    const systemStatus = await checkGlobalSystemStatus();
+    if (systemStatus.maintenanceMode) {
+      throw new functions.https.HttpsError(
+        'unavailable',
+        systemStatus.maintenanceMessage || 'ColimaNight está en pausa técnica temporal.'
+      );
+    }
+    if (systemStatus.readOnlyMode) {
+      throw new functions.https.HttpsError(
+        'resource-exhausted',
+        'Sistema en modo de solo lectura temporal por autoprotección operativa.'
+      );
+    }
+
     const {
       venueId,
       latitude,
@@ -95,8 +138,25 @@ export const submitPresenceHeartbeat = functions.https.onCall(
 // ============================================================================
 // 2. BLINDAJE REPUTACIONAL: REPORTES DE INCIDENTES (Cuórum de 5 / 3 armas)
 // ============================================================================
-export const submitIncidentReport = functions.https.onCall(
+export const submitIncidentReport = functions
+  .runWith({ maxInstances: CONFIG.MAX_FUNCTION_INSTANCES })
+  .https.onCall(
   async (data, context) => {
+    // 0. Autoprotección de Servidor y Modo Mantenimiento
+    const systemStatus = await checkGlobalSystemStatus();
+    if (systemStatus.maintenanceMode) {
+      throw new functions.https.HttpsError(
+        'unavailable',
+        systemStatus.maintenanceMessage || 'ColimaNight está en pausa técnica temporal.'
+      );
+    }
+    if (systemStatus.readOnlyMode) {
+      throw new functions.https.HttpsError(
+        'resource-exhausted',
+        'Sistema en modo de solo lectura temporal por autoprotección operativa.'
+      );
+    }
+
     const {
       venueId,
       incidentType,
@@ -201,6 +261,17 @@ export const submitIncidentReport = functions.https.onCall(
     }
 
     // 6. Evaluación de cuórum con blindaje reputacional (Solo para seguridad crítica)
+    if (systemStatus.alertsKillSwitch) {
+      console.warn(`[KillSwitch] Alertas silenciadas globalmente por protocolo de emergencia. Reporte para ${venueId} archivado solo en auditoría.`);
+      return {
+        success: true,
+        status: 'internal_audit',
+        quorumReached: false,
+        distinctReportsCount: 1,
+        message: 'Reporte registrado en auditoría interna preventiva. Alertas públicas silenciadas temporalmente por protocolo de protección.',
+      };
+    }
+
     const consensus = await consensusService.evaluateReport(
       venueId,
       incidentType as IncidentCategory,
@@ -299,9 +370,37 @@ export const triggerSocialIngestManual = functions.https.onCall(
     const result = await socialIngestService.syncOfficialInstagramEvents();
     return {
       success: true,
-      message: `Sincronizados ${result.syncedCount} eventos de los 11 canales de Instagram.`,
+      message: `Sincronizados ${result.syncedCount} eventos del pipeline híbrido de Instagram.`,
       events: result.events,
     };
+  }
+);
+
+// Función invocable para que el staff verificado publique promociones 2x1 o eventos en tiempo real
+export const publishStaffPromotion = functions.https.onCall(
+  async (data, context) => {
+    const { venueId, title, promo, djOrBand, hoursValid } = data;
+    if (!venueId || !title) {
+      throw new functions.https.HttpsError('invalid-argument', 'El local y título de la promoción son obligatorios.');
+    }
+
+    const isAdmin = context.auth && context.auth.token.role === 'admin';
+    const isStaff = context.auth && context.auth.token.role === 'venue_staff' && context.auth.token.assignedVenueId === venueId;
+
+    if (!isAdmin && !isStaff) {
+      throw new functions.https.HttpsError('permission-denied', 'No tienes permisos de staff asignado para este establecimiento.');
+    }
+
+    const event = await socialIngestService.publishDirectEvent({
+      venueId,
+      title,
+      promo,
+      djOrBand,
+      hoursValid: hoursValid || 24,
+      source: 'staff_verified',
+    });
+
+    return { success: true, event };
   }
 );
 

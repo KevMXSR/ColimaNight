@@ -207,182 +207,82 @@ class LiveActsLineupSection extends ConsumerWidget {
     final List<_LiveActEntry> entries = [];
 
     for (final venue in venues) {
-      if (!venue.hasLiveMusic && venue.upcomingEvents.isEmpty) continue;
+      if (venue.isPermanentlyClosed) continue;
 
-      // 1. Foro DMT (Rock & Indie + Preventa verificada)
-      if (venue.id == 'foro_dmt') {
-        final ev = venue.upcomingEvents.firstWhere(
-          (e) => e.id == 'foro_dmt_rock_friday',
-          orElse: () => venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue),
-        );
-        entries.add(_LiveActEntry(
-          id: 'act_foro_dmt',
-          actName: 'Bandas Locales & Noche de Rock en Vivo',
-          venueName: venue.name,
-          zone: 'Centro Histórico (Degollado 50)',
-          dateDisplay: ev.dateDisplay,
-          genreType: LiveMusicGenreType.rock,
-          highlightText: 'Tributos en vivo, rock en español, grunge y cerveza artesanal fría.',
-          promoNote: 'Entrada libre antes de las 10 PM • Cubetazo especial',
-          sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/foro_dmt/',
-          sourceInstagramHandle: ev.sourceInstagramHandle ?? '@foro_dmt',
-          sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
-          isPresaleActive: ev.isPresaleActive,
-          presalePrice: ev.presalePrice ?? 'Preventa: \$120 MXN • Taquilla: \$180 MXN',
-          presaleUrl: ev.presaleUrl,
-          venue: venue,
-          event: ev,
-        ));
-      }
+      // 1. Eventos confirmados en upcomingEvents (obtenidos de Firestore o cartelera oficial)
+      for (final event in venue.upcomingEvents) {
+        if (event.isExpired) continue;
 
-      // 2. Low Social Club (Tech-House + Preventa verificada)
-      else if (venue.id == 'low_social_club') {
-        final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
-        entries.add(_LiveActEntry(
-          id: 'act_low_social',
-          actName: 'DJ Residente • Sets Tech-House & Afro-House',
-          venueName: venue.name,
-          zone: 'Av. Constitución',
-          dateDisplay: ev.dateDisplay,
-          genreType: LiveMusicGenreType.techHouse,
-          highlightText: 'Música electrónica underground 128 BPM, visuales envolventes y sonido club.',
-          promoNote: '2x1 en mixología y acceso antes de medianoche',
-          sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/lowclub.col/',
-          sourceInstagramHandle: ev.sourceInstagramHandle ?? '@lowclub.col',
-          sourceFacebookUrl: ev.sourceFacebookUrl ?? venue.facebookUrl,
-          isPresaleActive: ev.isPresaleActive,
-          presalePrice: ev.presalePrice ?? 'Preventa: \$100 MXN (Incluye Drink)',
-          presaleUrl: ev.presaleUrl,
-          venue: venue,
-          event: ev,
-        ));
-      }
-
-      // 3. Guachi Rooftop (Sunset Electronic Sessions)
-      else if (venue.id == 'el_guachi') {
-        final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
-        entries.add(_LiveActEntry(
-          id: 'act_guachi',
-          actName: 'Sunset Sessions • Deep House & Mixología',
-          venueName: 'Guachi Rooftop',
-          zone: 'Tercer Anillo Periférico',
-          dateDisplay: ev.dateDisplay,
-          genreType: LiveMusicGenreType.techHouse,
-          highlightText: 'Sesión de atardecer con vista panorámica, coctelería y DJs invitados.',
-          promoNote: '2x1 en coctelería de autor antes de las 9:00 PM',
-          sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/guachirooftop/',
-          sourceInstagramHandle: ev.sourceInstagramHandle ?? '@guachirooftop',
-          sourceFacebookUrl: venue.facebookUrl,
-          venue: venue,
-          event: ev,
-        ));
-      }
-
-      // 4. Bar La Puerta: Snacks & Drinks Oficial + La Puerta del Perreo (@lapuertadelperreo.dog)
-      else if (venue.id == 'bar_la_puerta' || venue.id == 'la_puerta_bar') {
-        final evSnacks = venue.upcomingEvents.firstWhere(
-          (e) => e.id == 'puerta_jueves_snacks_drinks',
-          orElse: () => venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue),
-        );
-        entries.add(_LiveActEntry(
-          id: 'act_bar_la_puerta',
-          actName: 'DJ Sets Perreo Old School & Snacks',
-          venueName: venue.name,
-          zone: 'Centro Histórico Colima',
-          dateDisplay: evSnacks.dateDisplay,
-          genreType: LiveMusicGenreType.perreo,
-          highlightText: 'Noche de snacks y drinks a partir de las 7:00 PM, caguamas bien frías y perreo clásico.',
-          promoNote: 'Jueves: Snacks y Drinks a partir de las 7:00 PM',
-          sourceInstagramUrl: evSnacks.sourceInstagramUrl ?? 'https://www.instagram.com/barlapuerta/',
-          sourceInstagramHandle: evSnacks.sourceInstagramHandle ?? '@barlapuerta',
-          sourceFacebookUrl: venue.facebookUrl,
-          venue: venue,
-          event: evSnacks,
-        ));
-
-        // Segundo perfil verificado: @lapuertadelperreo.dog
-        final evPerreo = venue.upcomingEvents.firstWhere(
-          (e) => e.id == 'puerta_perreo_bellako',
-          orElse: () => evSnacks,
-        );
-        if (evPerreo.id == 'puerta_perreo_bellako') {
-          entries.add(_LiveActEntry(
-            id: 'act_puerta_del_perreo',
-            actName: 'La Puerta del Perreo • Bellakeo Underground',
-            venueName: '${venue.name} • Perreo Dog',
-            zone: 'Centro Histórico (27 de Septiembre)',
-            dateDisplay: evPerreo.dateDisplay,
-            genreType: LiveMusicGenreType.perreo,
-            highlightText: 'Sesión underground de reggaetón bellako, perreo sucio y ambiente festivo exclusivo.',
-            promoNote: evPerreo.promoNote ?? 'Shots de cortesía y caguamas especiales toda la noche',
-            sourceInstagramUrl: evPerreo.sourceInstagramUrl ?? 'https://www.instagram.com/lapuertadelperreo.dog/',
-            sourceInstagramHandle: evPerreo.sourceInstagramHandle ?? '@lapuertadelperreo.dog',
-            sourceFacebookUrl: venue.facebookUrl,
-            venue: venue,
-            event: evPerreo,
-          ));
+        LiveMusicGenreType genre = LiveMusicGenreType.techHouse;
+        final lowerVibe = '${event.artistOrDj ?? ''} ${venue.vibeGenre}'.toLowerCase();
+        if (lowerVibe.contains('rock') || lowerVibe.contains('metal') || lowerVibe.contains('grunge')) {
+          genre = LiveMusicGenreType.rock;
+        } else if (lowerVibe.contains('perreo') || lowerVibe.contains('urbano') || lowerVibe.contains('reggaetón') || lowerVibe.contains('reggaeton')) {
+          genre = LiveMusicGenreType.perreo;
+        } else if (lowerVibe.contains('indie') || lowerVibe.contains('vinyl') || lowerVibe.contains('craft') || lowerVibe.contains('funk')) {
+          genre = LiveMusicGenreType.craftIndie;
+        } else if (lowerVibe.contains('mariachi') || lowerVibe.contains('bohemia') || lowerVibe.contains('acústico') || lowerVibe.contains('acustico')) {
+          genre = LiveMusicGenreType.mariachiAcoustic;
+        } else if (event.isSportsMatch || lowerVibe.contains('fútbol') || lowerVibe.contains('futbol') || lowerVibe.contains('deporte')) {
+          genre = LiveMusicGenreType.sportsLive;
         }
-      }
 
-      // 5. Cervecería de la Costa Carranza (Transmisión Fútbol en Pantalla)
-      else if (venue.id == 'costa_carranza') {
-        final evSports = venue.upcomingEvents.firstWhere(
-          (e) => e.isSportsMatch,
-          orElse: () => venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue),
-        );
+        final igUrl = event.sourceInstagramUrl ??
+            (venue.instagramHandle != null ? 'https://www.instagram.com/${venue.instagramHandle!.replaceAll('@', '')}/' : null);
+        final igHandle = event.sourceInstagramHandle ?? venue.instagramHandle;
+
         entries.add(_LiveActEntry(
-          id: 'act_costa_carranza_futbol',
-          actName: '⚽ Transmisión en Pantalla • Clásico Nacional',
+          id: 'act_${event.id}',
+          actName: event.artistOrDj ?? event.title,
           venueName: venue.name,
-          zone: 'Venustiano Carranza (Esmeralda Norte)',
-          dateDisplay: evSports.dateDisplay,
-          genreType: LiveMusicGenreType.sportsLive,
-          highlightText: 'Chivas vs América en pantalla al aire libre, audio ambiente y cubetazos.',
-          promoNote: evSports.promoNote ?? 'Cubetazos 5x4 en Cerveza de la Costa durante el partido',
-          sourceInstagramUrl: evSports.sourceInstagramUrl ?? 'https://www.instagram.com/cerveceriadelacosta/',
-          sourceInstagramHandle: evSports.sourceInstagramHandle ?? '@cerveceriadelacosta',
-          sourceFacebookUrl: evSports.sourceFacebookUrl ?? venue.facebookUrl,
-          isSportsMatch: true,
-          matchTeams: evSports.matchTeams ?? 'CHIVAS vs AMÉRICA (Clásico Nacional)',
-          broadcastDetails: evSports.broadcastDetails ?? 'Transmisión en Pantalla al aire libre + Audio Ambiente',
-          isVideoStory: true,
+          zone: venue.zone,
+          dateDisplay: event.dateDisplay,
+          genreType: genre,
+          highlightText: event.title,
+          promoNote: event.promoNote,
+          sourceInstagramUrl: igUrl,
+          sourceInstagramHandle: igHandle,
+          sourceFacebookUrl: event.sourceFacebookUrl ?? venue.facebookUrl,
+          isPresaleActive: event.isPresaleActive,
+          presalePrice: event.presalePrice,
+          presaleUrl: event.presaleUrl,
+          isSportsMatch: event.isSportsMatch,
+          matchTeams: event.matchTeams,
+          broadcastDetails: event.broadcastDetails,
+          isVideoStory: event.isVideoStory,
           venue: venue,
-          event: evSports,
+          event: event,
         ));
       }
 
-      // 6. Dos Puntos (Indie & Vinyl Taproom)
-      else if (venue.id == 'dos_puntos') {
-        final ev = venue.upcomingEvents.isNotEmpty ? venue.upcomingEvents.first : _dummyEvent(venue);
-        entries.add(_LiveActEntry(
-          id: 'act_dos_puntos',
-          actName: 'DJ Set en Terraza & Mezclas Funk / Indie',
-          venueName: venue.name,
-          zone: 'Santos Degollado (Centro)',
-          dateDisplay: ev.dateDisplay,
-          genreType: LiveMusicGenreType.craftIndie,
-          highlightText: 'Jardín cervecero al aire libre, selección en vinilo y pizzas de autor.',
-          promoNote: '2x1 en pints seleccionadas de 7:00 a 9:00 PM',
-          sourceInstagramUrl: ev.sourceInstagramUrl ?? 'https://www.instagram.com/dospuntoscerveceria/',
-          sourceInstagramHandle: ev.sourceInstagramHandle ?? '@dospuntoscerveceria',
-          sourceFacebookUrl: venue.facebookUrl,
-          venue: venue,
-          event: ev,
-        ));
-      }
+      // 2. Presentación en vivo habitual si el establecimiento tiene música en vivo confirmada
+      if (venue.upcomingEvents.isEmpty && venue.hasLiveMusic && venue.liveMusicAct != null && venue.liveMusicAct!.isNotEmpty) {
+        LiveMusicGenreType genre = LiveMusicGenreType.techHouse;
+        final lowerVibe = '${venue.liveMusicAct!} ${venue.vibeGenre}'.toLowerCase();
+        if (lowerVibe.contains('rock') || lowerVibe.contains('metal')) {
+          genre = LiveMusicGenreType.rock;
+        } else if (lowerVibe.contains('perreo') || lowerVibe.contains('urbano') || lowerVibe.contains('reggaetón') || lowerVibe.contains('reggaeton')) {
+          genre = LiveMusicGenreType.perreo;
+        } else if (lowerVibe.contains('indie') || lowerVibe.contains('vinyl') || lowerVibe.contains('craft')) {
+          genre = LiveMusicGenreType.craftIndie;
+        } else if (lowerVibe.contains('mariachi') || lowerVibe.contains('bohemia')) {
+          genre = LiveMusicGenreType.mariachiAcoustic;
+        }
 
-      // 7. Almada Cantina Fina (Mariachi & Bohemia)
-      else if (venue.id == 'almada_cantina') {
+        final igUrl = venue.instagramHandle != null
+            ? 'https://www.instagram.com/${venue.instagramHandle!.replaceAll('@', '')}/'
+            : null;
+
         entries.add(_LiveActEntry(
-          id: 'act_almada',
-          actName: 'Mariachi & Banda Acústica en Vivo',
+          id: 'act_${venue.id}_live',
+          actName: venue.liveMusicAct!,
           venueName: venue.name,
-          zone: 'Residencial Las Pérgolas (Ignacio Sandoval)',
-          dateDisplay: 'Viernes & Sábados • 21:00 hrs',
-          genreType: LiveMusicGenreType.mariachiAcoustic,
-          highlightText: 'Ambiente de cantina contemporánea, platillos de autor y mariachi en vivo.',
-          promoNote: 'Copeo tradicional y servicio de botellas',
-          sourceInstagramUrl: 'https://www.instagram.com/almada_cantina.fina/',
+          zone: venue.zone,
+          dateDisplay: venue.isOpenNow ? 'En vivo hoy' : 'Noche de cartelera',
+          genreType: genre,
+          highlightText: '${venue.name} • ${venue.category}',
+          promoNote: venue.hasPromo ? venue.promoHeadline : null,
+          sourceInstagramUrl: igUrl,
           sourceInstagramHandle: venue.instagramHandle,
           sourceFacebookUrl: venue.facebookUrl,
           venue: venue,
@@ -392,19 +292,6 @@ class LiveActsLineupSection extends ConsumerWidget {
     }
 
     return entries;
-  }
-
-  VenueEvent _dummyEvent(VenueModel venue) {
-    return VenueEvent(
-      id: '${venue.id}_live',
-      title: venue.liveMusicAct ?? 'Música en Vivo',
-      dateDisplay: 'Fin de Semana • Noche',
-      artistOrDj: venue.liveMusicAct,
-      sourceInstagramUrl: venue.instagramHandle != null
-          ? 'https://www.instagram.com/${venue.instagramHandle!.replaceAll('@', '')}/'
-          : null,
-      sourceInstagramHandle: venue.instagramHandle,
-    );
   }
 
   @override

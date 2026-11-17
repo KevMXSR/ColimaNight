@@ -81,5 +81,13 @@ service cloud.firestore {
     match /device_reputations/{reputationId} {
       allow read, write: if false;
     }
+
+    // ==========================================================
+    // 6. COLECCIÓN 'system_status' (Kill-Switch y Modo Emergencia Autónomo)
+    // ==========================================================
+    match /system_status/{statusId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }

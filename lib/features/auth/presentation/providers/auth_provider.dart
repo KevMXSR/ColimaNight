@@ -46,7 +46,7 @@ class AuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-  /// Obtiene la lista de cuentas sociales recientes guardadas en el dispositivo para acceso One-Tap
+  /// Obtiene la lista de cuentas sociales recientes guardadas legítimamente en el dispositivo
   Future<List<Map<String, String>>> getRecentAccounts() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -58,24 +58,8 @@ class AuthNotifier extends StateNotifier<UserModel> {
     } catch (e) {
       debugPrint('Error al leer cuentas recientes: $e');
     }
-    // Cuentas base auténticas para acceso 1-Tap inmediato
-    return [
-      {
-        'displayName': 'Kevin Sandoval Ramirez',
-        'email': 'kevin.sandoval@gmail.com',
-        'provider': 'google',
-      },
-      {
-        'displayName': 'Kevin Sandoval',
-        'email': 'kevin.sandoval@facebook.com',
-        'provider': 'facebook',
-      },
-      {
-        'displayName': '@kevin_colima',
-        'email': '@kevin_colima@instagram.com',
-        'provider': 'instagram',
-      },
-    ];
+    // Cero perfiles falsos o simulados por defecto
+    return [];
   }
 
   /// Registra una cuenta en el historial del dispositivo
@@ -112,8 +96,8 @@ class AuthNotifier extends StateNotifier<UserModel> {
     _isLoading = true;
     await Future.delayed(const Duration(milliseconds: 300));
 
-    final cleanName = displayName.trim().isNotEmpty ? displayName.trim() : 'Kevin Sandoval';
-    final cleanEmail = email.trim().isNotEmpty ? email.trim() : 'kevin.sandoval@gmail.com';
+    final cleanName = displayName.trim().isNotEmpty ? displayName.trim() : 'Usuario';
+    final cleanEmail = email.trim();
 
     final newUser = UserModel(
       id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
@@ -138,15 +122,15 @@ class AuthNotifier extends StateNotifier<UserModel> {
     return true;
   }
 
-  /// Inicio de sesión rápido con Google (sin datos ficticios predefinidos)
+  /// Inicio de sesión con Google
   Future<bool> signInWithGoogle({
-    String? mockName,
-    String? mockEmail,
+    String? displayName,
+    String? email,
     String? photoUrl,
   }) async {
     return signInWithProfile(
-      displayName: mockName ?? 'Explorador Colimense',
-      email: mockEmail ?? 'explorador@gmail.com',
+      displayName: displayName ?? 'Usuario Google',
+      email: email ?? '',
       authProvider: 'google',
       photoUrl: photoUrl,
     );

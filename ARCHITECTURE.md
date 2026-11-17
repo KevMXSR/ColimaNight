@@ -98,10 +98,14 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
 
 ## 3. 🔐 Fase 1: Autenticación, Telemetría de Presencia y Monetización
 
-### 3.1 Autenticación Social & Modo Invitado (`lib/features/auth/`)
-- **Modo Invitado Inmediato:** Navegación 100% libre sin bloqueos de registro obligatorio.
-- **Google Sign-In:** Inicio de sesión social ágil para guardar favoritos y sincronizar perfil.
-- **Botón de Perfil Reactivo:** Integrado en la barra superior del feed indicando el estado (`Invitado` o `Conectado como [Nombre]`), con acceso al modal de perfil.
+### 3.1 Autenticación 100% Real & Modo Invitado (`lib/features/auth/`)
+- **Cero Perfiles Simulados o Falsos:** Se prohíbe terminantemente cualquier cuenta de prueba, perfil prefabricado o selector simulado por la aplicación.
+- **Modo Invitado (Guest):** Acceso libre, frictionless y 100% anónimo (`UserModel.guest()`) sin pantallas forzadas ni contraseñas.
+- **Vinculación Oficial Externa (`LaunchMode.externalApplication`):** Apertura en ventana emergente / navegador externo de las plataformas oficiales de autorización:
+  - Google OAuth (`accounts.google.com`) con parámetro `prompt=select_account`.
+  - Facebook Login OAuth (`facebook.com/v19.0/dialog/oauth`).
+  - Instagram Authorization OAuth (`api.instagram.com/oauth/authorize`).
+  Aprovecha las sesiones activas en el dispositivo sin requerir tecleo de credenciales en la app.
 
 ### 3.2 Telemetría de Presencia en Vivo (Perímetro 80 metros)
 - **Monitoreo en Tiempo Real:** Detección comunitaria de presencia activa en el perímetro de 80m de cada establecimiento.
@@ -113,11 +117,18 @@ Plataforma móvil nocturna de descubrimiento en tiempo real para jóvenes de 18-
   - $25 MXN: Cerveza Virtual 🍺 (Insignia Supporter Bronce).
   - $50 MXN: Ronda de Shots 🥃 (Insignia Supporter Plata).
   - $100 MXN: Mesa VIP Supporter 👑 (Corona Dorada VIP en perfil).
-  - Patreon / Apoyo Libre: Enlace externo a pasarelas de pago.
+  - Enlaces oficiales directos a PayPal (`paypal.me/GameKevMXSR`), SPEI BBVA y contacto empresarial.
 - **Botón de Donativo:** Acceso rápido con ícono de corazón/apoyo en la barra superior del feed.
 
 ### 3.4 Publicidad Nativa Cyber-Night (Google AdMob Mockup)
 - **Tarjeta Patrocinada (`CyberAdMobCard`):** Banner nativo con efecto Glassmorphism y bordes ámbar/cian intercalado cada 6 establecimientos en el feed principal.
+
+### 3.5 Optimización de Costos en Firestore 5.0 (Costo Cero Spark & Expansión Blaze)
+Administrado por `FirestoreCostOptimizer` (`lib/core/services/firestore_cost_optimizer.dart`):
+1. **Regla 1 — Cero Multimedia en Base de Datos:** Las fotos de ambiente y flyers se almacenan exclusivamente en Firebase Storage o servidores externos optimizados (WebP/JPG ligero). Firestore solo contiene URLs ligeras garantizando payloads inferiores a 2 KB por documento.
+2. **Regla 2 — Cero Lecturas Fantasma en Segundo Plano:** Suscripción estricta a `WidgetsBindingObserver`. Los listeners reactivos de `snapshots()` se suspenden de inmediato cuando la app pasa a segundo plano (`paused`, `inactive`, `hidden`) y se reanudan al volver al primer plano (`resumed`).
+3. **Regla 3 — Push Notifications con FCM:** Las alertas de seguridad comunitaria y promociones relámpago 2x1 se distribuyen mediante Firebase Cloud Messaging (FCM, gratuito e ilimitado) en lugar de consultas continuas o sondeo repetitivo (polling) a Firestore.
+4. **Economía de Expansión Regional (Plan Blaze):** Al extender la cobertura a municipios vecinos (Comala, Coquimatlán, Manzanillo), las consultas se segmentan por corredor (`corridorId`). Por encima de la cuota mensual gratuita de 1.5M de lecturas (50k/día), el costo en Firebase es de solo ~$0.06 USD (~$1 MXN) por cada 100,000 lecturas adicionales.
 
 ---
 

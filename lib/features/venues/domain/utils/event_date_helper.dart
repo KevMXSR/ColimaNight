@@ -1,4 +1,4 @@
-/// Utilidades para el cálculo y formateo de fechas de eventos en tiempo real
+/// Utilidades para el cálculo, formateo y control de vigencia estricta de eventos en tiempo real
 class EventDateHelper {
   static const List<String> _dayNames = [
     'Lunes',
@@ -25,20 +25,22 @@ class EventDateHelper {
     'Dic',
   ];
 
-  /// Calcula la fecha de la próxima ocurrencia de un día de la semana para la semana activa.
-  /// Si hoy es el mismo día y la hora aún no concluye, retorna el día de hoy.
+  /// Calcula la fecha de la próxima ocurrencia de un día de la semana.
+  /// Por defecto [allowAutoRollover] es false para evitar que eventos pasados
+  /// se sigan reprogramando indefinidamente semana tras semana.
   static DateTime getUpcomingWeekday(
     int targetWeekday, {
     int hour = 22,
     int minute = 0,
     DateTime? referenceDate,
+    bool allowAutoRollover = false,
   }) {
     final now = referenceDate ?? DateTime.now();
     int difference = targetWeekday - now.weekday;
 
-    // Si el día ya pasó en la semana actual (ej. hoy es domingo y el evento era viernes),
-    // se programa para la siguiente semana
-    if (difference < 0) {
+    // Si el día ya concluyó en la semana y allowAutoRollover es true,
+    // se traslada a la próxima semana; de lo contrario, se mantiene en la semana actual.
+    if (difference < 0 && allowAutoRollover) {
       difference += 7;
     }
 
@@ -69,5 +71,38 @@ class EventDateHelper {
   static bool isToday(DateTime dt, {DateTime? referenceDate}) {
     final now = referenceDate ?? DateTime.now();
     return dt.year == now.year && dt.month == now.month && dt.day == now.day;
+  }
+
+  /// Calcula la fecha y hora de expiración predeterminada (06:00 AM del día siguiente)
+  static DateTime calculateDefaultExpiration(DateTime eventDate) {
+    return DateTime(
+      eventDate.year,
+      eventDate.month,
+      eventDate.day + 1,
+      6,
+      0,
+    );
+  }
+
+  /// Valida si un evento sigue vigente y no ha concluido su ciclo operativo nocturno.
+  /// Los eventos concluyen a las 06:00 AM del día posterior a su fecha programada.
+  static bool isEventActive(DateTime? eventDate, {DateTime? expiresAt, DateTime? referenceDate}) {
+    if (eventDate == null) return false;
+    final now = referenceDate ?? DateTime.now();
+
+    if (expiresAt != null) {
+      return now.isBefore(expiresAt);
+    }
+
+    // Corte a las 06:00 AM del día siguiente
+    final cutoffTime = DateTime(
+      eventDate.year,
+      eventDate.month,
+      eventDate.day + 1,
+      6,
+      0,
+    );
+
+    return now.isBefore(cutoffTime);
   }
 }

@@ -109,14 +109,39 @@ class WeeklyEventsSheet extends ConsumerWidget {
                           Icon(Icons.event_busy_rounded, size: 48, color: AppColors.textMuted.withOpacity(0.5)),
                           const SizedBox(height: 12),
                           Text(
-                            'Sin eventos programados hoy',
-                            style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                            'Cartelera Oficial al Día',
+                            style: AppTypography.bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Text(
-                            'Los eventos se actualizan de acuerdo con las carteleras oficiales de cada establecimiento.',
+                            'No hay eventos especiales confirmados en este momento. La cartelera se sincroniza directamente con las publicaciones oficiales de los establecimientos verificados.',
                             textAlign: TextAlign.center,
-                            style: AppTypography.caption.copyWith(color: AppColors.textMuted),
+                            style: AppTypography.caption.copyWith(color: AppColors.textMuted, height: 1.4),
+                          ),
+                          const SizedBox(height: 16),
+                          OutlinedButton.icon(
+                            onPressed: () async {
+                              await ref.read(venuesNotifierProvider.notifier).refresh();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Cartelera y promociones sincronizadas'),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: AppColors.surfaceElevated,
+                                  ),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.neonCyan),
+                            label: const Text(
+                              'Sincronizar Cartelera',
+                              style: TextStyle(color: AppColors.neonCyan, fontSize: 13, fontWeight: FontWeight.w600),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.neonCyan),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
                           ),
                         ],
                       ),

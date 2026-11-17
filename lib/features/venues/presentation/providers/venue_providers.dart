@@ -48,9 +48,9 @@ final List<VenueModel> _initialVenues = [
     parkingDetails: 'Estacionamiento sobre Ignacio Sandoval',
     latitude: 19.263319260681573,
     longitude: -103.70427827536956,
-    instagramHandle: '@guachirooftop',
-    secondaryInstagramHandle: '@elguachicolima',
-    secondaryInstagramUrl: 'https://www.instagram.com/elguachicolima/',
+    instagramHandle: '@elguachicolima',
+    secondaryInstagramHandle: '@guachirooftop',
+    secondaryInstagramUrl: 'https://www.instagram.com/guachirooftop/',
     tikTokHandle: '@elguachicolima',
     facebookUrl: 'https://facebook.com/elguachicolima',
     vibeGenre: 'Perreo / Tech-House / Pop Latino',
@@ -64,45 +64,7 @@ final List<VenueModel> _initialVenues = [
     whatsappReservation: '523121234567',
     closedReason: 'Cerrado hoy · Abre Jueves 18:00',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'guachi_rooftop_sunset',
-        title: 'Sunset Session Rooftop & Mixología',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 18, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 18, minute: 0),
-        artistOrDj: 'Deep House & Sunset Beats en Terraza',
-        coverPrice: 'Entrada Libre en Rooftop',
-        promoNote: '2x1 en coctelería de autor antes de las 9:00 PM',
-        sourceInstagramUrl: 'https://www.instagram.com/guachirooftop/',
-        sourceInstagramHandle: '@guachirooftop',
-        isStoryAnnouncement: true,
-        specialSchedule: 'Terraza abierta desde las 6:00 PM',
-      ),
-      VenueEvent(
-        id: 'guachi_friday_reggaeton',
-        title: 'Viernes de Reggaetón & Tech-House',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 22, minute: 30)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 22, minute: 30),
-        artistOrDj: 'DJ Residente & Sets Urbanos',
-        coverPrice: 'Aprox. \$100 MXN',
-        promoNote: 'Promociones en copeo antes de medianoche',
-        sourceInstagramUrl: 'https://www.instagram.com/guachirooftop/',
-        sourceInstagramHandle: '@guachirooftop',
-        isStoryAnnouncement: true,
-      ),
-      VenueEvent(
-        id: 'guachi_saturday_party',
-        title: 'Sábado Night Club & Fiesta Total',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 22, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 22, minute: 0),
-        artistOrDj: 'DJ Invitado de Guadalajara',
-        coverPrice: 'Aprox. \$100 MXN',
-        promoNote: 'Mesas VIP y servicio de botellas',
-        sourceInstagramUrl: 'https://www.instagram.com/elguachicolima/',
-        sourceInstagramHandle: '@elguachicolima',
-        isStoryAnnouncement: false,
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   // --- SUCURSALES OFICIALES CERVECERÍA DE LA COSTA (SIN COVER, SIN RESERVACIÓN) ---
@@ -285,25 +247,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: false,
     coverDescription: 'Sin Cover',
     livePresenceCount: 2,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'costa_carranza_futbol_clasico',
-        title: 'Transmisión en Pantalla: Chivas vs América',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 19, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 19, minute: 0),
-        artistOrDj: 'Transmisión en Pantalla & Audio Bar',
-        coverPrice: 'Sin Cover • Entrada Libre',
-        promoNote: 'Cubetazos 5x4 en Cerveza de la Costa durante la transmisión',
-        sourceInstagramUrl: 'https://www.instagram.com/cerveceriadelacosta/',
-        sourceInstagramHandle: '@cerveceriadelacosta',
-        sourceFacebookUrl: 'https://www.facebook.com/costacarranzacolima/',
-        isStoryAnnouncement: true,
-        isVideoStory: true,
-        isSportsMatch: true,
-        matchTeams: 'CHIVAS vs AMÉRICA (Clásico Nacional)',
-        broadcastDetails: 'Transmisión en Pantalla al aire libre + Audio Ambiente',
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   const VenueModel(
@@ -645,21 +589,7 @@ final List<VenueModel> _initialVenues = [
     coverDescription: 'Cover: Hasta \$180 MXN (fines de semana)',
     whatsappReservation: '523121234567',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'dospuntos_saturday_night',
-        title: 'Noche Dos Puntos & Cerveza Artesanal',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 0),
-        artistOrDj: 'DJ Residente en Terraza',
-        coverPrice: 'Hasta \$180 MXN',
-        promoNote: '2x1 en pints seleccionadas antes de las 9:00 PM',
-        sourceInstagramUrl: 'https://www.instagram.com/dospuntoscerveceria/',
-        sourceInstagramHandle: '@dospuntoscerveceria',
-        sourceFacebookUrl: 'https://www.facebook.com/dospuntoscolima/',
-        isStoryAnnouncement: true,
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   // --- EL TAURINO BAR ---
@@ -737,48 +667,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: false,
     coverDescription: 'Sin Cover (Jueves)',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'puerta_jueves_snacks_drinks',
-        title: 'Jueves de Snacks & Drinks (A partir de las 7:00 PM)',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 19, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.thursday, hour: 19, minute: 0),
-        artistOrDj: 'Música & Precopeo en Bar La Puerta',
-        coverPrice: 'Entrada Libre / Sin Cover',
-        promoNote: 'Snacks y Drinks a partir de las 7:00 PM',
-        sourceInstagramUrl: 'https://www.instagram.com/barlapuerta/',
-        sourceInstagramHandle: '@barlapuerta',
-        sourceFacebookUrl: 'https://www.facebook.com/barlapuertacolima/',
-        isStoryAnnouncement: true,
-        specialSchedule: 'Apertura especial los jueves a las 7:00 PM',
-      ),
-      VenueEvent(
-        id: 'puerta_viernes_perreo',
-        title: 'Viernes Perreo & Hits Urbanos',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 0),
-        artistOrDj: 'DJ Residente Perreo',
-        coverPrice: 'Sin Cover antes de las 11 PM',
-        promoNote: 'Promoción en shots y caguamas',
-        sourceInstagramUrl: 'https://www.instagram.com/barlapuerta/',
-        sourceInstagramHandle: '@barlapuerta',
-        sourceFacebookUrl: 'https://www.facebook.com/barlapuertacolima/',
-        isStoryAnnouncement: false,
-      ),
-      VenueEvent(
-        id: 'puerta_perreo_bellako',
-        title: 'La Puerta del Perreo: Bellakeo Underground',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 30)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.saturday, hour: 21, minute: 30),
-        artistOrDj: 'DJs Residentes @lapuertadelperreo.dog',
-        coverPrice: 'Cover: \$50 MXN (Incluye Shot)',
-        promoNote: 'Caguamas bien frías & combos de chela y perreo',
-        sourceInstagramUrl: 'https://www.instagram.com/lapuertadelperreo.dog/',
-        sourceInstagramHandle: '@lapuertadelperreo.dog',
-        sourceFacebookUrl: 'https://www.facebook.com/barlapuertacolima/',
-        isStoryAnnouncement: true,
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   // --- LOW SOCIAL CLUB ---
@@ -823,24 +712,7 @@ final List<VenueModel> _initialVenues = [
     whatsappReservation: '523121234567',
     closedReason: 'Cerrado hoy · Abre Jueves 22:00',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'low_club_friday',
-        title: 'Low Sessions: Electronic & Urban Club',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 23, minute: 0)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 23, minute: 0),
-        artistOrDj: 'DJ Residente & Visuales Inmersivos',
-        coverPrice: 'Aprox. \$100 MXN',
-        promoNote: '2x1 en mixología y acceso antes de medianoche',
-        sourceInstagramUrl: 'https://www.instagram.com/lowclub.col/',
-        sourceInstagramHandle: '@lowclub.col',
-        sourceFacebookUrl: 'https://www.facebook.com/lowsocialclubcolima/',
-        isStoryAnnouncement: true,
-        isPresaleActive: true,
-        presalePrice: 'Preventa: \$100 MXN (Incluye Drink)',
-        presaleUrl: 'https://www.instagram.com/lowclub.col/',
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   // --- CASA COLIMA MEZCALERÍA ---
@@ -1155,24 +1027,7 @@ final List<VenueModel> _initialVenues = [
     whatsappReservation: '523121234567',
     closedReason: 'Cerrado hoy · Abre Jueves 20:00',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'foro_dmt_rock_friday',
-        title: 'Concierto en Vivo: Noche de Rock & Tributo',
-        dateDisplay: EventDateHelper.formatEventDate(EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 30)),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.friday, hour: 21, minute: 30),
-        artistOrDj: 'Bandas Locales Invitadas',
-        coverPrice: 'Cover según evento en vivo',
-        promoNote: 'Cerveza artesanal y comida de autor',
-        sourceInstagramUrl: 'https://www.instagram.com/foro_dmt/',
-        sourceInstagramHandle: '@foro_dmt',
-        sourceFacebookUrl: 'https://www.facebook.com/forodmtcolima/',
-        isStoryAnnouncement: true,
-        isPresaleActive: true,
-        presalePrice: 'Preventa: \$120 MXN • Taquilla: \$180 MXN',
-        presaleUrl: 'https://www.instagram.com/foro_dmt/',
-      ),
-    ],
+    upcomingEvents: [],
   ),
 
   // --- PARAÍSO DRINKS COLIMA ---
@@ -1254,22 +1109,7 @@ final List<VenueModel> _initialVenues = [
     hasCover: false,
     coverDescription: 'Sin Cover (Entrada Libre)',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'chapultepec_todo_mismo_precio',
-        title: 'Todo a un Mismo Precio (Todos los Días)',
-        dateDisplay: EventDateHelper.formatEventDate(DateTime.now()),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.now().weekday, hour: 13, minute: 0),
-        artistOrDj: 'Música Pop, Rock & Hits en Vivo',
-        coverPrice: 'Entrada Libre',
-        promoNote: 'Tarros, cócteles, hamburguesas y tacos a precio único accesible',
-        sourceInstagramUrl: 'https://www.instagram.com/cerveceriachapultepeccolima/',
-        sourceInstagramHandle: '@cerveceriachapultepeccolima',
-        sourceFacebookUrl: 'https://www.facebook.com/cerveceriachapultepeccolima/',
-        isStoryAnnouncement: true,
-        specialSchedule: 'Abierto desde la 1:00 PM todos los días',
-      ),
-    ],
+    upcomingEvents: [],
   ),
   // --- TORNA (FOCACCIA & VINYL LISTENING BAR) ---
   VenueModel(
@@ -1309,25 +1149,23 @@ final List<VenueModel> _initialVenues = [
     hasCover: false,
     coverDescription: 'Sin Cover (Entrada Libre)',
     livePresenceCount: 0,
-    upcomingEvents: [
-      VenueEvent(
-        id: 'torna_vinyl_session',
-        title: 'Sesión de Vinilo & Focaccia en Barra',
-        dateDisplay: EventDateHelper.formatEventDate(DateTime.now()),
-        eventDate: EventDateHelper.getUpcomingWeekday(DateTime.now().weekday, hour: 19, minute: 0),
-        artistOrDj: 'Selección de Vinilos Analógicos en Vivo',
-        coverPrice: 'Entrada Libre',
-        promoNote: 'Focaccias de masa madre, cócteles clásicos y tapas',
-        sourceInstagramUrl: 'https://www.instagram.com/torna.col/',
-        sourceInstagramHandle: '@torna.col',
-        isStoryAnnouncement: true,
-      ),
-    ],
+    upcomingEvents: [],
   ),
 ];
 
 class VenuesNotifier extends StateNotifier<List<VenueModel>> {
   VenuesNotifier() : super(_initialVenues);
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  /// Refresca los establecimientos y eventos bajo demanda (ej. Pull-to-Refresh)
+  Future<void> refresh() async {
+    _isLoading = true;
+    await Future.delayed(const Duration(milliseconds: 150));
+    state = List.from(state);
+    _isLoading = false;
+  }
 
   void updateCapacity(String venueId, int newCapacity) {
     state = state.map((v) {
@@ -1341,19 +1179,27 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
     }).toList();
   }
 
-  void toggleLiveMusic(String venueId) {
+  void toggleLiveMusic(String venueId, {String? actName}) {
     state = state.map((v) {
       if (v.id == venueId) {
-        return v.copyWith(hasLiveMusic: !v.hasLiveMusic);
+        final newHasLiveMusic = !v.hasLiveMusic;
+        return v.copyWith(
+          hasLiveMusic: newHasLiveMusic,
+          liveMusicAct: actName ?? v.liveMusicAct,
+        );
       }
       return v;
     }).toList();
   }
 
-  void togglePromo(String venueId) {
+  void togglePromo(String venueId, {String? promoHeadline}) {
     state = state.map((v) {
       if (v.id == venueId) {
-        return v.copyWith(hasPromo: !v.hasPromo);
+        final newHasPromo = !v.hasPromo;
+        return v.copyWith(
+          hasPromo: newHasPromo,
+          promoHeadline: promoHeadline ?? v.promoHeadline,
+        );
       }
       return v;
     }).toList();
@@ -1447,6 +1293,9 @@ class VenuesNotifier extends StateNotifier<List<VenueModel>> {
 final mockVenuesProvider = StateNotifierProvider<VenuesNotifier, List<VenueModel>>((ref) {
   return VenuesNotifier();
 });
+
+final venuesNotifierProvider = mockVenuesProvider;
+final venuesProvider = mockVenuesProvider;
 
 // Estado de Búsqueda
 final searchQueryProvider = StateProvider<String>((ref) => '');

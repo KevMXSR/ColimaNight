@@ -23,6 +23,7 @@ class VenueEvent {
   final String? broadcastDetails; // Ej: 'Pantalla gigante, audio en vivo y cubetazo'
   final bool isVideoStory; // Indica si proviene de un video reel o video en historia
   final String? sourceFacebookUrl; // Enlace directo a publicación o perfil de Facebook
+  final DateTime? expiresAt; // Fecha/hora de expiración estricta del evento
 
   const VenueEvent({
     required this.id,
@@ -46,6 +47,7 @@ class VenueEvent {
     this.broadcastDetails,
     this.isVideoStory = false,
     this.sourceFacebookUrl,
+    this.expiresAt,
   });
 
   /// Evalúa dinámicamente si el evento está ocurriendo HOY según DateTime.now()
@@ -56,6 +58,88 @@ class VenueEvent {
     return eventDate!.year == now.year &&
         eventDate!.month == now.month &&
         eventDate!.day == now.day;
+  }
+
+  /// Valida si el evento ya caducó
+  bool get isExpired {
+    final now = DateTime.now();
+    if (expiresAt != null) {
+      return now.isAfter(expiresAt!);
+    }
+    if (eventDate != null) {
+      // Concluye a las 06:00 AM del día posterior al evento
+      final endOfNight = DateTime(eventDate!.year, eventDate!.month, eventDate!.day + 1, 6, 0);
+      return now.isAfter(endOfNight);
+    }
+    return false;
+  }
+
+  factory VenueEvent.fromMap(Map<String, dynamic> map, String id) {
+    DateTime? parseDate(dynamic val) {
+      if (val == null) return null;
+      if (val is DateTime) return val;
+      if (val is int) return DateTime.fromMillisecondsSinceEpoch(val);
+      if (val is String) return DateTime.tryParse(val);
+      try {
+        final dynamic dynamicVal = val;
+        return dynamicVal.toDate() as DateTime;
+      } catch (_) {}
+      return null;
+    }
+
+    final evDate = parseDate(map['eventDate']);
+    final expDate = parseDate(map['expiresAt']);
+
+    return VenueEvent(
+      id: id,
+      title: map['title'] ?? map['eventTitle'] ?? 'Evento Nocturno',
+      dateDisplay: map['dateDisplay'] ?? (evDate != null ? '${evDate.day}/${evDate.month}' : 'Próximamente'),
+      eventDate: evDate,
+      artistOrDj: map['artistOrDj'] ?? map['djOrBand'],
+      coverPrice: map['coverPrice'] ?? (map['coverPriceMxn'] != null ? '\$${map['coverPriceMxn']} MXN' : null),
+      promoNote: map['promoNote'] ?? map['promo'],
+      forcedIsToday: map['forcedIsToday'],
+      flyerImageUrl: map['flyerImageUrl'] ?? map['mediaUrl'],
+      sourceInstagramUrl: map['sourceInstagramUrl'] ?? map['postUrl'],
+      sourceInstagramHandle: map['sourceInstagramHandle'] ?? map['instagramHandle'],
+      isStoryAnnouncement: map['isStoryAnnouncement'] ?? false,
+      specialSchedule: map['specialSchedule'],
+      presaleUrl: map['presaleUrl'],
+      presalePrice: map['presalePrice'],
+      isPresaleActive: map['isPresaleActive'] ?? false,
+      isSportsMatch: map['isSportsMatch'] ?? false,
+      matchTeams: map['matchTeams'],
+      broadcastDetails: map['broadcastDetails'],
+      isVideoStory: map['isVideoStory'] ?? false,
+      sourceFacebookUrl: map['sourceFacebookUrl'],
+      expiresAt: expDate,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'dateDisplay': dateDisplay,
+      'eventDate': eventDate?.toIso8601String(),
+      'artistOrDj': artistOrDj,
+      'coverPrice': coverPrice,
+      'promoNote': promoNote,
+      'forcedIsToday': forcedIsToday,
+      'flyerImageUrl': flyerImageUrl,
+      'sourceInstagramUrl': sourceInstagramUrl,
+      'sourceInstagramHandle': sourceInstagramHandle,
+      'isStoryAnnouncement': isStoryAnnouncement,
+      'specialSchedule': specialSchedule,
+      'presaleUrl': presaleUrl,
+      'presalePrice': presalePrice,
+      'isPresaleActive': isPresaleActive,
+      'isSportsMatch': isSportsMatch,
+      'matchTeams': matchTeams,
+      'broadcastDetails': broadcastDetails,
+      'isVideoStory': isVideoStory,
+      'sourceFacebookUrl': sourceFacebookUrl,
+      'expiresAt': expiresAt?.toIso8601String(),
+    };
   }
 }
 
@@ -333,5 +417,197 @@ class VenueModel {
       whatsappReservation: whatsappReservation ?? this.whatsappReservation,
       upcomingEvents: upcomingEvents ?? this.upcomingEvents,
     );
+  }
+
+  factory VenueModel.fromMap(Map<String, dynamic> map, String id) {
+    double parseDouble(dynamic val, double fallback) {
+      if (val == null) return fallback;
+      if (val is double) return val;
+      if (val is int) return val.toDouble();
+      if (val is String) return double.tryParse(val) ?? fallback;
+      return fallback;
+    }
+
+    int parseInt(dynamic val, int fallback) {
+      if (val == null) return fallback;
+      if (val is int) return val;
+      if (val is double) return val.toInt();
+      if (val is String) return int.tryParse(val) ?? fallback;
+      return fallback;
+    }
+
+    // Ubicación (puede venir como GeoPoint de Firestore o lat/lng individuales)
+    double lat = 19.2433;
+    double lng = -103.7247;
+    if (map['location'] != null) {
+      try {
+        final dynamic loc = map['location'];
+        lat = parseDouble(loc.latitude, lat);
+        lng = parseDouble(loc.longitude, lng);
+      } catch (_) {}
+    } else {
+      lat = parseDouble(map['latitude'], lat);
+      lng = parseDouble(map['longitude'], lng);
+    }
+
+    // Galería
+    List<String> gallery = [];
+    if (map['galleryUrls'] is List) {
+      gallery = (map['galleryUrls'] as List).map((e) => e.toString()).toList();
+    }
+
+    // Subcolección o lista de eventos
+    List<VenueEvent> events = [];
+    if (map['upcomingEvents'] is List) {
+      events = (map['upcomingEvents'] as List)
+          .asMap()
+          .entries
+          .map((entry) => VenueEvent.fromMap(
+                Map<String, dynamic>.from(entry.value as Map),
+                entry.value['id']?.toString() ?? '${id}_event_${entry.key}',
+              ))
+          .toList();
+    }
+
+    // Música en vivo estructurada o booleana
+    bool liveMusic = map['hasLiveMusic'] ?? false;
+    String? liveAct = map['liveMusicAct'];
+    if (map['liveMusic'] is Map) {
+      final liveMusicMap = map['liveMusic'] as Map;
+      liveMusic = liveMusicMap['hasLiveMusic'] ?? liveMusic;
+      liveAct = liveMusicMap['bandOrDjName'] ?? liveAct;
+    }
+
+    // Promociones activas (puede venir de activePromos array de Firestore)
+    bool promoActive = map['hasPromo'] ?? false;
+    String? promoText = map['promoHeadline'];
+    if (map['activePromos'] is List && (map['activePromos'] as List).isNotEmpty) {
+      promoActive = true;
+      final firstPromo = (map['activePromos'] as List).first;
+      if (firstPromo is Map) {
+        promoText = firstPromo['title'] ?? firstPromo['description'] ?? promoText;
+      } else if (firstPromo is String) {
+        promoText = firstPromo;
+      }
+    }
+
+    // Redes sociales (socialLinks Map o directo)
+    String? ig = map['instagramHandle'];
+    String? fb = map['facebookUrl'];
+    if (map['socialLinks'] is Map) {
+      final social = map['socialLinks'] as Map;
+      if (social['instagram'] != null) {
+        final igUrl = social['instagram'].toString();
+        ig = igUrl.split('/').where((s) => s.isNotEmpty).last;
+        if (!ig.startsWith('@')) ig = '@$ig';
+      }
+      if (social['facebook'] != null) {
+        fb = social['facebook'].toString();
+      }
+    }
+
+    return VenueModel(
+      id: id,
+      name: map['name'] ?? 'Establecimiento',
+      category: map['category'] ?? 'Bar',
+      zone: map['zone'] ?? map['address'] ?? 'Colima',
+      description: map['description'] ?? '',
+      coverImageUrl: map['coverImageUrl'] ?? 'assets/images/venues/el_guachi.jpg',
+      galleryUrls: gallery,
+      rating: parseDouble(map['rating'], 4.8),
+      reviewsCount: parseInt(map['reviewsCount'], 100),
+      capacityPercent: parseInt(map['capacityPercent'] ?? map['currentOccupancyPercent'], 0),
+      isHotRightNow: map['isHotRightNow'] ?? false,
+      hotReason: map['hotReason'],
+      hasLiveMusic: liveMusic,
+      liveMusicAct: liveAct,
+      isVipPresent: map['isVipPresent'] ?? false,
+      vipNote: map['vipNote'],
+      hasPromo: promoActive,
+      promoHeadline: promoText,
+      parkingAvailable: map['parkingAvailable'] ?? true,
+      parkingDetails: map['parkingDetails'],
+      latitude: lat,
+      longitude: lng,
+      instagramHandle: ig,
+      secondaryInstagramHandle: map['secondaryInstagramHandle'],
+      secondaryInstagramUrl: map['secondaryInstagramUrl'],
+      tikTokHandle: map['tikTokHandle'],
+      facebookUrl: fb,
+      facebookHandle: map['facebookHandle'],
+      websiteUrl: map['websiteUrl'],
+      reservationUrl: map['reservationUrl'],
+      vibeGenre: map['vibeGenre'] ?? map['vibeScore'] ?? 'Variado',
+      schedule: map['schedule'] ?? '8:00 PM - 3:00 AM',
+      estimatedMinutes: parseInt(map['estimatedMinutes'], 8),
+      securityStatus: map['securityStatus'] is Map
+          ? (map['securityStatus']['level'] ?? 'normal')
+          : (map['securityStatus'] ?? 'normal'),
+      activeIncidentReportsCount: parseInt(map['activeIncidentReportsCount'], 0),
+      lastIncidentType: map['lastIncidentType'],
+      lastReportNote: map['lastReportNote'],
+      isPermanentlyClosed: map['isPermanentlyClosed'] ?? (map['isEasterEgg'] == true),
+      closedJokeNote: map['closedJokeNote'],
+      livePresenceCount: parseInt(map['livePresenceCount'] ?? map['liveAttendeesCount'], 0),
+      hasCover: map['hasCover'] ?? false,
+      coverDescription: map['coverDescription'],
+      isOpenNow: map['isOpenNow'] ?? (map['active'] ?? true),
+      closedReason: map['closedReason'],
+      reservationPhone: map['reservationPhone'],
+      whatsappReservation: map['whatsappReservation'],
+      upcomingEvents: events,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'category': category,
+      'zone': zone,
+      'description': description,
+      'coverImageUrl': coverImageUrl,
+      'galleryUrls': galleryUrls,
+      'rating': rating,
+      'reviewsCount': reviewsCount,
+      'capacityPercent': capacityPercent,
+      'isHotRightNow': isHotRightNow,
+      'hotReason': hotReason,
+      'hasLiveMusic': hasLiveMusic,
+      'liveMusicAct': liveMusicAct,
+      'isVipPresent': isVipPresent,
+      'vipNote': vipNote,
+      'hasPromo': hasPromo,
+      'promoHeadline': promoHeadline,
+      'parkingAvailable': parkingAvailable,
+      'parkingDetails': parkingDetails,
+      'latitude': latitude,
+      'longitude': longitude,
+      'instagramHandle': instagramHandle,
+      'secondaryInstagramHandle': secondaryInstagramHandle,
+      'secondaryInstagramUrl': secondaryInstagramUrl,
+      'tikTokHandle': tikTokHandle,
+      'facebookUrl': facebookUrl,
+      'facebookHandle': facebookHandle,
+      'websiteUrl': websiteUrl,
+      'reservationUrl': reservationUrl,
+      'vibeGenre': vibeGenre,
+      'schedule': schedule,
+      'estimatedMinutes': estimatedMinutes,
+      'securityStatus': securityStatus,
+      'activeIncidentReportsCount': activeIncidentReportsCount,
+      'lastIncidentType': lastIncidentType,
+      'lastReportNote': lastReportNote,
+      'isPermanentlyClosed': isPermanentlyClosed,
+      'closedJokeNote': closedJokeNote,
+      'livePresenceCount': livePresenceCount,
+      'hasCover': hasCover,
+      'coverDescription': coverDescription,
+      'isOpenNow': isOpenNow,
+      'closedReason': closedReason,
+      'reservationPhone': reservationPhone,
+      'whatsappReservation': whatsappReservation,
+      'upcomingEvents': upcomingEvents.map((e) => e.toMap()).toList(),
+    };
   }
 }

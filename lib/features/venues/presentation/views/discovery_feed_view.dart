@@ -65,9 +65,15 @@ class DiscoveryFeedView extends ConsumerWidget {
         type: BrandBackgroundType.primaryLogo,
         child: SafeArea(
           bottom: false,
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await ref.read(venuesNotifierProvider.notifier).refresh();
+            },
+            color: AppColors.neonCyan,
+            backgroundColor: AppColors.surfaceElevated,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              slivers: [
             // Header Principal con Logo Neón y Status Nocturno
             SliverToBoxAdapter(
               child: Padding(
@@ -633,6 +639,7 @@ class DiscoveryFeedView extends ConsumerWidget {
         ),
       ),
     ),
-  );
+  ),
+);
 }
 }

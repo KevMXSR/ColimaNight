@@ -1,7 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:colima_night/core/config/monetization_config.dart';
+import 'package:colima_night/core/services/firestore_cost_optimizer.dart';
 import 'package:colima_night/features/auth/domain/models/user_model.dart';
 import 'package:colima_night/features/auth/presentation/providers/auth_provider.dart';
 import 'package:colima_night/features/auth/services/colima_oauth_service.dart';
@@ -9,6 +11,7 @@ import 'package:colima_night/features/venues/domain/models/venue_model.dart';
 
 void main() {
   setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -143,27 +146,25 @@ void main() {
       expect(updated.email, 'kevin.vip@gmail.com');
     });
 
-    test('AuthNotifier provides authentic recent accounts list for One-Tap login', () async {
+    test('AuthNotifier has zero fake profiles by default and saves genuine recent accounts', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final accounts = await container.read(authProvider.notifier).getRecentAccounts();
-      expect(accounts.isNotEmpty, isTrue);
+      // Cero cuentas falsas o simuladas por defecto
+      final initialAccounts = await container.read(authProvider.notifier).getRecentAccounts();
+      expect(initialAccounts.isEmpty, isTrue);
 
-      final googleAccount = accounts.firstWhere((a) => a['provider'] == 'google');
-      expect(googleAccount['displayName'], 'Kevin Sandoval Ramirez');
-      expect(googleAccount['email'], 'kevin.sandoval@gmail.com');
-
-      // Save a new account and verify it prepends to recent list
+      // Save a new genuine account and verify it prepends to recent list
       await container.read(authProvider.notifier).saveRecentAccount(
-            displayName: 'Kevin Sandoval VIP',
-            email: 'vip.kevin@gmail.com',
+            displayName: 'Usuario Real Colima',
+            email: 'real@gmail.com',
             provider: 'google',
           );
 
       final updatedAccounts = await container.read(authProvider.notifier).getRecentAccounts();
-      expect(updatedAccounts.first['displayName'], 'Kevin Sandoval VIP');
-      expect(updatedAccounts.first['email'], 'vip.kevin@gmail.com');
+      expect(updatedAccounts.length, equals(1));
+      expect(updatedAccounts.first['displayName'], 'Usuario Real Colima');
+      expect(updatedAccounts.first['email'], 'real@gmail.com');
     });
   });
 
@@ -230,6 +231,84 @@ void main() {
       final igUri = ColimaOAuthService.buildProviderAccountChooserUri(SocialAuthProvider.instagram);
       expect(igUri.host, contains('instagram.com'));
       expect(igUri.queryParameters['scope'], contains('user_profile'));
+    });
+  });
+
+  group('FirestoreCostOptimizer (Spark 0-Cost & Blaze Expansion) Tests', () {
+    test('Optimizes lifecycle and pauses Firestore listeners when app enters background', () {
+      final optimizer = FirestoreCostOptimizer.instance;
+      optimizer.initialize();
+
+      bool paused = false;
+      bool resumed = false;
+
+      optimizer.registerManagedListener(
+        listenerId: 'test_aforos_listener',
+        onPause: () => paused = true,
+        onResume: () => resumed = true,
+      );
+
+      expect(optimizer.isAppActive, isTrue);
+
+      // Simular cambio de estado a segundo plano (paused)
+      optimizer.didChangeAppLifecycleState(AppLifecycleState.paused);
+      expect(optimizer.isAppActive, isFalse);
+      expect(paused, isTrue);
+      expect(optimizer.ghostReadsPrevented, greaterThan(0));
+
+      // Simular regreso a primer plano (resumed)
+      optimizer.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      expect(optimizer.isAppActive, isTrue);
+      expect(resumed, isTrue);
+
+      optimizer.unregisterManagedListener('test_aforos_listener');
+    });
+
+    test('Validates payload size to guarantee < 2KB documents and prevent binary blobs', () {
+      final validDoc = {
+        'venueId': 'la_cerve_sevilla',
+        'currentCapacity': 85,
+        'updatedAt': '2026-11-17T20:00:00Z',
+        'flyerUrl': 'https://firebasestorage.googleapis.com/v0/b/app/o/flyer.webp',
+      };
+      expect(FirestoreCostOptimizer.validateDocumentPayload(validDoc), isTrue);
+
+      // Document with fake base64 image string is rejected
+      final invalidDoc = {
+        'venueId': 'la_cerve_sevilla',
+        'image': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD...',
+      };
+      expect(FirestoreCostOptimizer.validateDocumentPayload(invalidDoc), isFalse);
+    });
+
+    test('Validates media URLs to point strictly to external CDNs, Firebase Storage or assets', () {
+      expect(FirestoreCostOptimizer.isValidMediaUrl('https://firebasestorage.googleapis.com/photo.webp'), isTrue);
+      expect(FirestoreCostOptimizer.isValidMediaUrl('assets/images/venues/torna.jpg'), isTrue);
+      expect(FirestoreCostOptimizer.isValidMediaUrl('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'), isFalse);
+      expect(FirestoreCostOptimizer.isValidMediaUrl(''), isFalse);
+    });
+
+    test('FCM Topic registration matches official zero-cost push channels', () {
+      expect(FirestoreCostOptimizer.fcmTopicFlashPromos, 'colima_flash_promos');
+      expect(FirestoreCostOptimizer.fcmTopicSecurityAlerts, 'colima_security_alerts');
+      expect(FirestoreCostOptimizer.fcmCorridorTopic('sevilla_rio'), 'corridor_sevilla_rio');
+      expect(FirestoreCostOptimizer.fcmCorridorTopic('Centro Historico'), 'corridor_centro_historico');
+    });
+
+    test('Blaze regional expansion cost calculator reflects \$0.06 USD per 100k extra reads', () {
+      // Under 1.5M monthly reads -> $0.00 USD
+      expect(FirestoreCostOptimizer.calculateMonthlyBlazeCostUsd(totalMonthlyReads: 1200000), 0.0);
+
+      // 1.5M monthly reads -> $0.00 USD (exact Spark boundary)
+      expect(FirestoreCostOptimizer.calculateMonthlyBlazeCostUsd(totalMonthlyReads: 1500000), 0.0);
+
+      // 2.5M monthly reads -> 1,000,000 extra billable reads -> 10 blocks of 100k -> $0.60 USD (~12 MXN)
+      final cost2_5M = FirestoreCostOptimizer.calculateMonthlyBlazeCostUsd(totalMonthlyReads: 2500000);
+      expect(cost2_5M, closeTo(0.60, 0.001));
+
+      // 100k extra reads -> $0.06 USD
+      final cost1_6M = FirestoreCostOptimizer.calculateMonthlyBlazeCostUsd(totalMonthlyReads: 1600000);
+      expect(cost1_6M, closeTo(0.06, 0.001));
     });
   });
 }
