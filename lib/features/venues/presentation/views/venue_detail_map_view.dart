@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart' as ll;
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
@@ -246,11 +247,17 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          // Capa 1: Mapa Interactivo Gratuito (CartoDB / OpenStreetMap con fallback)
-          Positioned.fill(
-            child: FlutterMap(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= ResponsiveBreakpoints.mediumMax;
+          final double sidebarWidth = isDesktop ? 420.0 : 0.0;
+
+          return Stack(
+            children: [
+              // Capa 1: Mapa Interactivo Gratuito (CartoDB / OpenStreetMap con fallback)
+              Positioned.fill(
+                left: sidebarWidth,
+                child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
                 initialCenter: ll.LatLng(currentVenue.latitude, currentVenue.longitude),
@@ -341,7 +348,7 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
           // Capa 2: Barra Superior Flotante con Botón Atrás y Controles
           Positioned(
             top: 0,
-            left: 0,
+            left: sidebarWidth,
             right: 0,
             child: SafeArea(
               child: Padding(
@@ -549,21 +556,43 @@ class _VenueDetailMapViewState extends ConsumerState<VenueDetailMapView> {
             ),
           ),
 
-          // Capa 3: Bottom Sheet Expandible tipo Uber/DiDi
-          DraggableScrollableSheet(
-            initialChildSize: 0.42,
-            minChildSize: 0.26,
-            maxChildSize: 0.88,
-            builder: (context, scrollController) {
-              return VenueDetailBottomSheet(
-                venue: currentVenue,
-                scrollController: scrollController,
-              );
-            },
-          ),
+          // Capa 3: Detalle del Establecimiento (Sidebar Flotante en Desktop / DraggableSheet en Móvil)
+          if (isDesktop)
+            Positioned(
+              top: 0,
+              bottom: 0,
+              left: 0,
+              width: sidebarWidth,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: VenueDetailBottomSheet(
+                      venue: currentVenue,
+                      scrollController: ScrollController(),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            DraggableScrollableSheet(
+              initialChildSize: 0.42,
+              minChildSize: 0.26,
+              maxChildSize: 0.88,
+              builder: (context, scrollController) {
+                return VenueDetailBottomSheet(
+                  venue: currentVenue,
+                  scrollController: scrollController,
+                );
+              },
+            ),
         ],
-      ),
-    );
+      );
+    },
+  ),
+);
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../../../core/widgets/dynamic_brand_background.dart';
 import '../providers/venue_providers.dart';
 import 'venue_detail_bottom_sheet.dart';
@@ -15,6 +16,7 @@ class WeeklyEventsSheet extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
       builder: (_) => const WeeklyEventsSheet(),
     );
   }
@@ -23,15 +25,19 @@ class WeeklyEventsSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final eventItems = ref.watch(weeklyEventsProvider);
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border(
-          top: BorderSide(color: AppColors.glassBorder, width: 1.5),
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: const BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(
+            top: BorderSide(color: AppColors.glassBorder, width: 1.5),
+            left: BorderSide(color: AppColors.glassBorder, width: 1.0),
+            right: BorderSide(color: AppColors.glassBorder, width: 1.0),
+          ),
         ),
-      ),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: DynamicBrandBackground(
@@ -57,36 +63,44 @@ class WeeklyEventsSheet extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.neonViolet.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.neonViolet.withOpacity(0.4)),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.neonViolet.withOpacity(0.18),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.neonViolet.withOpacity(0.4)),
+                        ),
+                        child: const Icon(Icons.event_available_rounded, color: AppColors.neonViolet, size: 20),
                       ),
-                      child: const Icon(Icons.event_available_rounded, color: AppColors.neonViolet, size: 20),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'CARTELERA DE LA SEMANA',
-                          style: AppTypography.h3.copyWith(
-                            fontSize: 15,
-                            letterSpacing: 0.8,
-                            color: Colors.white,
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'CARTELERA DE LA SEMANA',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.h3.copyWith(
+                                fontSize: 15,
+                                letterSpacing: 0.8,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Eventos verificados en Colima y La Villa',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.caption.copyWith(color: AppColors.textMuted),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Eventos verificados en Colima y La Villa',
-                          style: AppTypography.caption.copyWith(color: AppColors.textMuted),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -224,13 +238,21 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  event.isToday ? 'HOY EN VIVO' : event.dateDisplay,
+                                                  event.isToday
+                                                      ? 'HOY EN VIVO'
+                                                      : (event.isRecurring
+                                                          ? event.statusBadge.toUpperCase()
+                                                          : (event.isUpcoming
+                                                              ? 'PRÓXIMAMENTE • ${event.dateDisplay}'
+                                                              : event.dateDisplay)),
                                                   style: TextStyle(
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.bold,
                                                     color: event.isToday
-                                                      ? Colors.white
-                                                      : AppColors.neonCyan,
+                                                        ? Colors.white
+                                                        : (event.isRecurring
+                                                            ? AppColors.neonViolet
+                                                            : AppColors.neonCyan),
                                                   ),
                                                 ),
                                               ],
@@ -286,13 +308,17 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                   ),
                                   const SizedBox(height: 10),
 
-                                  // Contenido Principal (Detalles del evento)
-                                  Column(
+                                  // Contenido Principal (Detalles del evento y miniatura de flyer)
+                                  Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        event.title,
-                                        style: AppTypography.bodyLarge.copyWith(
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              event.title,
+                                              style: AppTypography.bodyLarge.copyWith(
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 14,
                                                 color: Colors.white,
@@ -315,28 +341,38 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                                 ],
                                               ),
                                             ],
-                                            if (event.specialSchedule != null) ...[
-                                              const SizedBox(height: 3),
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.access_time_rounded, size: 12, color: AppColors.neonCyan),
-                                                  const SizedBox(width: 4),
-                                                  Expanded(
-                                                    child: Text(
-                                                      event.specialSchedule!,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: AppTypography.caption.copyWith(
-                                                        color: AppColors.neonCyan,
-                                                        fontWeight: FontWeight.w600,
+                                            if (event.specialSchedule != null && event.specialSchedule!.isNotEmpty) ...[
+                                              const SizedBox(height: 4),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.neonCyan.withValues(alpha: 0.12),
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const Icon(Icons.access_time_filled_rounded, size: 11, color: AppColors.neonCyan),
+                                                    const SizedBox(width: 4),
+                                                    Flexible(
+                                                      child: Text(
+                                                        event.specialSchedule!,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          color: AppColors.neonCyan,
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 10.5,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                             if (event.promoNote != null) ...[
-                                              const SizedBox(height: 3),
+                                              const SizedBox(height: 4),
                                               Text(
                                                 '⚡ ${event.promoNote}',
                                                 maxLines: 1,
@@ -349,6 +385,36 @@ class WeeklyEventsSheet extends ConsumerWidget {
                                             ],
                                           ],
                                         ),
+                                      ),
+                                      if (event.flyerImageUrl != null && event.flyerImageUrl!.isNotEmpty) ...[
+                                        const SizedBox(width: 10),
+                                        GestureDetector(
+                                          onTap: () => _showFlyerLightbox(context, event.flyerImageUrl!, event.title),
+                                          child: Tooltip(
+                                            message: 'Ver flyer completo',
+                                            child: Container(
+                                              width: 64,
+                                              height: 64,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                border: Border.all(color: AppColors.glassBorder),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withValues(alpha: 0.4),
+                                                    blurRadius: 6,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: _buildFlyerImage(event.flyerImageUrl!),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                   const SizedBox(height: 10),
 
                                   // Lugar Sede y Botones de Acción
@@ -445,6 +511,71 @@ class WeeklyEventsSheet extends ConsumerWidget {
       ),
     ),
   ),
+),
 );
+  }
+
+  /// Construye la imagen del flyer de forma resiliente (Asset o Red)
+  static Widget _buildFlyerImage(String url, {BoxFit fit = BoxFit.cover}) {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return Image.network(
+        url,
+        fit: fit,
+        errorBuilder: (_, __, ___) => const ColoredBox(
+          color: AppColors.surfaceElevated,
+          child: Center(
+            child: Icon(Icons.image_not_supported_rounded, color: AppColors.textMuted, size: 20),
+          ),
+        ),
+      );
+    } else {
+      return Image.asset(
+        url,
+        fit: fit,
+        errorBuilder: (_, __, ___) => const ColoredBox(
+          color: AppColors.surfaceElevated,
+          child: Center(
+            child: Icon(Icons.broken_image_rounded, color: AppColors.textMuted, size: 20),
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Despliega el visor de flyer en pantalla completa con zoom interactivo
+  static void _showFlyerLightbox(BuildContext context, String imageUrl, String title) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            InteractiveViewer(
+              minScale: 0.8,
+              maxScale: 3.5,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: _buildFlyerImage(imageUrl, fit: BoxFit.contain),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Material(
+                color: Colors.black.withValues(alpha: 0.7),
+                shape: const CircleBorder(),
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded, size: 20, color: Colors.white),
+                  onPressed: () => Navigator.pop(ctx),
+                  tooltip: 'Cerrar visor',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -130,9 +130,10 @@ class VenueScheduleEvaluator {
     int openMinute = scheduleRule.openMinute;
     final closeHour = scheduleRule.closeHour;
 
-    if (todayEvent?.eventDate != null) {
-      final evH = todayEvent!.eventDate!.hour;
-      final evM = todayEvent!.eventDate!.minute;
+    final evDate = todayEvent?.eventDate;
+    if (evDate != null) {
+      final evH = evDate.hour;
+      final evM = evDate.minute;
       if (evH < openHour || (evH == openHour && evM < openMinute)) {
         openHour = evH;
         openMinute = evM;

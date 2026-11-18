@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_venue_image.dart';
@@ -63,55 +62,72 @@ class HotRightNowCard extends StatelessWidget {
                   ),
                 ),
 
-                // Tag Flotante Superior: "🔥 HOT RIGHT NOW" & "Aforo %"
+                // Tag Flotante Superior Responsivo: "🔥 HOT RIGHT NOW" & Badges sin desbordamiento
                 Positioned(
                   top: 14,
                   left: 14,
                   right: 14,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.hotFireGradient,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.neonRedAlert.withOpacity(0.5),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.local_fire_department, color: Colors.white, size: 16),
-                            const SizedBox(width: 4),
-                            Text(
-                              'HOT RIGHT NOW',
-                              style: AppTypography.badgeLabel.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.8,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isVeryNarrow = constraints.maxWidth < 340;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                gradient: AppColors.hotFireGradient,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.neonRedAlert.withOpacity(0.5),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.local_fire_department, color: Colors.white, size: 15),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      isVeryNarrow ? 'HOT' : 'HOT RIGHT NOW',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.badgeLabel.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          NeonBadge.livePresence(venue.livePresence),
+                          ),
                           const SizedBox(width: 6),
-                          if (venue.isVipPresent) ...[
-                            NeonBadge.vip(venue.vipNote ?? 'VIP'),
-                            const SizedBox(width: 6),
-                          ],
-                          NeonBadge.capacity(venue.capacityPercent),
+                          Flexible(
+                            flex: 2,
+                            child: Wrap(
+                              alignment: WrapAlignment.end,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 6,
+                              runSpacing: 4,
+                              children: [
+                                NeonBadge.livePresence(venue.livePresence),
+                                if (venue.isVipPresent && !isVeryNarrow)
+                                  NeonBadge.vip(venue.vipNote ?? 'VIP'),
+                                NeonBadge.capacity(venue.capacityPercent),
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
 

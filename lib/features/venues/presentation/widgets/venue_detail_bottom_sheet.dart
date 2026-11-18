@@ -672,77 +672,82 @@ class VenueDetailBottomSheet extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Redes Sociales Oficiales del Lugar
-              Text(
-                'REDES SOCIALES & AMBIENTE EN VIVO',
-                style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  if (venue.instagramHandle != null)
-                    SizedBox(
-                      width: venue.secondaryInstagramHandle != null ? (MediaQuery.of(context).size.width - 50) / 2 : double.infinity,
-                      child: _SocialButton(
-                        icon: Icons.camera_alt_rounded,
-                        label: venue.secondaryInstagramHandle != null ? 'Instagram (Rooftop / Terraza)' : 'Instagram Oficial',
-                        handle: venue.instagramHandle!,
-                        color: const Color(0xFFE1306C),
-                        onTap: () => _launchUrl('https://instagram.com/${venue.instagramHandle!.replaceAll('@', '')}'),
+              // Redes Sociales Oficiales del Lugar (Solo si cuenta con canales verificados)
+              if (venue.instagramHandle != null ||
+                  venue.secondaryInstagramHandle != null ||
+                  venue.facebookUrl != null ||
+                  venue.tikTokHandle != null ||
+                  venue.websiteUrl != null) ...[
+                const SizedBox(height: 20),
+                Text(
+                  'REDES SOCIALES & AMBIENTE EN VIVO',
+                  style: AppTypography.badgeLabel.copyWith(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    if (venue.instagramHandle != null)
+                      SizedBox(
+                        width: venue.secondaryInstagramHandle != null ? (MediaQuery.of(context).size.width - 50) / 2 : double.infinity,
+                        child: _SocialButton(
+                          icon: Icons.camera_alt_rounded,
+                          label: venue.secondaryInstagramHandle != null ? 'Instagram Principal' : 'Instagram Oficial',
+                          handle: venue.instagramHandle!,
+                          color: const Color(0xFFE1306C),
+                          onTap: () => _launchUrl('https://instagram.com/${venue.instagramHandle!.replaceAll('@', '')}'),
+                        ),
                       ),
-                    ),
-                  if (venue.secondaryInstagramHandle != null)
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width - 50) / 2,
-                      child: _SocialButton(
-                        icon: Icons.camera_alt_rounded,
-                        label: venue.secondaryInstagramHandle == '@lapuertadelperreo.dog'
-                            ? 'La Puerta del Perreo'
-                            : (venue.id == 'el_guachi' ? 'Club Principal' : 'Instagram Secundario'),
-                        handle: venue.secondaryInstagramHandle!,
-                        color: const Color(0xFF833AB4),
-                        onTap: () => _launchUrl(venue.secondaryInstagramUrl ?? 'https://instagram.com/${venue.secondaryInstagramHandle!.replaceAll('@', '')}'),
+                    if (venue.secondaryInstagramHandle != null)
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width - 50) / 2,
+                        child: _SocialButton(
+                          icon: Icons.camera_alt_rounded,
+                          label: venue.secondaryInstagramHandle == '@lapuertadelperreo.dog'
+                              ? 'La Puerta del Perreo'
+                              : 'Instagram Secundario',
+                          handle: venue.secondaryInstagramHandle!,
+                          color: const Color(0xFF833AB4),
+                          onTap: () => _launchUrl(venue.secondaryInstagramUrl ?? 'https://instagram.com/${venue.secondaryInstagramHandle!.replaceAll('@', '')}'),
+                        ),
                       ),
-                    ),
-                  if (venue.facebookUrl != null)
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width - 50) / 2,
-                      child: _SocialButton(
-                        icon: Icons.facebook_rounded,
-                        label: 'Facebook Oficial',
-                        handle: venue.facebookHandle ?? 'Facebook',
-                        color: const Color(0xFF1877F2),
-                        onTap: () => _launchUrl(venue.facebookUrl!),
+                    if (venue.facebookUrl != null)
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width - 50) / 2,
+                        child: _SocialButton(
+                          icon: Icons.facebook_rounded,
+                          label: 'Facebook Oficial',
+                          handle: venue.facebookHandle ?? 'Facebook',
+                          color: const Color(0xFF1877F2),
+                          onTap: () => _launchUrl(venue.facebookUrl!),
+                        ),
                       ),
-                    ),
-                  if (venue.tikTokHandle != null)
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width - 50) / 2,
-                      child: _SocialButton(
-                        icon: Icons.music_video_rounded,
-                        label: 'TikTok Oficial',
-                        handle: venue.tikTokHandle!,
-                        color: AppColors.neonCyan,
-                        onTap: () => _launchUrl('https://tiktok.com/@${venue.tikTokHandle!.replaceAll('@', '')}'),
+                    if (venue.tikTokHandle != null)
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width - 50) / 2,
+                        child: _SocialButton(
+                          icon: Icons.music_video_rounded,
+                          label: 'TikTok Oficial',
+                          handle: venue.tikTokHandle!,
+                          color: AppColors.neonCyan,
+                          onTap: () => _launchUrl('https://tiktok.com/@${venue.tikTokHandle!.replaceAll('@', '')}'),
+                        ),
                       ),
-                    ),
-                  if (venue.websiteUrl != null)
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width - 50) / 2,
-                      child: _SocialButton(
-                        icon: Icons.language_rounded,
-                        label: 'Sitio Web Oficial',
-                        handle: venue.websiteUrl!.replaceFirst('https://', '').replaceFirst('http://', '').replaceAll('/', ''),
-                        color: const Color(0xFFF2761E),
-                        onTap: () => _launchUrl(venue.websiteUrl!),
+                    if (venue.websiteUrl != null)
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width - 50) / 2,
+                        child: _SocialButton(
+                          icon: Icons.language_rounded,
+                          label: 'Sitio Web Oficial',
+                          handle: venue.websiteUrl!.replaceFirst('https://', '').replaceFirst('http://', '').replaceAll('/', ''),
+                          color: const Color(0xFFF2761E),
+                          onTap: () => _launchUrl(venue.websiteUrl!),
+                        ),
                       ),
-                    ),
-                ],
-              ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 20),
 
               // Galería Visual / Ambiente del Lugar

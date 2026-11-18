@@ -24,6 +24,8 @@ class VenueEvent {
   final bool isVideoStory; // Indica si proviene de un video reel o video en historia
   final String? sourceFacebookUrl; // Enlace directo a publicación o perfil de Facebook
   final DateTime? expiresAt; // Fecha/hora de expiración estricta del evento
+  final bool isRecurring; // Indica si es una promoción recurrente semanal (ej: Todos los jueves)
+  final int? recurringWeekday; // 1 = Lunes, ..., 7 = Domingo
 
   const VenueEvent({
     required this.id,
@@ -48,20 +50,48 @@ class VenueEvent {
     this.isVideoStory = false,
     this.sourceFacebookUrl,
     this.expiresAt,
+    this.isRecurring = false,
+    this.recurringWeekday,
   });
 
   /// Evalúa dinámicamente si el evento está ocurriendo HOY según DateTime.now()
   bool get isToday {
     if (forcedIsToday != null) return forcedIsToday!;
-    if (eventDate == null) return false;
     final now = DateTime.now();
+    if (isRecurring && recurringWeekday != null) {
+      return now.weekday == recurringWeekday;
+    }
+    if (eventDate == null) return false;
     return eventDate!.year == now.year &&
         eventDate!.month == now.month &&
         eventDate!.day == now.day;
   }
 
+  /// Valida si el evento es futuro pero anunciado con anticipación
+  bool get isUpcoming {
+    if (isRecurring) return false;
+    if (eventDate == null) return false;
+    final now = DateTime.now();
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    return eventDate!.isAfter(startOfToday) && !isToday;
+  }
+
+  /// Badge contextual para la cartelera ("Próximamente", "¡Hoy!", "Recurrente")
+  String get statusBadge {
+    if (isRecurring && recurringWeekday != null) {
+      const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+      final dayName = days[(recurringWeekday! - 1) % 7];
+      return isToday ? '¡Hoy Promo! • Cada $dayName' : 'Recurrente • Cada $dayName';
+    }
+    if (isToday) return '¡Hoy!';
+    if (isUpcoming) return 'Próximamente';
+    if (isExpired) return 'Concluido';
+    return 'Confirmado';
+  }
+
   /// Valida si el evento ya caducó
   bool get isExpired {
+    if (isRecurring) return false;
     final now = DateTime.now();
     if (expiresAt != null) {
       return now.isAfter(expiresAt!);
@@ -113,6 +143,10 @@ class VenueEvent {
       isVideoStory: map['isVideoStory'] ?? false,
       sourceFacebookUrl: map['sourceFacebookUrl'],
       expiresAt: expDate,
+      isRecurring: map['isRecurring'] ?? false,
+      recurringWeekday: map['recurringWeekday'] != null
+          ? int.tryParse(map['recurringWeekday'].toString())
+          : null,
     );
   }
 
@@ -139,6 +173,8 @@ class VenueEvent {
       'isVideoStory': isVideoStory,
       'sourceFacebookUrl': sourceFacebookUrl,
       'expiresAt': expiresAt?.toIso8601String(),
+      'isRecurring': isRecurring,
+      'recurringWeekday': recurringWeekday,
     };
   }
 }

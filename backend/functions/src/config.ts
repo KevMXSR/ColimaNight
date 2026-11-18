@@ -31,7 +31,7 @@ export const CONFIG = {
     { handle: '@dmtrockbar', venueId: 'dmt-rock-bar', name: 'DMT Rock Bar' },
     { handle: '@cerveceriadecolima', venueId: 'estacion-colimita-centro', name: 'Cervecería de Colima' },
     { handle: '@lapuertadelperreo.dog', venueId: 'la-puerta-bar', name: 'La Puerta Bar / Del Perreo' },
-    { handle: '@elguachicolima', secondaryHandle: '@guachirooftop', venueId: 'el-guachi', name: 'El Guachi' },
+    { handle: '@guachirooftop', venueId: 'el-guachi', name: 'El Guachi' },
     { handle: '@almada_cantina.fina', venueId: 'almada-cantina-fina', name: 'Almada Cantina Fina' },
     { handle: '@dospuntoscerveceria', venueId: 'dos-puntos-cerveceria', name: 'Dos Puntos Cervecería' },
     { handle: '@lowclub.col', venueId: 'low-social-club', name: 'Low Social Club' },
@@ -39,6 +39,8 @@ export const CONFIG = {
     { handle: '@la_regional_cantina', venueId: 'la-regional', name: 'La Regional Cantina' },
     { handle: '@mezcal.santo', venueId: 'santo-mezcal', name: 'Santo Mezcal' },
     { handle: '@casa.colima.mezcaleria', venueId: 'casa-colima-mezcaleria', name: 'Casa Colima Mezcalería' },
+    { handle: '@el_taurino_colima', venueId: 'el_taurino', name: 'El Taurino Bar' },
+    { handle: '@lostorosbarrataurina', venueId: 'los_toros_barra_taurina', name: 'Los Toros Barra Taurina' },
   ],
 
   // 7. Modelo de Donativos Comunitarios (Estilo Patreon)

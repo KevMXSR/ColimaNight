@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../providers/auth_provider.dart';
 import '../../services/colima_oauth_service.dart';
@@ -19,6 +20,7 @@ class AuthModal extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
       builder: (_) => AuthModal(onOpenSupporterModal: onOpenSupporterModal),
     );
   }
@@ -103,7 +105,10 @@ class _AuthModalState extends ConsumerState<AuthModal> {
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider);
 
-    return Container(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
+        child: Container(
       padding: EdgeInsets.only(
         top: 20,
         left: 20,
@@ -481,7 +486,9 @@ class _AuthModalState extends ConsumerState<AuthModal> {
           ],
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _socialLoginButton({

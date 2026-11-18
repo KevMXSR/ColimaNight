@@ -1,0 +1,47 @@
+{
+  "costa_carranza": [
+    {
+      "id": "ev_costa_jueves_promo",
+      "title": "Jueves de Tarros & Pinta Artesanal",
+      "description": "2x1 en toda la línea de barril local de Cervecería de la Costa y alitas al carbón.",
+      "specialSchedule": "6:00 PM - 10:00 PM",
+      "promoNote": "2x1 en barril y alitas",
+      "genre": "Rock Clásico / Pop Alternativo / Synth",
+      "isRecurring": true,
+      "recurringWeekday": 4,
+      "dateDisplay": "Cada Jueves • 6:00 PM - 10:00 PM",
+      "sourceInstagramHandle": "@cerveceriadelacosta",
+      "sourceInstagramUrl": "https://www.facebook.com/costacarranzacolima/"
+    }
+  ],
+  "el_guachi": [
+    {
+      "id": "ev_guachi_rooftop_sunset",
+      "title": "Rooftop Sunset & Tech House Session",
+      "description": "Música en vivo en la terraza rooftop con DJs invitados, coctelería y vista panorámica.",
+      "specialSchedule": "A partir de las 8:00 PM",
+      "promoNote": "Cover libre antes de las 22:00",
+      "genre": "Deep House / Melodic Techno / Rooftop Beats",
+      "isRecurring": true,
+      "recurringWeekday": 5,
+      "dateDisplay": "Cada Viernes • 20:00",
+      "sourceInstagramHandle": "@guachirooftop",
+      "sourceInstagramUrl": "https://www.instagram.com/guachirooftop/"
+    }
+  ],
+  "dmt_rock_bar": [
+    {
+      "id": "ev_dmt_saturday_rock",
+      "title": "Noche de Tributo & Rock en Vivo",
+      "description": "Bandas locales en vivo interpretando clásicos de rock en español e inglés en el centro histórico.",
+      "specialSchedule": "9:00 PM - 2:00 AM",
+      "promoNote": "Cubeta nacional en promoción toda la noche",
+      "genre": "Rock en Español / Rock Clásico",
+      "isRecurring": true,
+      "recurringWeekday": 6,
+      "dateDisplay": "Cada Sábado • 21:00",
+      "sourceInstagramHandle": "@dmtrockbar",
+      "sourceInstagramUrl": "https://www.instagram.com/dmtrockbar/"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
 
@@ -63,6 +64,7 @@ class IncidentReportModal extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
       builder: (context) => IncidentReportModal(preselectedVenue: venue),
     );
   }
@@ -171,7 +173,10 @@ class _IncidentReportModalState extends ConsumerState<IncidentReportModal> {
   Widget build(BuildContext context) {
     final venues = ref.watch(mockVenuesProvider);
 
-    return Container(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
+        child: Container(
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
@@ -570,6 +575,8 @@ class _IncidentReportModalState extends ConsumerState<IncidentReportModal> {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

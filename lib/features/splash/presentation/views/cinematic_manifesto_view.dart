@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -246,13 +245,26 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
               ],
             ),
 
-            // 3. Contenido Principal Flotante
+            // 3. Contenido Principal Flotante Responsivo
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final availableHeight = constraints.maxHeight;
+                      final isShortScreen = availableHeight < 640;
+                      return SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: (availableHeight - 32).clamp(0.0, double.infinity),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                     // Barra Superior con Indicadores de Capítulo y Botón Saltar
                     Row(
                       children: [
@@ -333,7 +345,7 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                       ],
                     ),
 
-                    const Spacer(flex: 2),
+                    SizedBox(height: isShortScreen ? 14 : 24),
 
                     // Escena Narrativa con Transición Suave (AnimatedSwitcher)
                     AnimatedSwitcher(
@@ -449,7 +461,7 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                       ),
                     ),
 
-                    const Spacer(flex: 3),
+                    SizedBox(height: isShortScreen ? 14 : 24),
 
                     // Barra Inferior de Navegación y Llamado a la Acción
                     Row(
@@ -476,73 +488,36 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                         else
                           const SizedBox(width: 40),
 
-                        // Indicador interactivo "Toca para continuar"
-                        if (!isLastScene)
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Toca la pantalla para avanzar',
-                                style: AppTypography.caption.copyWith(
-                                  color: Colors.white54,
-                                  fontSize: 11.5,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              const Icon(
-                                Icons.chevron_right_rounded,
-                                size: 16,
-                                color: Colors.white38,
-                              ),
-                            ],
-                          )
-                        else
-                          // Botón Prominente en la Escena Final
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: _enterApp,
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 12),
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.primaryGradient,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.neonViolet.withOpacity(0.65),
-                                      blurRadius: 18,
-                                      spreadRadius: 2,
+                        // Indicador interactivo "Toca para continuar" o Botón Final
+                        if (!isLastScene) ...[
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      'Toca la pantalla para avanzar',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.caption.copyWith(
+                                        color: Colors.white54,
+                                        fontSize: 11.5,
+                                        letterSpacing: 0.5,
+                                      ),
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'ENTRAR A COLIMA NIGHT',
-                                        style: AppTypography.bodyBold.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 13.5,
-                                          letterSpacing: 1.8,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      const Icon(
-                                        Icons.nightlife_rounded,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ],
                                   ),
-                                ),
+                                  const SizedBox(width: 4),
+                                  const Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 16,
+                                    color: Colors.white38,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-
-                        if (!isLastScene)
                           GestureDetector(
                             onTap: _nextScene,
                             child: Container(
@@ -561,6 +536,56 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                               ),
                             ),
                           ),
+                        ] else ...[
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: _enterApp,
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 12),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.neonViolet.withOpacity(0.65),
+                                      blurRadius: 18,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'ENTRAR A COLIMA NIGHT',
+                                            style: AppTypography.bodyBold.copyWith(
+                                              color: Colors.white,
+                                              fontSize: 13.5,
+                                              letterSpacing: 1.8,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.nightlife_rounded,
+                                            size: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
 
@@ -568,10 +593,15 @@ class _CinematicManifestoViewState extends ConsumerState<CinematicManifestoView>
                   ],
                 ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
-    );
-  }
+    ),
+  ),
+],
+),
+),
+);
+}
 }

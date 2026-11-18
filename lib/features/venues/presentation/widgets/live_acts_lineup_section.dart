@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/monetization_config.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/widgets/app_venue_image.dart';
 import '../../domain/models/venue_model.dart';
 import '../providers/venue_providers.dart';
 import 'venue_detail_bottom_sheet.dart';

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColimaNight Studio • Curaduría y Cartelera Oficial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090A10;
+      --surface: #12131D;
+      --surface-elevated: #1A1B29;
+      --surface-hover: #222336;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(0, 229, 255, 0.5);
+      --neon-cyan: #00E5FF;
+      --neon-violet: #BD00FF;
+      --neon-magenta: #FF0055;
+      --neon-amber: #FFB300;
+      --neon-green: #00E676;
+      --text: #F8F9FA;
+      --text-muted: #8E8EA0;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Glow Background */
+    .glow-sphere-1 {
+      position: fixed;
+      top: -160px;
+      left: -160px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(189, 0, 255, 0.15) 0%, rgba(9, 10, 16, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-sphere-2 {
+      position: fixed;
+      bottom: -160px;
+      right: -160px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, rgba(9, 10, 16, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Navigation Header */
+    header {
+      height: 64px;
+      background: rgba(12, 13, 22, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 50;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge h1 {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #FFF 0%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge .tag {
+      background: rgba(189, 0, 255, 0.15);
+      border: 1px solid rgba(189, 0, 255, 0.4);
+      color: var(--neon-violet);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 1px solid var(--border);
+      padding-left: 16px;
+    }
+
+    .kpi-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .kpi-pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .kpi-pill.cyan .dot { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
+    .kpi-pill.violet .dot { background: var(--neon-violet); box-shadow: 0 0 6px var(--neon-violet); }
+    .kpi-pill.green .dot { background: var(--neon-green); box-shadow: 0 0 6px var(--neon-green); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-cyan), #00B0FF);
+      color: #090A10;
+      font-weight: 700;
+      box-shadow: 0 3px 14px rgba(0, 229, 255, 0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 5px 20px rgba(0, 229, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-deploy {
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-magenta));
+      color: #FFF;
+      box-shadow: 0 3px 14px rgba(189, 0, 255, 0.25);
+    }
+
+    .btn-deploy:hover {
+      box-shadow: 0 5px 20px rgba(189, 0, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Main Split Layout */
+    .studio-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Left Sidebar: Master List */
+    .sidebar-list {
+      width: 360px;
+      min-width: 320px;
+      max-width: 400px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(18, 19, 29, 0.95);
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: #FFF;
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 9px 12px 9px 36px;
+      border-radius: 9px;
+      outline: none;
+      transition: border 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--neon-cyan);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .filter-chips::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn.active {
+      background: rgba(0, 229, 255, 0.12);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    .venues-scroll-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Venue List Item */
+    .venue-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.18s ease;
+      position: relative;
+    }
+
+    .venue-item:hover {
+      background: var(--surface-elevated);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .venue-item.selected {
+      background: var(--surface-elevated);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.12);
+    }
+
+    .venue-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .venue-item-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #FFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .venue-badge-count {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .venue-badge-count.has-events {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--neon-cyan);
+    }
+
+    .venue-item-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .venue-item-social {
+      font-size: 11px;
+      color: var(--neon-violet);
+      font-weight: 600;
+    }
+
+    /* Right Workspace: Detail & Editor */
+    .workspace-detail {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px 60px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Selected Venue Header Banner */
+    .venue-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .venue-banner::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-violet));
+    }
+
+    .venue-banner-info h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .venue-banner-meta {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .venue-banner-meta a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .venue-banner-meta a:hover {
+      text-decoration: underline;
+    }
+
+    /* Active Cartelera Grid / Cards */
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title-row h3 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .events-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .event-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .event-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      background: var(--surface-elevated);
+    }
+
+    .event-card-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .event-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .event-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .event-badge.today {
+      background: rgba(189, 0, 255, 0.2);
+      border: 1px solid var(--neon-violet);
+      color: #FFF;
+    }
+
+    .event-badge.rec {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    .event-badge.upcoming {
+      background: rgba(255, 179, 0, 0.15);
+      border: 1px solid var(--neon-amber);
+      color: var(--neon-amber);
+    }
+
+    .event-schedule-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neon-cyan);
+      background: rgba(0, 229, 255, 0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .event-title-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .event-meta-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .event-promo-highlight {
+      font-size: 12px;
+      color: var(--neon-amber);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .event-card-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      cursor: pointer;
+    }
+
+    .event-card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s ease;
+    }
+
+    .event-card-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    .event-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 13px;
+    }
+
+    .icon-btn:hover {
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .icon-btn.delete:hover {
+      background: rgba(255, 0, 85, 0.2);
+      border-color: var(--neon-magenta);
+      color: #FFF;
+    }
+
+    .empty-state-card {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    /* Integrated Editor Form Card */
+    .editor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .editor-card-header h3 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: #FFF;
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      outline: none;
+      transition: border 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--neon-cyan);
+    }
+
+    .type-switcher {
+      display: flex;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .type-switch-btn {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .type-switch-btn.active.spec {
+      background: var(--surface-hover);
+      color: var(--neon-cyan);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+    }
+
+    .type-switch-btn.active.rec {
+      background: var(--surface-hover);
+      color: var(--neon-violet);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(189, 0, 255, 0.3);
+    }
+
+    .chip-selector-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .quick-chip {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .quick-chip:hover {
+      background: var(--surface-hover);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .quick-chip.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    /* Flyer Dropzone & Upload */
+    .flyer-dropzone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      background: var(--surface-elevated);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .flyer-dropzone:hover, .flyer-dropzone.dragover {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 229, 255, 0.04);
+    }
+
+    .flyer-dropzone .dz-icon {
+      font-size: 28px;
+    }
+
+    .flyer-dropzone .dz-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFF;
+    }
+
+    .flyer-dropzone .dz-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .flyer-preview-container {
+      display: none;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .flyer-preview-img {
+      width: 90px;
+      height: 90px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .flyer-preview-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .flyer-preview-details .title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .flyer-preview-details .path {
+      font-size: 11px;
+      color: var(--neon-cyan);
+      word-break: break-all;
+    }
+
+    /* PIN Overlay */
+    .pin-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    .pin-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .pin-box h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .pin-dots {
+      display: flex;
+      gap: 16px;
+      margin: 8px 0;
+    }
+
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .pin-dot.filled {
+      background: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .pin-btn {
+      aspect-ratio: 1;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: #FFF;
+      font-size: 20px;
+      font-weight: 700;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .pin-btn:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pin-btn:active {
+      transform: scale(0.95);
+    }
+
+    .pin-error {
+      color: #FF5566;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 18px;
+    }
+
+    /* Lightbox Modal for Full Image Zoom */
+    .lightbox-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .lightbox-overlay.active {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: #FFF;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--neon-cyan);
+      color: #FFF;
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 229, 255, 0.25);
+      z-index: 300;
+      font-size: 13px;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-sphere-1"></div>
+  <div class="glow-sphere-2"></div>
+
+  <!-- PIN Security Lock Screen -->
+  <div id="pinScreen" class="pin-overlay">
+    <div class="pin-box">
+      <div style="font-size: 32px;">🔒</div>
+      <h2>COLIMANIGHT STUDIO</h2>
+      <p style="font-size: 12px; color: var(--text-muted); text-align: center;">
+        Ingresa el PIN de curaduría para acceder al panel de cartelera oficial.
+      </p>
+      <div class="pin-dots">
+        <div class="pin-dot" id="dot0"></div>
+        <div class="pin-dot" id="dot1"></div>
+        <div class="pin-dot" id="dot2"></div>
+        <div class="pin-dot" id="dot3"></div>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pressPin('1')">1</button>
+        <button class="pin-btn" onclick="pressPin('2')">2</button>
+        <button class="pin-btn" onclick="pressPin('3')">3</button>
+        <button class="pin-btn" onclick="pressPin('4')">4</button>
+        <button class="pin-btn" onclick="pressPin('5')">5</button>
+        <button class="pin-btn" onclick="pressPin('6')">6</button>
+        <button class="pin-btn" onclick="pressPin('7')">7</button>
+        <button class="pin-btn" onclick="pressPin('8')">8</button>
+        <button class="pin-btn" onclick="pressPin('9')">9</button>
+        <button class="pin-btn" onclick="clearPin()">C</button>
+        <button class="pin-btn" onclick="pressPin('0')">0</button>
+        <button class="pin-btn" onclick="backspacePin()">⌫</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="header-left">
+      <div class="logo-badge">
+        <h1>COLIMANIGHT</h1>
+        <span class="tag">Studio Curaduría</span>
+      </div>
+      <div class="header-stats">
+        <div class="kpi-pill cyan">
+          <span class="dot"></span>
+          <span id="statVenuesCount">29 Establecimientos</span>
+        </div>
+        <div class="kpi-pill violet">
+          <span class="dot"></span>
+          <span id="statEventsCount">0 Eventos Activos</span>
+        </div>
+        <div class="kpi-pill green">
+          <span class="dot"></span>
+          <span id="statPromosCount">0 Promos 2x1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="exportDataJson()">
+        💾 Exportar JSON
+      </button>
+      <button class="btn btn-deploy" onclick="triggerDeploy()">
+        ⚡ Desplegar a GitHub Pages
+      </button>
+      <button class="btn btn-primary" onclick="prepareNewEvent()">
+        + Nueva Publicación
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Split Layout (Master List + Detail Workspace) -->
+  <div class="studio-layout">
+    <!-- Left Sidebar: Lista Compacta de Establecimientos -->
+    <aside class="sidebar-list">
+      <div class="sidebar-header">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Buscar antro, zona o @handle..." oninput="filterVenues()">
+        </div>
+        <div class="filter-chips">
+          <button class="chip-btn active" onclick="setFilter('all', this)">Todos (29)</button>
+          <button class="chip-btn" onclick="setFilter('has_events', this)">Con Cartelera</button>
+          <button class="chip-btn" onclick="setFilter('empty', this)">Sin Eventos</button>
+          <button class="chip-btn" onclick="setFilter('recurring', this)">Promos 2x1</button>
+        </div>
+      </div>
+
+      <div class="venues-scroll-list" id="venuesList">
+        <!-- Renderizado dinámico desde app.js -->
+      </div>
+    </aside>
+
+    <!-- Right Workspace: Cartelera Activa y Editor Integrado -->
+    <main class="workspace-detail">
+      <!-- Selected Venue Header Banner -->
+      <div class="venue-banner" id="venueBanner">
+        <div class="venue-banner-info">
+          <h2 id="bannerVenueName">Cervecería de la Costa - Carranza</h2>
+          <div class="venue-banner-meta">
+            <span id="bannerCategory">Taproom & Terraza</span>
+            <span>•</span>
+            <span id="bannerZone">Avenida Venustiano Carranza 2101</span>
+            <span id="bannerDotSocial">•</span>
+            <span id="bannerInstagram">@cerveceriadelacosta</span>
+            <a id="bannerInstagramLink" href="#" target="_blank" rel="noopener">Abrir en Instagram ↗</a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="prepareNewEvent()">+ Agregar Promo</button>
+        </div>
+      </div>
+
+      <!-- Active Cartelera for this venue -->
+      <section>
+        <div class="section-title-row">
+          <h3>📅 Cartelera Activa en este Establecimiento</h3>
+          <span id="venueEventsCountBadge" style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">
+            1 publicación activa
+          </span>
+        </div>
+
+        <div class="events-list-container" id="venueEventsList">
+          <!-- Renderizado dinámico desde app.js -->
+        </div>
+      </section>
+
+      <!-- Integrated Editor Form Card -->
+      <section class="editor-card" id="editorCard">
+        <div class="editor-card-header">
+          <h3 id="formModeTitle">Nueva Publicación para este Local</h3>
+          <span id="formEditingBadge" style="display: none; font-size: 11px; background: rgba(0, 229, 255, 0.15); color: var(--neon-cyan); padding: 3px 8px; border-radius: 6px; font-weight: 700;">
+            MODO EDICIÓN
+          </span>
+        </div>
+
+        <form id="eventForm" onsubmit="saveEvent(event)">
+          <input type="hidden" id="editingEventId" value="">
+
+          <!-- Selector de Local (Por si desea reasignar) -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Establecimiento Sede</label>
+            <select id="venueSelect" class="form-control" required onchange="onVenueSelectChange()">
+              <!-- Poblado dinámicamente -->
+            </select>
+          </div>
+
+          <!-- Tipo de Publicación -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Tipo de Publicación</label>
+            <div class="type-switcher">
+              <button type="button" class="type-switch-btn active spec" id="typeSpecificBtn" onclick="setEventType('specific')">
+                📅 Fecha Específica
+              </button>
+              <button type="button" class="type-switch-btn rec" id="typeRecurringBtn" onclick="setEventType('recurring')">
+                🔄 Promoción Recurrente (Permanente/Semanal)
+              </button>
+            </div>
+          </div>
+
+          <!-- Título del Evento o Noche Temática -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Título del Evento o Promo</label>
+            <input type="text" id="eventTitle" class="form-control" placeholder="Ej: Jueves de Tarros & Pinta Artesanal / Sunset Rooftop" required>
+            <div class="chip-selector-row" style="margin-top: 6px;">
+              <span class="quick-chip" onclick="quickFillTitle('Sunset Session & Mixología')">Sunset Session</span>
+              <span class="quick-chip" onclick="quickFillTitle('Viernes de Perreo & Hits')">Viernes Perreo</span>
+              <span class="quick-chip" onclick="quickFillTitle('2x1 en Cervezas Artesanales')">2x1 Cerveza</span>
+              <span class="quick-chip" onclick="quickFillTitle('Noche de Rock en Vivo')">Rock en Vivo</span>
+            </div>
+          </div>
+
+          <!-- Día / Fecha -->
+          <div id="specificDateFields" style="margin-bottom: 16px;">
+            <div class="form-group">
+              <label>Fecha y Hora de Inicio</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="date" id="eventDate" class="form-control">
+                <input type="time" id="eventTime" class="form-control" value="21:00">
+              </div>
+              <div class="chip-selector-row" style="margin-top: 6px;">
+                <span class="quick-chip" onclick="setQuickDate('today')">Hoy</span>
+                <span class="quick-chip" onclick="setQuickDate('thursday')">Jueves</span>
+                <span class="quick-chip" onclick="setQuickDate('friday')">Viernes</span>
+                <span class="quick-chip" onclick="setQuickDate('saturday')">Sábado</span>
+              </div>
+              <p style="font-size: 11px; color: var(--neon-cyan); margin-top: 6px;">
+                ⏰ Expiración nocturna automática: 06:00 AM del día posterior.
+              </p>
+            </div>
+          </div>
+
+          <div id="recurringDateFields" style="margin-bottom: 16px; display: none;">
+            <div class="form-group">
+              <label>Día de la Semana en que Aplica</label>
+              <select id="recurringWeekday" class="form-control">
+                <option value="4">Todos los Jueves</option>
+                <option value="5">Todos los Viernes</option>
+                <option value="6">Todos los Sábados</option>
+                <option value="7">Todos los Domingos</option>
+                <option value="3">Todos los Miércoles</option>
+                <option value="2">Todos los Martes</option>
+                <option value="1">Todos los Lunes</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- NUEVO APARTADO DE HORARIO DE LA PROMOCIÓN -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>⏰ Horario en que Aplica la Promo / Evento</label>
+            <input type="text" id="eventSchedule" class="form-control" placeholder="Ej: 7:00 PM - 11:00 PM / A partir de las 8:00 PM / Todo el día">
+            <div class="chip-selector-row" style="margin-top: 6px;">
+              <span class="quick-chip" onclick="quickFillSchedule('Todo el día')">Todo el día</span>
+              <span class="quick-chip" onclick="quickFillSchedule('6:00 PM - 10:00 PM')">6:00 PM - 10:00 PM</span>
+              <span class="quick-chip" onclick="quickFillSchedule('8:00 PM - 12:00 AM')">8:00 PM - 12:00 AM</span>
+              <span class="quick-chip" onclick="quickFillSchedule('Antes de las 11:00 PM')">Antes de las 11:00 PM</span>
+              <span class="quick-chip" onclick="quickFillSchedule('A partir de las 9:00 PM')">A partir de las 9:00 PM</span>
+              <span class="quick-chip" onclick="quickFillSchedule('Hasta agotar existencias')">Hasta agotar existencias</span>
+            </div>
+          </div>
+
+          <!-- DJ / Artista y Cover -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div class="form-group">
+              <label>DJ / Artista / Género</label>
+              <input type="text" id="artistOrDj" class="form-control" placeholder="Ej: DJ Residente / Rock Clásico">
+            </div>
+            <div class="form-group">
+              <label>Cover / Entrada</label>
+              <input type="text" id="coverPrice" class="form-control" placeholder="Ej: Sin Cover / $100 MXN">
+            </div>
+          </div>
+
+          <!-- Promoción Destacada -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>Nota de la Promoción (2x1, Descuento, etc.)</label>
+            <input type="text" id="promoNote" class="form-control" placeholder="Ej: 2x1 en mixología y cubetazo 5x4 antes de las 11:00 PM">
+          </div>
+
+          <!-- NUEVO APARTADO DE CARGA DE FLYER / CAPTURAS LOCALES -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label>📸 Flyer Oficial o Captura de Pantalla (Desde este dispositivo o Ctrl+V)</label>
+
+            <!-- Dropzone interactiva con soporte para arrastrar, clic y Ctrl+V -->
+            <div class="flyer-dropzone" id="flyerDropzone" onclick="triggerFilePicker()">
+              <div class="dz-icon">🖼️</div>
+              <div class="dz-text">Haz clic para subir captura / flyer o arrastra aquí</div>
+              <div class="dz-sub">
+                💡 Consejo Pro: Puedes tomar captura con <b>Win+Shift+S</b> y presionar <b>Ctrl+V</b> directamente en la pantalla.
+              </div>
+              <input type="file" id="flyerFileInput" accept="image/png,image/jpeg,image/webp,image/jpg" style="display:none;" onchange="handleFileSelect(event)">
+            </div>
+
+            <!-- Previsualización del archivo cargado -->
+            <div class="flyer-preview-container" id="flyerPreviewContainer">
+              <img id="flyerPreviewImg" class="flyer-preview-img" src="" alt="Vista previa" onclick="openLightbox(this.src)">
+              <div class="flyer-preview-details">
+                <span class="title" id="flyerPreviewTitle">Flyer cargado con éxito</span>
+                <span class="path" id="flyerPreviewAssetPath">assets/images/venues/flyers/...</span>
+                <span style="font-size: 11px; color: var(--neon-green);">✓ Guardado en assets para compilación oficial</span>
+              </div>
+              <button type="button" class="icon-btn delete" onclick="clearUploadedFlyer()" title="Quitar imagen">✕</button>
+            </div>
+
+            <input type="hidden" id="flyerUploadedPath" value="">
+            <input type="text" id="flyerUrl" class="form-control" style="margin-top: 8px; font-size: 12px;" placeholder="Opcional: URL externa directa de imagen si no usas archivo local">
+          </div>
+
+          <!-- Enlace a Instagram del bar -->
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label>Enlace / Atribución Oficial (Instagram o Facebook)</label>
+            <input type="text" id="sourceInstagramUrl" class="form-control" placeholder="https://www.instagram.com/p/... o perfil del local">
+          </div>
+
+          <!-- Botones de Acción -->
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpiar / Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitForm">✓ Guardar y Publicar</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- Lightbox Modal for Zooming Images -->
+  <div class="lightbox-overlay" id="lightboxModal" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="Zoom Flyer" onclick="event.stopPropagation()">
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span id="toastIcon">✓</span>
+    <span id="toastMessage">Operación realizada con éxito</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

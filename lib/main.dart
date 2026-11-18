@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +12,16 @@ void main() {
   // Inicializa el optimizador de costos de Firestore (Spark 0-cost guard)
   FirestoreCostOptimizer.instance.initialize();
 
-  // Bloqueo de orientación vertical y barra de estado inmersiva para nightlife
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  // En plataformas móviles bloquea orientación vertical para experiencia inmersiva nightlife;
+  // en Web y Escritorio permite adaptación libre al tamaño de ventana.
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -41,6 +47,7 @@ class ColimaNightApp extends StatelessWidget {
     return MaterialApp(
       title: 'ColimaNight',
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const AppScrollBehavior(),
       theme: AppTheme.darkTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,

@@ -171,12 +171,11 @@ class _SplashLoadingViewState extends ConsumerState<SplashLoadingView>
 
     return Scaffold(
       backgroundColor: const Color(0xFF06070B),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: _navigateToNextScreen,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
+      // Visualización forzada: Se omite GestureDetector con onTap para que el video
+      // oficial de arranque se reproduzca en su totalidad sin interrupciones.
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
           // Capa 1: Video Oficial a Pantalla Completa (Full Cover) o Fallback Neón
           if (isPlayingVideo)
             SizedBox.expand(
@@ -359,7 +358,6 @@ class _SplashLoadingViewState extends ConsumerState<SplashLoadingView>
           ),
         ],
       ),
-    ),
-  );
+    );
   }
 }

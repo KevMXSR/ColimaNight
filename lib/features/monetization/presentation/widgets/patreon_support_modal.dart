@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/monetization_config.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/widgets/glass_container.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 
 class PatreonSupportModal extends ConsumerWidget {
@@ -14,6 +14,7 @@ class PatreonSupportModal extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
       builder: (_) => const PatreonSupportModal(),
     );
   }
@@ -63,7 +64,10 @@ class PatreonSupportModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
+        child: Container(
       padding: EdgeInsets.only(
         top: 20,
         left: 20,
@@ -200,11 +204,14 @@ class PatreonSupportModal extends ConsumerWidget {
                   children: [
                     const Icon(Icons.account_balance_wallet_rounded, color: Color(0xFF0079C1), size: 18),
                     const SizedBox(width: 8),
-                    Text(
-                      'Donar monto libre en PayPal (paypal.me/GameKevMXSR)',
-                      style: AppTypography.bodyBold.copyWith(
-                        color: Colors.white,
-                        fontSize: 12.5,
+                    Flexible(
+                      child: Text(
+                        'Donar monto libre en PayPal (paypal.me/GameKevMXSR)',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.bodyBold.copyWith(
+                          color: Colors.white,
+                          fontSize: 12.5,
+                        ),
                       ),
                     ),
                   ],
@@ -220,11 +227,14 @@ class PatreonSupportModal extends ConsumerWidget {
               children: [
                 const Icon(Icons.celebration_rounded, color: AppColors.neonMagenta, size: 18),
                 const SizedBox(width: 8),
-                Text(
-                  'ORGANIZADORES, BARES & HACIENDAS',
-                  style: AppTypography.badgeLabel.copyWith(
-                    color: AppColors.neonMagenta,
-                    letterSpacing: 0.8,
+                Flexible(
+                  child: Text(
+                    'ORGANIZADORES, BARES & HACIENDAS',
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.badgeLabel.copyWith(
+                      color: AppColors.neonMagenta,
+                      letterSpacing: 0.8,
+                    ),
                   ),
                 ),
               ],
@@ -280,6 +290,8 @@ class PatreonSupportModal extends ConsumerWidget {
                       icon: const Icon(Icons.email_outlined, color: AppColors.neonCyan, size: 20),
                       label: Text(
                         'Escribir a Soporte (${MonetizationConfig.contactEmail})',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                         style: AppTypography.bodyBold.copyWith(
                           color: Colors.white,
                           fontSize: 12,
@@ -293,7 +305,9 @@ class PatreonSupportModal extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }
 
@@ -348,7 +362,13 @@ class _TierCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(title, style: AppTypography.bodyBold.copyWith(fontSize: 15)),
+                      Flexible(
+                        child: Text(
+                          title,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodyBold.copyWith(fontSize: 15),
+                        ),
+                      ),
                       if (isFeatured) ...[
                         const SizedBox(width: 6),
                         Container(

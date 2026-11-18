@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../../../../core/widgets/dynamic_brand_background.dart';
 import '../../domain/models/venue_model.dart';
@@ -71,84 +72,96 @@ class DiscoveryFeedView extends ConsumerWidget {
             },
             color: AppColors.neonCyan,
             backgroundColor: AppColors.surfaceElevated,
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-              slivers: [
-            // Header Principal con Logo Neón y Status Nocturno
+            child: ResponsiveContentContainer(
+              maxWidth: ResponsiveBreakpoints.maxFeedWidth,
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                slivers: [
+            // Header Principal con Logo Neón y Status Nocturno Responsivo
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isExtraSmall = constraints.maxWidth < 360;
+                    final isCompact = constraints.maxWidth < 420;
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'COLIMA',
-                              style: AppTypography.heroDisplay.copyWith(
-                                fontSize: 24,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'NIGHT',
-                              style: AppTypography.heroDisplay.copyWith(
-                                fontSize: 24,
-                                color: AppColors.neonCyan,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.neonRedAlert,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.neonRedAlert,
-                                    blurRadius: 6,
-                                    spreadRadius: 2,
+                        // Columna de Marca
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'COLIMA',
+                                    style: AppTypography.heroDisplay.copyWith(
+                                      fontSize: isExtraSmall ? 20 : 24,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'NIGHT',
+                                    style: AppTypography.heroDisplay.copyWith(
+                                      fontSize: isExtraSmall ? 20 : 24,
+                                      color: AppColors.neonCyan,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.neonRedAlert,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.neonRedAlert,
+                                          blurRadius: 6,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () => ExpansionRoadmapModal.show(context),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Colima & VDA',
-                                style: AppTypography.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: AppColors.neonCyan.withOpacity(0.12),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: AppColors.neonCyan.withOpacity(0.4)),
-                                ),
-                                child: const Row(
+                              GestureDetector(
+                                onTap: () => ExpansionRoadmapModal.show(context),
+                                child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.waves_rounded, size: 10, color: AppColors.neonCyan),
-                                    SizedBox(width: 3),
                                     Text(
-                                      'Próx: Tecomán & Mzo',
-                                      style: TextStyle(
-                                        fontSize: 9.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.neonCyan,
+                                      'Colima & VDA',
+                                      style: AppTypography.caption.copyWith(
+                                        color: AppColors.textSecondary,
+                                        fontSize: isExtraSmall ? 10.5 : 12,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.neonCyan.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: AppColors.neonCyan.withOpacity(0.4)),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.waves_rounded, size: 9, color: AppColors.neonCyan),
+                                          const SizedBox(width: 3),
+                                          Text(
+                                            isExtraSmall ? 'Próx...' : 'Próx: Tecomán & Mzo',
+                                            style: const TextStyle(
+                                              fontSize: 9.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.neonCyan,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -157,162 +170,176 @@ class DiscoveryFeedView extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                        const SizedBox(width: 8),
 
-                    // Acciones Rápidas del Header (Manifiesto, Apoyo Patreon, Perfil/Auth, Mapa)
-                    Row(
-                      children: [
-                        // Botón Manifiesto Cinematográfico (Historia & Dedicatoria del Creador)
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                transitionDuration: const Duration(milliseconds: 500),
-                                pageBuilder: (context, animation, secondaryAnimation) =>
-                                    const CinematicManifestoView(isManualReplay: true),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  return FadeTransition(
-                                    opacity: CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeInOut,
+                        // Acciones Rápidas del Header
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Botón Manifiesto Cinematográfico
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(milliseconds: 500),
+                                    pageBuilder: (context, animation, secondaryAnimation) =>
+                                        const CinematicManifestoView(isManualReplay: true),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeInOut,
+                                        ),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isExtraSmall ? 7 : 10,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonViolet.withOpacity(0.18),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: AppColors.neonViolet.withOpacity(0.55)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.neonViolet.withOpacity(0.25),
+                                      blurRadius: 8,
                                     ),
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.neonViolet.withOpacity(0.18),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.neonViolet.withOpacity(0.55)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.neonViolet.withOpacity(0.25),
-                                  blurRadius: 8,
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.auto_stories_rounded, color: AppColors.neonCyan, size: 16),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-
-                        // Botón Apoyo Comunitario / Patreon
-                        GestureDetector(
-                          onTap: () => PatreonSupportModal.show(context),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.neonAmber.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.neonAmber.withOpacity(0.5)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.neonAmber.withOpacity(0.2),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.favorite_rounded, color: AppColors.neonAmber, size: 16),
-                                if (user.isSupporter) ...[
-                                  const SizedBox(width: 4),
-                                  const Icon(Icons.star_rounded, color: AppColors.neonAmber, size: 14),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-
-                        // Botón de Perfil / Autenticación Social (Invitado vs Conectado)
-                        GestureDetector(
-                          onTap: () => AuthModal.show(
-                            context,
-                            onOpenSupporterModal: () => PatreonSupportModal.show(context),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: user.isGuest
-                                  ? AppColors.surfaceElevated.withOpacity(0.8)
-                                  : AppColors.neonViolet.withOpacity(0.25),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: user.isGuest ? AppColors.glassBorder : AppColors.neonViolet,
+                                child: const Icon(Icons.auto_stories_rounded, color: AppColors.neonCyan, size: 16),
                               ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  user.isGuest ? Icons.person_outline_rounded : Icons.person_rounded,
-                                  color: user.isGuest ? AppColors.textSecondary : AppColors.neonCyan,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 5),
-                                ConstrainedBox(
-                                  constraints: const BoxConstraints(maxWidth: 72),
-                                  child: Text(
-                                    user.isGuest ? 'Invitado' : user.displayName.split(' ').first,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTypography.badgeLabel.copyWith(
-                                      color: user.isGuest ? AppColors.textSecondary : Colors.white,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
+                            const SizedBox(width: 5),
 
-                        // Botón para saltar al mapa completo
-                        GestureDetector(
-                          onTap: () {
-                            final target = hotVenue ??
-                                (filteredVenues.isNotEmpty ? filteredVenues.first : allVenues.first);
-                            _navigateToDetail(context, ref, target);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.neonViolet.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.neonViolet.withOpacity(0.5)),
+                            // Botón Apoyo Comunitario / Patreon
+                            GestureDetector(
+                              onTap: () => PatreonSupportModal.show(context),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isExtraSmall ? 7 : 10,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonAmber.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: AppColors.neonAmber.withOpacity(0.5)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.neonAmber.withOpacity(0.2),
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.favorite_rounded, color: AppColors.neonAmber, size: 16),
+                                    if (user.isSupporter && !isExtraSmall) ...[
+                                      const SizedBox(width: 3),
+                                      const Icon(Icons.star_rounded, color: AppColors.neonAmber, size: 14),
+                                    ],
+                                  ],
+                                ),
+                              ),
                             ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.map_outlined, color: AppColors.neonCyan, size: 16),
-                                const SizedBox(width: 5),
-                                Text(
-                                  'Mapa',
-                                  style: AppTypography.bodyBold.copyWith(
-                                    color: AppColors.neonCyan,
-                                    fontSize: 12,
+                            const SizedBox(width: 5),
+
+                            // Botón de Perfil / Autenticación Social
+                            GestureDetector(
+                              onTap: () => AuthModal.show(
+                                context,
+                                onOpenSupporterModal: () => PatreonSupportModal.show(context),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isExtraSmall ? 7 : 9,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: user.isGuest
+                                      ? AppColors.surfaceElevated.withOpacity(0.8)
+                                      : AppColors.neonViolet.withOpacity(0.25),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: user.isGuest ? AppColors.glassBorder : AppColors.neonViolet,
                                   ),
                                 ),
-                              ],
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      user.isGuest ? Icons.person_outline_rounded : Icons.person_rounded,
+                                      color: user.isGuest ? AppColors.textSecondary : AppColors.neonCyan,
+                                      size: 16,
+                                    ),
+                                    if (!isCompact) ...[
+                                      const SizedBox(width: 4),
+                                      ConstrainedBox(
+                                        constraints: const BoxConstraints(maxWidth: 64),
+                                        child: Text(
+                                          user.isGuest ? 'Invitado' : user.displayName.split(' ').first,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTypography.badgeLabel.copyWith(
+                                            color: user.isGuest ? AppColors.textSecondary : Colors.white,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 5),
+
+                            // Botón para saltar al mapa completo
+                            GestureDetector(
+                              onTap: () {
+                                final target = hotVenue ??
+                                    (filteredVenues.isNotEmpty ? filteredVenues.first : allVenues.first);
+                                _navigateToDetail(context, ref, target);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isCompact ? 9 : 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.neonViolet.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: AppColors.neonViolet.withOpacity(0.5)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.map_outlined, color: AppColors.neonCyan, size: 16),
+                                    if (!isCompact) ...[
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Mapa',
+                                        style: AppTypography.bodyBold.copyWith(
+                                          color: AppColors.neonCyan,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -640,6 +667,7 @@ class DiscoveryFeedView extends ConsumerWidget {
       ),
     ),
   ),
+),
 );
 }
 }

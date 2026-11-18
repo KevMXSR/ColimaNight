@@ -226,16 +226,14 @@ void main() {
       expect(laPuerta.facebookUrl, contains('barlapuertacolima'));
     });
 
-    test('El Guachi correctly associates @guachirooftop as secondary rooftop handle on Ignacio Sandoval', () {
+    test('El Guachi correctly associates @guachirooftop as official handle on Ignacio Sandoval', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
       final guachi = venues.firstWhere((v) => v.id == 'el_guachi');
 
-      expect(guachi.instagramHandle, equals('@elguachicolima'));
-      expect(guachi.secondaryInstagramHandle, equals('@guachirooftop'));
-      expect(guachi.secondaryInstagramUrl, equals('https://www.instagram.com/guachirooftop/'));
+      expect(guachi.instagramHandle, equals('@guachirooftop'));
       expect(guachi.zone, contains('Ignacio Sandoval 1943'));
     });
 

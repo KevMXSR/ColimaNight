@@ -64,42 +64,103 @@ class VenueCard extends StatelessWidget {
                   ),
                 ),
 
-                // Badge de Telemetría en Vivo y Aforo en esquina superior derecha
+                // Fila Superior Unificada y Responsiva (Categoría, Horario, Presencia y Aforo sin colisiones)
                 Positioned(
                   top: 12,
+                  left: 12,
                   right: 12,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (scheduleStatus.isOpenNow)
-                        NeonBadge.livePresence(venue.livePresence)
-                      else
-                        Container(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isNarrow = constraints.maxWidth < 360;
+
+                      Widget buildCategoryBadge() {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.65),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: scheduleStatus.isOpenNow ? AppColors.glassBorder : Colors.white24,
+                            ),
+                          ),
+                          child: Text(
+                            venue.category.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.badgeLabel.copyWith(
+                              color: scheduleStatus.isOpenNow ? AppColors.neonCyan : Colors.white70,
+                              fontSize: 10,
+                            ),
+                          ),
+                        );
+                      }
+
+                      Widget buildScheduleBadge() {
+                        return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: scheduleStatus.badgeType.backgroundColor,
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: Colors.white24),
+                            border: Border.all(
+                              color: scheduleStatus.badgeType.borderColor,
+                            ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.bedtime_rounded, size: 11, color: Colors.white60),
-                              SizedBox(width: 4),
-                              Text(
-                                'Inactivo',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                              Icon(
+                                scheduleStatus.badgeType.icon,
+                                size: scheduleStatus.isOpenNow ? 6 : 10,
+                                color: scheduleStatus.badgeType.color,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  scheduleStatus.badgeLabel,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: scheduleStatus.badgeType.color,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      const SizedBox(width: 6),
-                      venue.securityStatus == 'active_alert'
-                          ? Container(
+                        );
+                      }
+
+                      List<Widget> buildPresenceBadges() {
+                        return [
+                          if (scheduleStatus.isOpenNow)
+                            NeonBadge.livePresence(venue.livePresence)
+                          else
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.white24),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.bedtime_rounded, size: 11, color: Colors.white60),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Inactivo',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (venue.securityStatus == 'active_alert')
+                            Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
                                 color: AppColors.neonRedAlert,
@@ -117,81 +178,67 @@ class VenueCard extends StatelessWidget {
                                 ],
                               ),
                             )
-                          : (scheduleStatus.isOpenNow
-                              ? NeonBadge.capacity(venue.capacityPercent)
-                              : Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.7),
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(color: Colors.white24),
-                                  ),
-                                  child: const Text(
-                                    '0% Aforo',
-                                    style: TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                )),
-                    ],
-                  ),
-                ),
-
-                // Chip de Categoría & Estatus de apertura en esquina superior izquierda
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.65),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: scheduleStatus.isOpenNow ? AppColors.glassBorder : Colors.white24),
-                        ),
-                        child: Text(
-                          venue.category.toUpperCase(),
-                          style: AppTypography.badgeLabel.copyWith(
-                            color: scheduleStatus.isOpenNow ? AppColors.neonCyan : Colors.white70,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: scheduleStatus.badgeType.backgroundColor,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: scheduleStatus.badgeType.borderColor,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              scheduleStatus.badgeType.icon,
-                              size: scheduleStatus.isOpenNow ? 6 : 10,
-                              color: scheduleStatus.badgeType.color,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              scheduleStatus.badgeLabel,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: scheduleStatus.badgeType.color,
+                          else if (scheduleStatus.isOpenNow)
+                            NeonBadge.capacity(venue.capacityPercent)
+                          else
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.white24),
+                              ),
+                              child: const Text(
+                                '0% Aforo',
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
+                        ];
+                      }
+
+                      if (isNarrow) {
+                        return Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            buildCategoryBadge(),
+                            buildScheduleBadge(),
+                            ...buildPresenceBadges(),
                           ],
-                        ),
-                      ),
-                    ],
+                        );
+                      }
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                buildCategoryBadge(),
+                                buildScheduleBadge(),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Wrap(
+                            alignment: WrapAlignment.end,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: buildPresenceBadges(),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
 
@@ -325,14 +372,16 @@ class VenueCard extends StatelessWidget {
                               children: [
                                 const Icon(Icons.event_note_rounded, size: 12, color: AppColors.neonViolet),
                                 const SizedBox(width: 4),
-                                Text(
-                                  venue.upcomingEvents.first.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                Flexible(
+                                  child: Text(
+                                    venue.upcomingEvents.first.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],

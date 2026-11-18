@@ -1,6 +1,7 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/venue_model.dart';
-import '../../domain/utils/event_date_helper.dart';
 
 enum VenueFilterChip {
   all('Todos'),
@@ -48,11 +49,7 @@ final List<VenueModel> _initialVenues = [
     parkingDetails: 'Estacionamiento sobre Ignacio Sandoval',
     latitude: 19.263319260681573,
     longitude: -103.70427827536956,
-    instagramHandle: '@elguachicolima',
-    secondaryInstagramHandle: '@guachirooftop',
-    secondaryInstagramUrl: 'https://www.instagram.com/guachirooftop/',
-    tikTokHandle: '@elguachicolima',
-    facebookUrl: 'https://facebook.com/elguachicolima',
+    instagramHandle: '@guachirooftop',
     vibeGenre: 'Perreo / Tech-House / Pop Latino',
     schedule: 'Rooftop: 6:00 PM - 2:00 AM; Club: 9:30 PM - 5:30 AM',
     estimatedMinutes: 6,
@@ -615,6 +612,7 @@ final List<VenueModel> _initialVenues = [
     parkingDetails: 'Sin estacionamiento',
     latitude: 19.241001022989938,
     longitude: -103.72426068358524,
+    instagramHandle: '@el_taurino_colima',
     vibeGenre: 'Cantina / Regional Mexicano / Tradición',
     schedule: 'Martes a Domingo: 2:00 PM - 12:00 AM (Lunes cerrado)',
     estimatedMinutes: 5,
@@ -780,6 +778,7 @@ final List<VenueModel> _initialVenues = [
     parkingDetails: 'Estacionamiento sobre calle Santos Degollado',
     latitude: 19.24266787069572,
     longitude: -103.722301619548,
+    instagramHandle: '@lostorosbarrataurina',
     vibeGenre: 'Cantina / Ranchero / Cerveza Fría',
     schedule: 'Jueves a Sábado: 3:00 PM - 1:00 AM',
     estimatedMinutes: 5,
@@ -1154,15 +1153,47 @@ final List<VenueModel> _initialVenues = [
 ];
 
 class VenuesNotifier extends StateNotifier<List<VenueModel>> {
-  VenuesNotifier() : super(_initialVenues);
+  VenuesNotifier() : super(_initialVenues) {
+    _loadCuratedEvents();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  /// Carga de forma asíncrona la cartelera oficial curada desde assets/data/curated_events.json
+  Future<void> _loadCuratedEvents() async {
+    try {
+      final raw = await rootBundle.loadString('assets/data/curated_events.json');
+      if (raw.trim().isEmpty || raw.trim() == '{}') return;
+      final Map<String, dynamic> data = jsonDecode(raw);
+
+      state = state.map((venue) {
+        if (data.containsKey(venue.id)) {
+          final listRaw = data[venue.id];
+          if (listRaw is List && listRaw.isNotEmpty) {
+            final events = listRaw
+                .map((e) => VenueEvent.fromMap(
+                      Map<String, dynamic>.from(e as Map),
+                      e['id']?.toString() ?? 'ev_${venue.id}',
+                    ))
+                .where((e) => !e.isExpired)
+                .toList();
+
+            return venue.copyWith(upcomingEvents: events);
+          }
+        }
+        return venue;
+      }).toList();
+    } catch (_) {
+      // Ignorar silenciosamente si no hay assets/bundle en pruebas unitarias
+    }
+  }
 
   /// Refresca los establecimientos y eventos bajo demanda (ej. Pull-to-Refresh)
   Future<void> refresh() async {
     _isLoading = true;
     await Future.delayed(const Duration(milliseconds: 150));
+    await _loadCuratedEvents();
     state = List.from(state);
     _isLoading = false;
   }
@@ -1345,8 +1376,12 @@ final weeklyEventsProvider = Provider<List<ConsolidatedEventItem>>((ref) {
 
   for (final venue in venues) {
     for (final event in venue.upcomingEvents) {
-      // Excluir eventos cuya fecha ya haya pasado en días anteriores
-      if (event.eventDate != null && event.eventDate!.isBefore(startOfToday)) {
+      // Excluir eventos caducados (las promociones recurrentes nunca caducan)
+      if (event.isExpired) {
+        continue;
+      }
+      // Para eventos puntuales, excluir si su fecha ya concluyó en días anteriores
+      if (!event.isRecurring && event.eventDate != null && event.eventDate!.isBefore(startOfToday) && !event.isToday) {
         continue;
       }
       items.add(ConsolidatedEventItem(event: event, venue: venue));

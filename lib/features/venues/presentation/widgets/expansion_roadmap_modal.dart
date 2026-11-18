@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/config/monetization_config.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/responsive_breakpoints.dart';
 
 /// Modal informativo de la Hoja de Ruta de Expansión de Colima Night hacia
 /// Tecomán y Manzanillo. Brinda visibilidad del crecimiento futuro de la app
@@ -14,13 +15,17 @@ class ExpansionRoadmapModal extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
       builder: (_) => const ExpansionRoadmapModal(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: ResponsiveBreakpoints.maxModalWidth),
+        child: Container(
       padding: EdgeInsets.only(
         top: 20,
         left: 20,
@@ -172,7 +177,9 @@ class ExpansionRoadmapModal extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _buildPhaseCard({
