@@ -107,6 +107,8 @@ class VenueLocation {
           musicGenre: 'Indie Rock, Tropical & House',
           activePromotion: 'Pintas Costera & Marejada 2x1 antes de las 9:00 PM',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -121,6 +123,8 @@ class VenueLocation {
           musicGenre: 'Electro Pop & Sunset Beats',
           activePromotion: 'Jarras de Cerveza Artesanal y Hamburguesas en promo',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -135,6 +139,8 @@ class VenueLocation {
           musicGenre: 'Rock Clásico & Funk',
           activePromotion: 'Degustación de 4 estilos craft por \$140',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -149,6 +155,8 @@ class VenueLocation {
           musicGenre: 'Crossover, Rock en Español & Pop',
           activePromotion: 'Cubetas artesanales con alitas en descuento',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -163,6 +171,8 @@ class VenueLocation {
           musicGenre: 'DJ Set en Vivo & Nu-Disco',
           activePromotion: 'Lanzamiento de edición especial de barril',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -177,6 +187,8 @@ class VenueLocation {
           musicGenre: 'DJ Set en Vivo & Nu-Disco',
           activePromotion: 'Pintas artesanales y cocina al carbón',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -191,6 +203,8 @@ class VenueLocation {
           musicGenre: 'Indie & Acoustic Sessions',
           activePromotion: 'Pintas seleccionadas a precio especial',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -205,6 +219,8 @@ class VenueLocation {
           musicGenre: 'Acoustic & Chill Beats',
           activePromotion: 'Happy hour en cervezas artesanales',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -219,6 +235,8 @@ class VenueLocation {
           musicGenre: 'Rock & Pop Alternativo',
           activePromotion: '2x1 en botanas al pedir jarra cervecera',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -233,6 +251,8 @@ class VenueLocation {
           musicGenre: 'Deep House & Sunset Grooves',
           activePromotion: 'Tasting flights y cócteles de ginebra artesanal',
           instagramHandle: 'cerveceriadelacosta',
+          facebookPageId: 'CerveceriadelaCosta',
+          tiktokHandle: 'cerveceriadelacosta',
           // Sin reservacion de mesa
         ),
 
@@ -251,7 +271,8 @@ class VenueLocation {
           musicGenre: 'Jazz, Funk & Cumbia Fusión',
           activePromotion: 'Colimita, Páramo y Ticús de barril con tapas locales',
           instagramHandle: 'cerveceriadecolima',
-          facebookPageId: 'CerveceriaDeColima',
+          facebookPageId: 'CerveceriadeColima',
+          tiktokHandle: 'cerveceriadecolima__',
           // Sin reservacion de mesa
         ),
         const VenueLocation(
@@ -266,6 +287,8 @@ class VenueLocation {
           musicGenre: 'Indie Pop & Tropical Beats',
           activePromotion: 'Tardes de cerveza y maridaje de autor',
           instagramHandle: 'cerveceriadecolima',
+          facebookPageId: 'CerveceriadeColima',
+          tiktokHandle: 'cerveceriadecolima__',
           // Sin reservacion de mesa
         ),
 
@@ -285,7 +308,8 @@ class VenueLocation {
           musicGenre: 'Banda, Regional Mexicano & Pop Latino',
           activePromotion: 'Botana caliente de mariscos en consumo de bebidas',
           geofenceRadiusMeters: ColimaGeoConstants.proofOfProximityRadiusMeters,
-          instagramHandle: 'guachirooftop',
+          instagramHandle: 'elguachicruderia',
+          facebookPageId: '100083754547876',
           whatsappNumber: '+523121301010',
         ),
         const VenueLocation(
@@ -301,6 +325,8 @@ class VenueLocation {
           activePromotion: 'Tequilas y Mezcales premium al 3x2 antes de las 10 PM',
           geofenceRadiusMeters: ColimaGeoConstants.proofOfProximityRadiusMeters,
           instagramHandle: 'almada_cantina.fina',
+          facebookPageId: '61554656578145',
+          tiktokHandle: 'almada.cantina.fina',
           whatsappNumber: '+523121302020',
         ),
         const VenueLocation(
@@ -315,6 +341,7 @@ class VenueLocation {
           musicGenre: 'Música Variada, Cumbia & Rock en Español',
           activePromotion: 'Cerveza de media nacional con botana tradicional',
           instagramHandle: 'el_gustito_ignacio_sandoval',
+          facebookPageId: 'elgustitoignaciosandoval',
           whatsappNumber: '+523121303030',
         ),
 
@@ -333,6 +360,8 @@ class VenueLocation {
           musicGenre: 'Classic Rock, Hard Rock & Heavy Metal en Vivo',
           activePromotion: 'Cervezas nacionales y mezcal espadín en \$80',
           instagramHandle: 'dmtrockbar',
+          facebookPageId: 'dmtrockbar',
+          tiktokHandle: 'dmtrockbar',
           whatsappNumber: '+523121404040',
         ),
         const VenueLocation(
@@ -347,6 +376,7 @@ class VenueLocation {
           musicGenre: 'Rock Alternativo, Indie & Post-Punk',
           activePromotion: 'Promo de caguamas y tarros artesanales',
           instagramHandle: 'dospuntoscerveceria',
+          facebookPageId: 'CervezaDosPuntos',
           whatsappNumber: '+523121405050',
         ),
         const VenueLocation(
@@ -360,6 +390,8 @@ class VenueLocation {
           currentOccupancyPercentage: 55,
           musicGenre: 'Boleros, Ranchera Clásica & Trova',
           activePromotion: 'La cantina más tradicional de Colima: botana con cada trago',
+          instagramHandle: 'el_taurino_colima',
+          facebookPageId: 'eltaurinoCOLIMA',
           whatsappNumber: '+523121406060',
         ),
         const VenueLocation(
@@ -373,7 +405,8 @@ class VenueLocation {
           currentOccupancyPercentage: 65,
           musicGenre: 'Trova, Bohemia Acústica & Canción Latinoamericana',
           activePromotion: 'Cerveza y sangría con entremeses de la casa',
-          instagramHandle: 'lapuertadelperreo.dog',
+          instagramHandle: 'barlapuerta',
+          facebookPageId: 'LaPuertaBarColima',
           whatsappNumber: '+523121407070',
         ),
         const VenueLocation(
@@ -388,6 +421,8 @@ class VenueLocation {
           musicGenre: 'House, Tech-House & Electrónica',
           activePromotion: 'Sin promoción activa',
           instagramHandle: 'lowclub.col',
+          facebookPageId: 'Lowsocialclub',
+          tiktokHandle: 'low.social.club',
         ),
         const VenueLocation(
           id: 'mezcaleria-casa-colima',
@@ -401,6 +436,8 @@ class VenueLocation {
           musicGenre: 'Música Bohemia, Son Jarocho & Trova Acústica',
           activePromotion: 'Degustación de mezcal artesanal con maridaje de sales de Colima',
           instagramHandle: 'casa.colima.mezcaleria',
+          facebookPageId: '100063620859970',
+          tiktokHandle: 'casa.colima.mezca',
         ),
         const VenueLocation(
           id: 'lostoros-barra-taurina',
@@ -414,6 +451,7 @@ class VenueLocation {
           musicGenre: 'Música de Cantina, Ranchera Clásica & Ambiente Taurino',
           activePromotion: 'Tequila tradicional y botanas de cortesía por consumo',
           instagramHandle: 'lostorosbarrataurina',
+          facebookPageId: 'eltaurinoCOLIMA',
         ),
 
         // Corredor Sevilla del Río & Camino Real
@@ -429,6 +467,7 @@ class VenueLocation {
           musicGenre: 'Pop Latino, Regional & Crossover',
           activePromotion: 'Cubetazo nacional \$180 y chamorros al estilo Colima',
           instagramHandle: 'la_regional_cantina',
+          facebookPageId: 'laregionalcantina',
           whatsappNumber: '+523121508080',
         ),
         const VenueLocation(
@@ -443,6 +482,7 @@ class VenueLocation {
           musicGenre: 'Música en Vivo, Salsa & Cumbia',
           activePromotion: 'Ceviches colimenses y cerveza helada',
           instagramHandle: 'lachintolacolima',
+          facebookPageId: 'tucasacolimota',
           whatsappNumber: '+523121509090',
         ),
 
@@ -459,6 +499,8 @@ class VenueLocation {
           musicGenre: 'Electro Cumbia, Afro House & Mezcal Sessions',
           activePromotion: 'Vuelos de mezcal oaxaqueño y michoacano 2x1',
           instagramHandle: 'mezcal.santo',
+          facebookPageId: 'SMezcal',
+          tiktokHandle: 'santo.mezcal.coli',
           whatsappNumber: '+523121601010',
         ),
 
@@ -477,6 +519,8 @@ class VenueLocation {
           musicGenre: 'Rock en Vivo / Indie / Alternativo',
           activePromotion: 'Cerveza artesanal 2x1 hasta las 10 PM',
           instagramHandle: 'foro_dmt',
+          facebookPageId: 'FORODMT',
+          tiktokHandle: 'foro_dmt',
           whatsappNumber: '+523121234567',
         ),
 
@@ -494,6 +538,7 @@ class VenueLocation {
           musicGenre: 'Drinks de Autor / Pop Latino / Precopeo',
           activePromotion: '2x1 en coctelería de autor de 8 a 10 PM',
           instagramHandle: 'paraisodrinkscolima',
+          facebookPageId: '61553948607612',
           whatsappNumber: '+523121234567',
         ),
         // Cervecería Chapultepec (Corredor Venustiano Carranza Norte / Esmeralda)
@@ -510,6 +555,8 @@ class VenueLocation {
           musicGenre: 'Pop Rock, Música Casual & Hits',
           activePromotion: 'Todo a un Mismo Precio en bebidas y alimentos',
           instagramHandle: 'cerveceriachapultepeccolima',
+          facebookPageId: 'cerveceriachapultepeccolima',
+          tiktokHandle: 'lachapu',
           whatsappNumber: '+523123235812',
         ),
         const VenueLocation(
@@ -525,7 +572,30 @@ class VenueLocation {
           musicGenre: 'Vinyl Sessions, Nu-Disco, House & Hi-Fi Beats',
           activePromotion: 'Focaccias de masa madre, coctelería clásica y vinilos',
           instagramHandle: 'torna.col',
+          facebookPageId: '61574344913041',
+          tiktokHandle: 'tornabar',
           googlePlaceId: '0x84255b627a032d5f:0xd8947045b43b1170',
+        ),
+
+        // ====================================================================
+        // 4. Karaoke Bar Villa de Álvarez
+        // ====================================================================
+        const VenueLocation(
+          id: 'el-secreto-karaoke',
+          name: 'El Secreto Karaoke Bar',
+          category: VenueCategory.barPub,
+          corridorId: CorridorId.tercerAnilloVda,
+          address: 'Av. Benito Juárez #1000, Local 7, Col. General Manuel Álvarez, 28984 Ciudad de Villa de Álvarez, Col.',
+          coordinates: GeoPoint(19.249152, -103.7466283),
+          currentStatus: VenueStatus.available,
+          currentOccupancyPercentage: 70,
+          hasCover: false,
+          musicGenre: 'Karaoke en Vivo, Pop en Español, Baladas & Rock Clásico',
+          activePromotion: 'Noches de Karaoke: Cubetazos & Coctelería en Promoción',
+          instagramHandle: 'elsecreto_bar1',
+          facebookPageId: '61591782338465',
+          whatsappNumber: '+523121961600',
+          googlePlaceId: '0x8425459de7349d49:0x40a8499e5e2755c1',
         ),
       ];
 

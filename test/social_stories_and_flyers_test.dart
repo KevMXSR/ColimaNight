@@ -75,12 +75,13 @@ void main() {
       expect(puerta.schedule, contains('7:00 PM'));
     });
 
-    test('El Guachi is linked to official @guachirooftop on Ignacio Sandoval', () {
+    test('El Guachi is linked to official @elguachicruderia & @guachirooftop on Ignacio Sandoval', () {
       final container = ProviderContainer();
       final venues = container.read(mockVenuesProvider);
 
       final guachi = venues.firstWhere((v) => v.id == 'el_guachi');
-      expect(guachi.instagramHandle, '@guachirooftop');
+      expect(guachi.instagramHandle, '@elguachicruderia');
+      expect(guachi.secondaryInstagramHandle, '@guachirooftop');
       expect(guachi.zone, contains('Ignacio Sandoval 1943'));
     });
   });

@@ -161,21 +161,70 @@ void main() {
       expect(low.longitude, -103.72559862649845);
     });
 
-    test('Venues count is exactly 29 verified establishments, excludes Taverna and Barezzito', () {
+    test('Venues count is exactly 30 verified establishments, excludes Taverna and Barezzito', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
-      expect(venues.length, equals(29));
+      expect(venues.length, equals(30));
       expect(venues.any((v) => v.id == 'cerveceria_chapultepec'), isTrue);
       expect(venues.any((v) => v.id == 'torna'), isTrue);
+      expect(venues.any((v) => v.id == 'el_secreto_karaoke'), isTrue);
       expect(venues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
       expect(venues.any((v) => v.id == 'barezzito_easter_egg'), isFalse);
       expect(venues.any((v) => v.name.toLowerCase().contains('barezzito')), isFalse);
-      expect(VenueLocation.verifiedColimaVenues.length, equals(29));
+      expect(VenueLocation.verifiedColimaVenues.length, equals(30));
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.id == 'cerveceria_chapultepec'), isTrue);
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.id == 'torna'), isTrue);
+      expect(VenueLocation.verifiedColimaVenues.any((v) => v.id == 'el-secreto-karaoke'), isTrue);
       expect(VenueLocation.verifiedColimaVenues.any((v) => v.name.toLowerCase().contains('taverna')), isFalse);
+    });
+
+    test('Social media audit: zero placeholder/hallucinated TikTok handles and accurate official links', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+
+      // Verify fake TikTok handles are NOT present anywhere
+      final fakeHandles = [
+        '@costacerveza',
+        '@dospuntoscolima',
+        '@barlapuertacolima',
+        '@laregionalcolima',
+        '@elgustitocolima',
+        '@paraisodrinkscol',
+      ];
+      for (final fake in fakeHandles) {
+        expect(venues.any((v) => v.tikTokHandle == fake), isFalse,
+            reason: 'Fake handle $fake should not exist in catalog');
+      }
+
+      // Verify official TikTok links
+      final low = venues.firstWhere((v) => v.id == 'low_social_club');
+      expect(low.tikTokHandle, equals('@low.social.club'));
+
+      final costa = venues.firstWhere((v) => v.id == 'costa_carranza');
+      expect(costa.tikTokHandle, equals('@cerveceriadelacosta'));
+
+      final colimita = venues.firstWhere((v) => v.id == 'colimita_centro');
+      expect(colimita.tikTokHandle, equals('@cerveceriadecolima__'));
+
+      // Verify venues with no TikTok have null handle
+      final regional = venues.firstWhere((v) => v.id == 'la_regional');
+      expect(regional.tikTokHandle, isNull);
+
+      final dosPuntos = venues.firstWhere((v) => v.id == 'dos_puntos');
+      expect(dosPuntos.tikTokHandle, isNull);
+
+      final puerta = venues.firstWhere((v) => v.id == 'la_puerta_bar');
+      expect(puerta.tikTokHandle, isNull);
+
+      final gustito = venues.firstWhere((v) => v.id == 'el_gustito');
+      expect(gustito.tikTokHandle, isNull);
+
+      final paraiso = venues.firstWhere((v) => v.id == 'paraiso_drinks');
+      expect(paraiso.tikTokHandle, isNull);
     });
     test('Barezzito Easter Egg is correctly positioned on map at Av. Constitucion 1450', () {
       const barezzito = VenueLocation.barezzitoEasterEgg;

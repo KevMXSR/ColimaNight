@@ -62,7 +62,8 @@ void main() {
       expect(elGuachi.zone, contains('Ignacio Sandoval'));
       expect(elGuachi.zone.contains('Tercer Anillo'), isFalse,
           reason: 'El Guachi está en Calle Ignacio Sandoval 1943, NO en Tercer Anillo.');
-      expect(elGuachi.instagramHandle, equals('@guachirooftop'));
+      expect(elGuachi.instagramHandle, equals('@elguachicruderia'));
+      expect(elGuachi.secondaryInstagramHandle, equals('@guachirooftop'));
       expect(elGuachi.upcomingEvents, isEmpty,
           reason: 'El catálogo base no debe tener eventos ficticios.');
     });
@@ -161,7 +162,7 @@ void main() {
 
       final venues = container.read(venuesNotifierProvider);
       expect(venues, isNotEmpty);
-      expect(venues.length, equals(29));
+      expect(venues.length, equals(30));
     });
 
     test('togglePromo and toggleLiveMusic update state optimistically', () {

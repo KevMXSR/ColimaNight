@@ -143,8 +143,13 @@ void main() {
       expect(jsContent.contains("@elguachicolima"), isFalse,
           reason: 'El handle @elguachicolima fue inventado y no debe existir.');
       expect(jsContent.contains("id: 'el_guachi', name: 'El Guachi'"), isTrue);
-      expect(jsContent.contains("instagram: '@guachirooftop'"), isTrue,
-          reason: 'El Guachi debe estar asociado a su cuenta oficial @guachirooftop.');
+      expect(jsContent.contains("instagram: '@elguachicruderia'"), isTrue,
+          reason: 'El Guachi debe estar asociado a su cuenta oficial @elguachicruderia.');
+      expect(jsContent.contains("secondaryIg: '@guachirooftop'"), isTrue,
+          reason: 'El Guachi debe tener su cuenta secundaria @guachirooftop.');
+
+      // Validar presencia de El Secreto Karaoke Bar en Studio
+      expect(jsContent.contains("id: 'el_secreto_karaoke', name: 'El Secreto Karaoke Bar'"), isTrue);
 
       // Validar perfiles verificados de El Taurino y Los Toros Barra Taurina
       expect(jsContent.contains("id: 'el_taurino', name: 'El Taurino Bar', zone: 'Filomeno Medina 12, Centro', category: 'Cantina Tradicional', instagram: '@el_taurino_colima'"), isTrue);

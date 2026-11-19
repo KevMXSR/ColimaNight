@@ -194,7 +194,7 @@ void main() {
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
-      expect(venues.length, equals(29)); // Total venues 29
+      expect(venues.length, equals(30)); // Total venues 30
 
       final torna = venues.firstWhere((v) => v.id == 'torna');
       expect(torna.name, equals('Torna'));
@@ -210,6 +210,24 @@ void main() {
       expect(torna.liveMusicAct, contains('Vinilo'));
       expect(torna.ambientPhotos.length, equals(4));
     });
+
+    test('El Secreto Karaoke Bar profile & official links verification (#30)', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final venues = container.read(mockVenuesProvider);
+      final secreto = venues.firstWhere((v) => v.id == 'el_secreto_karaoke');
+      expect(secreto.name, equals('El Secreto Karaoke Bar'));
+      expect(secreto.category, equals('Bar & Karaoke'));
+      expect(secreto.zone, contains('Av. Benito Juárez #1000, Local 7'));
+      expect(secreto.latitude, closeTo(19.249152, 0.001));
+      expect(secreto.longitude, closeTo(-103.7466283, 0.001));
+      expect(secreto.instagramHandle, equals('@elsecreto_bar1'));
+      expect(secreto.facebookUrl, equals('https://www.facebook.com/profile.php?id=61591782338465'));
+      expect(secreto.hasLiveMusic, isTrue);
+      expect(secreto.liveMusicAct, contains('Karaoke'));
+      expect(secreto.ambientPhotos.length, equals(4));
+    });
   });
 
   group('Secondary Profiles & Video Stories Verification Tests', () {
@@ -223,17 +241,18 @@ void main() {
       expect(laPuerta.instagramHandle, equals('@barlapuerta'));
       expect(laPuerta.secondaryInstagramHandle, equals('@lapuertadelperreo.dog'));
       expect(laPuerta.secondaryInstagramUrl, equals('https://www.instagram.com/lapuertadelperreo.dog/'));
-      expect(laPuerta.facebookUrl, contains('barlapuertacolima'));
+      expect(laPuerta.facebookUrl, equals('https://www.facebook.com/LaPuertaBarColima'));
     });
 
-    test('El Guachi correctly associates @guachirooftop as official handle on Ignacio Sandoval', () {
+    test('El Guachi correctly associates @elguachicruderia & @guachirooftop as official handles', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final venues = container.read(mockVenuesProvider);
       final guachi = venues.firstWhere((v) => v.id == 'el_guachi');
 
-      expect(guachi.instagramHandle, equals('@guachirooftop'));
+      expect(guachi.instagramHandle, equals('@elguachicruderia'));
+      expect(guachi.secondaryInstagramHandle, equals('@guachirooftop'));
       expect(guachi.zone, contains('Ignacio Sandoval 1943'));
     });
 
