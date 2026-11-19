@@ -50,8 +50,6 @@ final List<VenueModel> _initialVenues = [
     latitude: 19.263319260681573,
     longitude: -103.70427827536956,
     instagramHandle: '@guachirooftop',
-    tikTokHandle: '@elguachicolima',
-    facebookUrl: 'https://facebook.com/elguachicolima',
     vibeGenre: 'Perreo / Tech-House / Pop Latino',
     schedule: '9:30 PM - 5:30 AM',
     estimatedMinutes: 6,

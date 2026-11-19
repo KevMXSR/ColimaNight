@@ -26,5 +26,5 @@
 }
 
 # Plugins específicos (Geolocator, SharedPreferences, etc.)
--dontwarn com.baseflow.geolocator.**
+-dontwarn **
 -keep class com.baseflow.geolocator.** { *; }

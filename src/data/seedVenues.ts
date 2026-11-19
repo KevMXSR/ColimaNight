@@ -330,7 +330,7 @@ export const SEED_VENUES: VenueDocument[] = [
       lastUpdated: firestore.Timestamp.now(),
     },
     activePromos: [],
-    socialLinks: { instagram: 'https://instagram.com/elguachicolima' },
+    socialLinks: { instagram: 'https://instagram.com/guachirooftop' },
     securityStatus: { level: 'normal', activeIncidentId: null, incidentType: null, lastReportedAt: null, alertExpiresAt: null, warningMessage: null },
     stats: { checkinsTonight: 155, averageWaitMinutes: 15, lastVibeUpdate: firestore.Timestamp.now() },
     active: true,
