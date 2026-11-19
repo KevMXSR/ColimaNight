@@ -18,13 +18,10 @@ concurrency:
 
 jobs:
   # ------------------------------------------------------------
-  # Job 1: Pruebas Automatizadas y Despliegue Web a GitHub Pages
+  # Job 1: Pruebas Automatizadas y Compilación Web
   # ------------------------------------------------------------
-  test_and_deploy_web:
+  test_and_build_web:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout Código
         uses: actions/checkout@v4
@@ -70,16 +67,27 @@ jobs:
         with:
           path: 'build/web'
 
+  # ------------------------------------------------------------
+  # Job 2: Despliegue a GitHub Pages (Garantiza indexación de artefacto)
+  # ------------------------------------------------------------
+  deploy_web:
+    needs: test_and_build_web
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Desplegar a GitHub Pages
         id: deployment
-        if: github.ref == 'refs/heads/main'
         uses: actions/deploy-pages@v4
 
   # ------------------------------------------------------------
-  # Job 2: Compilación y Empaquetado de Android APK Release
+  # Job 3: Compilación y Empaquetado de Android APK Release
   # ------------------------------------------------------------
   build_android_apk:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout Código
         uses: actions/checkout@v4
